@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ChatServer", "ChatServer\ChatServer.vcxproj", "{4386300D-72CA-49CD-9263-455C25AF122B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ChatClient", "ChatClient\ChatClient.vcxproj", "{01E2794B-D636-439E-A43A-CCBB9743C49E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{06B0D977-D12F-442D-861F-F9ED1C9E1AC3}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		readme.md = readme.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4386300D-72CA-49CD-9263-455C25AF122B}.Debug|x64.ActiveCfg = Debug|x64
+		{4386300D-72CA-49CD-9263-455C25AF122B}.Debug|x64.Build.0 = Debug|x64
+		{4386300D-72CA-49CD-9263-455C25AF122B}.Debug|x86.ActiveCfg = Debug|Win32
+		{4386300D-72CA-49CD-9263-455C25AF122B}.Debug|x86.Build.0 = Debug|Win32
+		{4386300D-72CA-49CD-9263-455C25AF122B}.Release|x64.ActiveCfg = Release|x64
+		{4386300D-72CA-49CD-9263-455C25AF122B}.Release|x64.Build.0 = Release|x64
+		{4386300D-72CA-49CD-9263-455C25AF122B}.Release|x86.ActiveCfg = Release|Win32
+		{4386300D-72CA-49CD-9263-455C25AF122B}.Release|x86.Build.0 = Release|Win32
+		{01E2794B-D636-439E-A43A-CCBB9743C49E}.Debug|x64.ActiveCfg = Debug|x64
+		{01E2794B-D636-439E-A43A-CCBB9743C49E}.Debug|x64.Build.0 = Debug|x64
+		{01E2794B-D636-439E-A43A-CCBB9743C49E}.Debug|x86.ActiveCfg = Debug|Win32
+		{01E2794B-D636-439E-A43A-CCBB9743C49E}.Debug|x86.Build.0 = Debug|Win32
+		{01E2794B-D636-439E-A43A-CCBB9743C49E}.Release|x64.ActiveCfg = Release|x64
+		{01E2794B-D636-439E-A43A-CCBB9743C49E}.Release|x64.Build.0 = Release|x64
+		{01E2794B-D636-439E-A43A-CCBB9743C49E}.Release|x86.ActiveCfg = Release|Win32
+		{01E2794B-D636-439E-A43A-CCBB9743C49E}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
