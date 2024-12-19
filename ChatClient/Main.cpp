@@ -5,10 +5,16 @@
 #include "SFML/System.hpp"
 
 #include <vector>
+#include <cstring>
 
 #pragma comment (lib, "opengl32.lib")
 #pragma comment (lib, "winmm.lib")
 #pragma comment (lib, "ws2_32.lib")
+
+struct PACKET {
+	char size;
+	string content;
+};
 
 int main() {
 	int clinet_num = 10;
@@ -31,6 +37,16 @@ int main() {
 		}
 
 		printf("Connect Server!\n");
+
+		
+		PACKET packet;
+		packet.content = "Hello World!";
+		packet.size = sizeof(packet);
+
+		size_t sent;
+		if (sf::Socket::Done != sockets[i]->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent)) {
+			printf("클라이언트 송신 오류\n");
+		}
 	}
 	
 	for (int i = 0; i < clinet_num; ++i) {

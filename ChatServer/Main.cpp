@@ -2,30 +2,21 @@
 
 #include "stdafx.h"
 #include "OverlappedExpansion.h"
+#include "Client.h"
 
 #include <iostream>
 #include <string>
+#include <unordered_map>
+#include <atomic>
 
+atomic<int> ticket_number;
 
-#include "SFML/Network.hpp"
-void test_server() {
-	sf::TcpListener listener;
+struct PACKET {
+	char size;
+	string content;
+};
 
-	// bind the listener to a port
-	if (listener.listen(9785) != sf::Socket::Done)
-	{
-		// error...
-	}
-
-	// accept a new connection
-	sf::TcpSocket client;
-	if (listener.accept(client) != sf::Socket::Done)
-	{
-		// error...
-	}
-
-	printf("Accept new clinet");
-}
+unordered_map<int, Client> clients;
 
 int main() {
 	WSADATA WSAData;
@@ -52,12 +43,14 @@ int main() {
 	accept_overlapped_expansion->socket_type = SOCKET_TYPE::ACCEPT;
 
 	HANDLE h_iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
-	CreateIoCompletionPort(reinterpret_cast<HANDLE>(server_socket), h_iocp, 9999, 0);
+	CreateIoCompletionPort(reinterpret_cast<HANDLE>(server_socket), h_iocp, (ULONG_PTR)accept_overlapped_expansion, 0);
 
 	if (h_iocp == NULL) {
 		cout << GetLastError();
 		return 0;
 	}
+
+	ticket_number.store(0);
 
 	SOCKET client_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 
@@ -101,6 +94,11 @@ int main() {
 		switch (exoverlapped->socket_type) {
 		case SOCKET_TYPE::ACCEPT: {
 			printf("new clinet accept\n");
+			int ticket = ticket_number.load();
+			ticket_number.fetch_add(1);
+			clients[ticket] = Client(client_socket);
+			CreateIoCompletionPort(reinterpret_cast<HANDLE>(client_socket), h_iocp, ticket, 0);
+			clients[ticket].recv_packet();
 
 			ZeroMemory(&accept_overlapped_expansion->overlapped,
 				sizeof(accept_overlapped_expansion->overlapped));
@@ -113,7 +111,9 @@ int main() {
 			break;
 		}
 		case SOCKET_TYPE::RECV: {
-			printf("recv new message\n");
+			PACKET* packet = reinterpret_cast<PACKET*>(exoverlapped->packet_buffer);
+			unsigned long long ticket = (unsigned long long)key;
+			printf("[%llu]: %s\n", ticket, packet->content.c_str());
 			break;
 		}
 		case SOCKET_TYPE::SEND: {
