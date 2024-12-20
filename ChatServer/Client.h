@@ -2,7 +2,7 @@
 
 #include "OverlappedExpansion.h"
 
-class Client : private OverlappedExpansion
+class Client : public OverlappedExpansion
 {
 private:
 
