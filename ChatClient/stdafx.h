@@ -19,9 +19,4 @@
 
 using namespace std;
 
-#pragma pack (1)
-struct PACKET {
-	char size;
-	char content[64];
-};
-#pragma pack (pop)
+#include "../ChatServer/Packet.h"
