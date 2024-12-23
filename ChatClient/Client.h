@@ -26,7 +26,7 @@ public:
 	sf::Socket::Status connect_to_server(string addr, unsigned short port);
 	void disconnect_to_server();
 
-	void communicate_server();
+	void communicate_server(int i);
 
 	void send_chatting();
 	void recv_chatting();

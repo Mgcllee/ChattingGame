@@ -22,7 +22,7 @@ void Client::disconnect_to_server()
 	m_socket->disconnect();
 }
 
-void Client::communicate_server()
+void Client::communicate_server(int i)
 {
 	random_device rd;  // 하드웨어에서 랜덤 넘버를 얻음
 	mt19937 eng(rd()); // 생성기를 시드로 초기화
@@ -64,6 +64,11 @@ void Client::communicate_server()
 	default: {
 		break;
 	}
+	}
+
+	if (m_socket->getRemoteAddress() == sf::IpAddress::None) {
+		printf("None %d\n", i);
+		exit(true);
 	}
 }
 
