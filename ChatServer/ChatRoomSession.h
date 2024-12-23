@@ -8,10 +8,10 @@ class ChatRoomSession
 private:
 
 public:
-	ChatRoomSession(vector<Client> clients);
-	~ChatRoomSession();
+	ChatRoomSession(vector<Client> clients) {} ;
+	~ChatRoomSession() {};
 
-	void sync_all_chat();
-	void sync_one_chat();
+	void sync_all_chat() {};
+	void sync_one_chat() {};
 };
 

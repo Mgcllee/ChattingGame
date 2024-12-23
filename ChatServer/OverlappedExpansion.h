@@ -1,10 +1,16 @@
 #pragma once
 
-#include "NetworkSetting.h"
+#include <WS2tcpip.h>
+#include <MSWSock.h>
+
+#pragma comment(lib, "WS2_32.lib")
+#pragma comment(lib, "MSWSock.lib")
+
+#include "Packet.h"
 
 enum SOCKET_TYPE { ACCEPT, RECV, SEND, LOGOUT };
 
-class OverlappedExpansion : public NetworkSetting {
+class OverlappedExpansion {
 public:
 	OverlappedExpansion() { 
 		wsa_buffer.len = BUF_SIZE;

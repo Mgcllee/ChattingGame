@@ -21,9 +21,6 @@
     <ClInclude Include="Client.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NetworkSetting.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ChatRoomSession.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -36,15 +33,15 @@
     <ClInclude Include="JobWorker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GameSession.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Client.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NetworkSetting.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ChatRoomSession.cpp">
@@ -54,6 +51,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="JobWorker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameSession.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
