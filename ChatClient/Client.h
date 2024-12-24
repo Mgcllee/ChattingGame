@@ -23,7 +23,7 @@ public:
 	}
 
 
-	sf::Socket::Status connect_to_server(string addr, unsigned short port);
+	sf::Socket::Status connect_to_server(string addr, unsigned short port, int i);
 	void disconnect_to_server();
 
 	void communicate_server(int i);

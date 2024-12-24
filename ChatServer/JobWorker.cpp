@@ -25,6 +25,8 @@ void JobWorker::job_worker(HANDLE h_iocp) {
 	ULONG_PTR key;
 	WSAOVERLAPPED* overlapped;
 
+	printf("Start Server\n");
+
 	while (true) {
 		BOOL GQCS_result = GetQueuedCompletionStatus(h_iocp, &num_bytes, &key, &overlapped, INFINITY);
 		OverlappedExpansion* exoverlapped = reinterpret_cast<OverlappedExpansion*>(overlapped);
@@ -38,6 +40,9 @@ void JobWorker::job_worker(HANDLE h_iocp) {
 		case SOCKET_TYPE::ACCEPT: {
 			int ticket = ticket_number.load();
 			ticket_number.fetch_add(1);
+			
+			if (ticket % 100'000 == 0) printf("ticket: %d\n", ticket);
+
 			clients[ticket] = Client(accept_client_socket);
 			CreateIoCompletionPort(reinterpret_cast<HANDLE>(accept_client_socket), h_iocp, ticket, 0);
 			clients[ticket].recv_packet();

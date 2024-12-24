@@ -5,14 +5,10 @@ Client::~Client()
 	// m_socket->disconnect();
 }
 
-sf::Socket::Status Client::connect_to_server(string addr, unsigned short port)
+sf::Socket::Status Client::connect_to_server(string addr, unsigned short port, int i)
 {
 	sf::Socket::Status status = m_socket->connect(addr, port);
 	m_socket->setBlocking(false);
-
-	/*if (status != sf::Socket::Done) {
-		printf("서버와 연결할 수 없습니다.\n");
-	}*/
 
 	return status;
 }
@@ -35,7 +31,7 @@ void Client::communicate_server(int i)
 	switch (order) {
 	case 1: {	// connect 
 		if (m_socket->getRemoteAddress() == sf::IpAddress::None) {
-			connect_to_server(SERVER_ADDR, PORT_NUM);
+			connect_to_server(SERVER_ADDR, PORT_NUM, i);
 		}
 		break;
 	}
