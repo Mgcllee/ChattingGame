@@ -115,7 +115,7 @@ void JobWorker::recv_client_packet(int client_ticket, OverlappedExpansion* exove
 }
 
 void JobWorker::process_packet(int player_ticket, char* packet) {
-	if (player_ticket >= 13'000) {
+	if (player_ticket % 10'000 == 0) {
 		PACKET* chat_packet = reinterpret_cast<PACKET*>(packet);
 		printf("[%d]: %s\n", player_ticket, chat_packet->content);
 	}
