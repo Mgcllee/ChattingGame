@@ -25,8 +25,6 @@ void JobWorker::job_worker(HANDLE h_iocp) {
 	ULONG_PTR key;
 	WSAOVERLAPPED* overlapped;
 
-	printf("Start Server\n");
-
 	while (true) {
 		BOOL GQCS_result = GetQueuedCompletionStatus(h_iocp, &num_bytes, &key, &overlapped, INFINITY);
 		OverlappedExpansion* exoverlapped = reinterpret_cast<OverlappedExpansion*>(overlapped);
@@ -115,8 +113,15 @@ void JobWorker::recv_client_packet(int client_ticket, OverlappedExpansion* exove
 }
 
 void JobWorker::process_packet(int player_ticket, char* packet) {
-	if (player_ticket % 10'000 == 0) {
-		PACKET* chat_packet = reinterpret_cast<PACKET*>(packet);
+	switch (packet[1]) {
+	case C2S_PACKET_TYPE::SEND_CHAT_PACK: {
+		C2S_SEND_CHAT_PACK* chat_packet = reinterpret_cast<C2S_SEND_CHAT_PACK*>(packet);
 		printf("[%d]: %s\n", player_ticket, chat_packet->content);
+		break;
+	}
+	case C2S_PACKET_TYPE::REQUEST_CHAT_LOG_PACK: {
+
+		break;
+	}
 	}
 }

@@ -20,9 +20,9 @@ void Client::disconnect_to_server()
 
 void Client::communicate_server(int i)
 {
-	random_device rd;  // 하드웨어에서 랜덤 넘버를 얻음
-	mt19937 eng(rd()); // 생성기를 시드로 초기화
-	uniform_int_distribution<> distr(2, 3); // 1부터 5까지의 범위 설정
+	random_device rd;
+	mt19937 eng(rd());
+	uniform_int_distribution<> distr(2, 3);
 
 	int order = distr(eng);
 	
