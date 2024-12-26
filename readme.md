@@ -9,9 +9,11 @@
 
 ## 서버 접속 가능 클라이언트 수
 
-> netsh int ipv4 set dynamicport tcp start=1024 num=64511
+최대 접속 가능 수: 50'000 클라이언트  
 
-위 명령어를 통해서 약 16'000 개의 연결만 가능한 상태에서 약 64400 개 까지 연결이 가능하게 됨.  
+<br/>
+
+> netsh int ipv4 set dynamicport tcp start=1024 num=51000
 
 <br/>
 
