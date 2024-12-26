@@ -72,11 +72,12 @@ void Client::send_chatting()
 {
 	// [Work I/O]: 메모장(ReadOnly)에서 일부 발췌하여 읽고 그 내용을 전송
 
-	PACKET packet;
+	C2S_SEND_CHAT_PACK packet;
 	
 	// [TODO]: update read io work
-	 strncpy_s(packet.content, "Hello World!", sizeof("Hello World!"));
+	strncpy_s(packet.content, "Hello World!", sizeof("Hello World!"));
 	packet.size = sizeof(packet);
+	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK;
 
 	size_t sent;
 	if (sf::Socket::Done != m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent)) {
@@ -88,11 +89,11 @@ void Client::recv_chatting()
 {
 	// [Work I/O]: 새롭게 받은 채팅을 그래픽으로 출력(하는 모습이라고 가정)
 
-	PACKET* packet = new PACKET();
+	S2C_SEND_CHAT_LOG* packet = new S2C_SEND_CHAT_LOG();
 	size_t recved_size;
 	m_socket->receive(reinterpret_cast<void*>(packet), (size_t)sizeof(packet), recved_size);
 	
-	printf("%s\n", packet->content);
+	// printf("%s\n", packet->content);
 }
 
 void Client::request_chat_log()
@@ -104,13 +105,15 @@ void Client::request_logout()
 {
 	// [Work I/O]: 메모장(ReadOnly)에서 일부 발췌하여 읽고 그 내용을 전송
 
-	PACKET packet;
+	C2S_SEND_CHAT_PACK packet;
 
 	// [TODO]: update read io work
 
+	packet.size = sizeof(packet);
+	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK;
+
 	const char* str = "Goodbye Server i'm leave";;
 	strncpy_s(packet.content, str, sizeof(str));
-	packet.size = sizeof(packet);
 
 	size_t sent;
 	if (sf::Socket::Done != m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent)) {
