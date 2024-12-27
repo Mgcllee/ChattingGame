@@ -6,9 +6,9 @@ JobWorker::JobWorker(
 	SOCKET in_server_socket,
 	SOCKET in_accept_client_socket, 
 	OverlappedExpansion* in_accept_overlapped_expansion,
-	atomic<int>& in_ticket_number,
-	unordered_map<int, Client>& in_clients,
-	ofstream& in_chat_log_file
+	std::atomic<int>& in_ticket_number,
+	std::unordered_map<int, Client>& in_clients,
+	std::ofstream& in_chat_log_file
 )
 	: server_socket(in_server_socket)
 	, accept_client_socket(in_accept_client_socket)
@@ -30,7 +30,7 @@ void JobWorker::job_worker(HANDLE h_iocp) {
 	WSAOVERLAPPED* overlapped;
 
 	while (true) {
-		BOOL GQCS_result = GetQueuedCompletionStatus(h_iocp, &num_bytes, &key, &overlapped, INFINITY);
+		BOOL GQCS_result = GetQueuedCompletionStatus(h_iocp, &num_bytes, &key, &overlapped, static_cast<DWORD>(INFINITY));
 		OverlappedExpansion* exoverlapped = reinterpret_cast<OverlappedExpansion*>(overlapped);
 
 		int client_ticket = static_cast<int>(key);
@@ -57,7 +57,7 @@ void JobWorker::job_worker(HANDLE h_iocp) {
 			break;
 		}
 		case SOCKET_TYPE::RECV: {
-			recv_client_packet(key, exoverlapped, num_bytes);
+			recv_client_packet(static_cast<int>(key), exoverlapped, num_bytes);
 			break;
 		}
 		default: {
@@ -75,8 +75,8 @@ bool JobWorker::check_exist_job(OverlappedExpansion* exoverlapped, BOOL GQCS_res
 			printf("Accept error\n");
 		}
 		else {
-			string error_message = "GQCS Error on client[";
-			error_message += to_string(client_ticket);
+			std::string error_message = "GQCS Error on client[";
+			error_message += std::to_string(client_ticket);
 			error_message += "]";
 			printf("%s\n", error_message.c_str());
 		}
@@ -115,7 +115,7 @@ void JobWorker::process_packet(int player_ticket, char* packet) {
 	switch (packet[1]) {
 	case C2S_PACKET_TYPE::SEND_CHAT_PACK: {
 		C2S_SEND_CHAT_PACK* chat_packet = reinterpret_cast<C2S_SEND_CHAT_PACK*>(packet);
-		const string message = format("[{}]: {}\n", player_ticket, chat_packet->content);
+		const std::string message = std::format("[{}]: {}\n", player_ticket, chat_packet->content);
 		printf("%s\n", message.c_str());
 		write_to_chat_log(message);
 		break;
@@ -127,7 +127,7 @@ void JobWorker::process_packet(int player_ticket, char* packet) {
 	}
 }
 
-void JobWorker::write_to_chat_log(const string& chat) {
-	lock_guard<mutex> lock(chat_log_mutex);
-	chat_log_file << chat << endl;
+void JobWorker::write_to_chat_log(const std::string& chat) {
+	std::lock_guard<std::mutex> lock(chat_log_mutex);
+	chat_log_file << chat << std::endl;
 }

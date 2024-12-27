@@ -9,7 +9,7 @@ enum C2S_PACKET_TYPE {
 	REQUEST_CHAT_LOG_PACK
 };
 
-#pragma pack (1)
+#pragma pack (push, 1)
 
 struct C2S_SEND_CHAT_PACK {
 	char size;
@@ -32,7 +32,7 @@ enum S2C_PACKET_TYPE {
 
 };
 
-#pragma pack (1)
+#pragma pack (push, 1)
 
 struct S2C_SEND_CHAT_LOG {
 	char size;

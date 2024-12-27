@@ -41,7 +41,7 @@ GameSession::GameSession()
 		addr_size + 16, 0, &accept_overlapped_expansion->overlapped);
 
 
-	chat_log_file.open("chat_log.txt", ios::out | ios::app);
+	chat_log_file.open("chat_log.txt", std::ios::out | std::ios::app);
 }
 
 GameSession::~GameSession()
