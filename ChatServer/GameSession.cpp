@@ -39,6 +39,9 @@ GameSession::GameSession()
 	AcceptEx(server_socket, accept_client_socket,
 		accept_overlapped_expansion->packet_buffer, 0, addr_size + 16,
 		addr_size + 16, 0, &accept_overlapped_expansion->overlapped);
+
+
+	chat_log_file.open("chat_log.txt", ios::out | ios::app);
 }
 
 GameSession::~GameSession()
@@ -48,13 +51,15 @@ GameSession::~GameSession()
 void GameSession::run_game_session() {
 	ticket_number.store(0);
 
-	vector <thread> worker_threads;
+	std::vector<std::thread> worker_threads;
 	int num_threads = std::thread::hardware_concurrency();
 	
 	for (int i = 0; i < num_threads; ++i) {
 		worker_threads.emplace_back(
 			&JobWorker::job_worker, 
-			new JobWorker(server_socket, accept_client_socket, accept_overlapped_expansion, ticket_number, clients),
+			new JobWorker(server_socket, accept_client_socket, accept_overlapped_expansion, 
+				ticket_number, clients,
+				chat_log_file),
 			h_iocp);
 	}
 

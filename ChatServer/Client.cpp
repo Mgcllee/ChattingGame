@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Client.h"
 
 void Client::send_packet(char* packet)

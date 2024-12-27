@@ -10,8 +10,10 @@ class GameSession
 	OverlappedExpansion* accept_overlapped_expansion;
 	HANDLE h_iocp;
 
-	atomic<int> ticket_number;
-	unordered_map<int, Client> clients;
+	std::atomic<int> ticket_number;
+	std::unordered_map<int, Client> clients;
+
+	std::ofstream chat_log_file;
 
 public:
 	GameSession();

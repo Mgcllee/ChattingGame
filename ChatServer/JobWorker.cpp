@@ -1,3 +1,5 @@
+#pragma once
+
 #include "JobWorker.h"
 
 JobWorker::JobWorker(
@@ -5,13 +7,15 @@ JobWorker::JobWorker(
 	SOCKET in_accept_client_socket, 
 	OverlappedExpansion* in_accept_overlapped_expansion,
 	atomic<int>& in_ticket_number,
-	unordered_map<int, Client>& in_clients
+	unordered_map<int, Client>& in_clients,
+	ofstream& in_chat_log_file
 )
 	: server_socket(in_server_socket)
 	, accept_client_socket(in_accept_client_socket)
 	, accept_overlapped_expansion(in_accept_overlapped_expansion)
 	, ticket_number(in_ticket_number)
 	, clients(in_clients)
+	, chat_log_file(in_chat_log_file)
 {
 
 }
@@ -38,8 +42,6 @@ void JobWorker::job_worker(HANDLE h_iocp) {
 		case SOCKET_TYPE::ACCEPT: {
 			int ticket = ticket_number.load();
 			ticket_number.fetch_add(1);
-			
-			if (ticket % 100'000 == 0) printf("ticket: %d\n", ticket);
 
 			clients[ticket] = Client(accept_client_socket);
 			CreateIoCompletionPort(reinterpret_cast<HANDLE>(accept_client_socket), h_iocp, ticket, 0);
@@ -58,11 +60,8 @@ void JobWorker::job_worker(HANDLE h_iocp) {
 			recv_client_packet(key, exoverlapped, num_bytes);
 			break;
 		}
-		case SOCKET_TYPE::SEND: {
-
-			break;
-		}
 		default: {
+			printf("[Error]: Packet Type Error!\n");
 			break;
 		}
 		}
@@ -116,7 +115,9 @@ void JobWorker::process_packet(int player_ticket, char* packet) {
 	switch (packet[1]) {
 	case C2S_PACKET_TYPE::SEND_CHAT_PACK: {
 		C2S_SEND_CHAT_PACK* chat_packet = reinterpret_cast<C2S_SEND_CHAT_PACK*>(packet);
-		printf("[%d]: %s\n", player_ticket, chat_packet->content);
+		const string message = format("[{}]: {}\n", player_ticket, chat_packet->content);
+		printf("%s\n", message.c_str());
+		write_to_chat_log(message);
 		break;
 	}
 	case C2S_PACKET_TYPE::REQUEST_CHAT_LOG_PACK: {
@@ -124,4 +125,9 @@ void JobWorker::process_packet(int player_ticket, char* packet) {
 		break;
 	}
 	}
+}
+
+void JobWorker::write_to_chat_log(const string& chat) {
+	lock_guard<mutex> lock(chat_log_mutex);
+	chat_log_file << chat << endl;
 }
