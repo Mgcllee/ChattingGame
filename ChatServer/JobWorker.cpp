@@ -121,6 +121,9 @@ void JobWorker::process_packet(int player_ticket, char* packet) {
 		break;
 	}
 	case C2S_PACKET_TYPE::REQUEST_CHAT_LOG_PACK: {
+		S2C_SEND_CHAT_LOG log_pack;
+		log_pack.size = sizeof(S2C_SEND_CHAT_LOG);
+		log_pack.type = S2C_PACKET_TYPE::SEND_CHAT_LOG_PACK;
 
 		break;
 	}

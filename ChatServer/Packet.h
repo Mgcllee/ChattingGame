@@ -20,7 +20,6 @@ struct C2S_SEND_CHAT_PACK {
 struct C2S_REQUEST_CHAT_LOG_PACK {
 	char size;
 	char type;
-	// 
 };
 
 #pragma pack (pop)
@@ -38,7 +37,8 @@ struct S2C_SEND_CHAT_LOG {
 	char size;
 	char type;
 	
-	char* log; // 대용량 파일 전송 방법 필요
+	char length;
+	char* str;
 };
 
 #pragma pack (pop)
