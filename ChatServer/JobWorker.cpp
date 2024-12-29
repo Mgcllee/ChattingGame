@@ -115,7 +115,7 @@ void JobWorker::process_packet(int player_ticket, char* packet) {
 	switch (packet[1]) {
 	case C2S_PACKET_TYPE::SEND_CHAT_PACK: {
 		C2S_SEND_CHAT_PACK* chat_packet = reinterpret_cast<C2S_SEND_CHAT_PACK*>(packet);
-		const std::string message = std::format("[{}]: {}\n", player_ticket, chat_packet->content);
+		const std::string message = std::format("[{}]: {}\n", player_ticket, chat_packet->str);
 		printf("%s\n", message.c_str());
 		write_to_chat_log(message);
 		break;
