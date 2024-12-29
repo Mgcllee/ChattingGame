@@ -1,7 +1,6 @@
 // Chatting Game Packet structure.
 
 
-#define BUF_SIZE 1024
 #define SERVER_PORT 9785
 
 enum C2S_PACKET_TYPE {
@@ -14,7 +13,9 @@ enum C2S_PACKET_TYPE {
 struct C2S_SEND_CHAT_PACK {
 	char size;
 	char type;
-	char content[64];
+	
+	char length;
+	char* str;
 };
 
 struct C2S_REQUEST_CHAT_LOG_PACK {
