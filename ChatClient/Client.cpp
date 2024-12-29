@@ -74,8 +74,10 @@ void Client::send_chatting()
 
 	C2S_SEND_CHAT_PACK packet;
 	
-	// [TODO]: update read io work
-	strncpy_s(packet.content, "Hello World!", sizeof("Hello World!"));
+	const char* str = "Hello World!";
+	
+	packet.length = sizeof(str);
+	strncpy_s(packet.str, str, sizeof(str));
 	packet.size = sizeof(packet);
 	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK;
 
@@ -105,15 +107,12 @@ void Client::request_logout()
 {
 	// [Work I/O]: 메모장(ReadOnly)에서 일부 발췌하여 읽고 그 내용을 전송
 
-	C2S_SEND_CHAT_PACK packet;
+	const char* str = "Goodbye Server i'm leave";
 
-	// [TODO]: update read io work
-
+	packet.length = sizeof(str);
+	strncpy_s(packet.str, str, sizeof(str));
 	packet.size = sizeof(packet);
 	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK;
-
-	const char* str = "Goodbye Server i'm leave";;
-	strncpy_s(packet.content, str, sizeof(str));
 
 	size_t sent;
 	if (sf::Socket::Done != m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent)) {
