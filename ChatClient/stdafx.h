@@ -19,4 +19,4 @@
 
 using namespace std;
 
-#include "../ChatServer/Packet.h"
+#include "Common/Packet.h"
