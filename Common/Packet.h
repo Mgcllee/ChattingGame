@@ -1,7 +1,7 @@
 // Chatting Game Packet structure.
 
-
 #define SERVER_PORT 9785
+#define BUF_SIZE 1024
 
 enum C2S_PACKET_TYPE {
 	SEND_CHAT_PACK = 1,

@@ -6,7 +6,7 @@
 #pragma comment(lib, "WS2_32.lib")
 #pragma comment(lib, "MSWSock.lib")
 
-#include "Packet.h"
+#include "Common/Packet.h"
 
 enum SOCKET_TYPE { ACCEPT, RECV, SEND, LOGOUT };
 
