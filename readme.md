@@ -1,5 +1,4 @@
 # Multi-User chatting program
----
 
 This repository is Multi-User chatting game program.
 
@@ -8,7 +7,6 @@ This repository is a personal work piece to practice how multiple clients connec
 <br/>
 
 ## In this repository
----
 
 * [Chatting Game Server Project readme file](https://github.com/Mgcllee/ChattingGame/blob/master/ChatServer/readme.md)  
 * [Chatting Game Server Project code](https://github.com/Mgcllee/ChattingGame/blob/master/ChatServer)  
@@ -19,6 +17,5 @@ This repository is a personal work piece to practice how multiple clients connec
 
 
 ## License
----
 
 This repository is licensed with the MIT license.
