@@ -1,19 +1,24 @@
 # Multi-User chatting program
 ---
 
-1. 유저가 접속하는 방을 따로 만들어 관리하기
-2. 채팅 중 비속어 등을 처리할 로직 만들기 ('*' 기호로 변환 등)
-3. 방 생성은 조건(100명 충족 or 생성된 시간)이 충족되면 채팅 시작
+This repository is Multi-User chatting game program.
+
+This repository is a personal work piece to practice how multiple clients connect to the server and expedite tasks when multiple requests are made.  
 
 <br/>
 
-## 서버 접속 가능 클라이언트 수
+## In this repository
+---
 
-최대 접속 가능 수: 50'000 클라이언트  
+* [Chatting Game Server Project readme file](https://github.com/Mgcllee/ChattingGame/blob/master/ChatServer/readme.md)  
+* [Chatting Game Server Project code](https://github.com/Mgcllee/ChattingGame/blob/master/ChatServer)  
+* [Chatting Game Client Project readme file](https://github.com/Mgcllee/ChattingGame/blob/master/ChatServer/readme.md)  
+* [Chatting Game Client Project code](https://github.com/Mgcllee/ChattingGame/blob/master/ChatClient)  
 
 <br/>
 
-> netsh int ipv4 set dynamicport tcp start=1024 num=51000
 
-<br/>
+## License
+---
 
+This repository is licensed with the MIT license.
