@@ -76,11 +76,11 @@ void Client::send_chatting()
 	
 	
 	C2S_SEND_CHAT_PACK packet;
-	packet.size = sizeof(packet);
 	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK;
-	packet.length = sizeof(str);
-	packet.str = new char[sizeof(str)];
-	strncpy_s(packet.str, sizeof(packet.str), str, sizeof(str));
+	packet.length = std::strlen(str) + 1;
+	packet.str = new char[packet.length];
+	memcpy(packet.str, str, packet.length);
+	packet.size = sizeof(packet);
 
 	size_t sent;
 	if (sf::Socket::Done != m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent)) {
@@ -111,11 +111,11 @@ void Client::request_logout()
 	const char* str = "Goodbye Server i'm leave";
 
 	C2S_SEND_CHAT_PACK packet;
-	packet.size = sizeof(packet);
 	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK;
-	packet.length = sizeof(str);
-	packet.str = new char[sizeof(str)];
-	strncpy_s(packet.str, sizeof(packet.str), str, sizeof(str));
+	packet.length = std::strlen(str) + 1;
+	packet.str = new char[packet.length];
+	memcpy(packet.str, str, packet.length);
+	packet.size = sizeof(packet);
 
 	size_t sent;
 	if (sf::Socket::Done != m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent)) {

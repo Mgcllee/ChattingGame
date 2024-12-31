@@ -29,7 +29,7 @@ struct C2S_REQUEST_CHAT_LOG_PACK {
 
 enum S2C_PACKET_TYPE {
 	SEND_CHAT_LOG_PACK = 1,
-
+	
 };
 
 #pragma pack (push, 1)

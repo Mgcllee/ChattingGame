@@ -1,6 +1,6 @@
 #pragma once 
 
-#define MAX_CLIENT 50'000
+#define MAX_CLIENT 100
 
 #include "Client.h"
 
