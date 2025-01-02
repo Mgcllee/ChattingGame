@@ -78,8 +78,7 @@ void Client::send_chatting()
 	C2S_SEND_CHAT_PACK packet;
 	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK;
 	packet.length = std::strlen(str) + 1;
-	packet.str = new char[packet.length];
-	memcpy(packet.str, str, packet.length);
+	strncpy_s(packet.str, str, packet.length);
 	packet.size = sizeof(packet);
 
 	size_t sent;
@@ -113,8 +112,7 @@ void Client::request_logout()
 	C2S_SEND_CHAT_PACK packet;
 	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK;
 	packet.length = std::strlen(str) + 1;
-	packet.str = new char[packet.length];
-	memcpy(packet.str, str, packet.length);
+	strncpy_s(packet.str, str, packet.length);
 	packet.size = sizeof(packet);
 
 	size_t sent;
