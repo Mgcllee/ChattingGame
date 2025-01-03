@@ -10,6 +10,11 @@ sf::Socket::Status Client::connect_to_server(string addr, unsigned short port, i
 	sf::Socket::Status status = m_socket->connect(addr, port);
 	m_socket->setBlocking(false);
 
+	if (m_socket->getRemoteAddress() == sf::IpAddress::None) {
+		printf("Error first connect_to_server function!\n");
+		exit(true);
+	}
+
 	return status;
 }
 
@@ -22,49 +27,28 @@ void Client::communicate_server(int i)
 {
 	random_device rd;
 	mt19937 eng(rd());
-	uniform_int_distribution<> distr(2, 3);
+	uniform_int_distribution<> distr(1, 2);
 
 	int order = distr(eng);
-	
-	if (order == 1) order = 2;
-
 	switch (order) {
-	case 1: {	// connect 
+	case 1: {	// disconnect
 		if (m_socket->getRemoteAddress() == sf::IpAddress::None) {
-			connect_to_server(SERVER_ADDR, PORT_NUM, i);
+			break;
 		}
+		
+		request_logout();
+		//m_socket->disconnect();
 		break;
 	}
-	case 2: {	// disconnect
-		if (m_socket->getRemoteAddress() != sf::IpAddress::None) {
-			request_logout();
-			//m_socket->disconnect();
+	case 2: {	// send chat and recv new chat
+		if (m_socket->getRemoteAddress() == sf::IpAddress::None) {
+			break;
 		}
+		
+		send_chatting();
+		// recv_chatting();
 		break;
 	}
-	case 3: {	// send chat and recv new chat
-		if (m_socket->getRemoteAddress() != sf::IpAddress::None) {
-			send_chatting();
-			// recv_chatting();
-		}
-		break;
-	}
-	case 4: {	// request all chat
-
-		break;
-	}
-	case 5: {	// request my information
-
-		break;
-	}
-	default: {
-		break;
-	}
-	}
-
-	if (m_socket->getRemoteAddress() == sf::IpAddress::None) {
-		printf("None %d\n", i);
-		exit(true);
 	}
 }
 
@@ -74,7 +58,6 @@ void Client::send_chatting()
 
 	const char* str = "Hello World!";
 	
-	
 	C2S_SEND_CHAT_PACK packet;
 	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK;
 	packet.length = std::strlen(str) + 1;
@@ -82,8 +65,22 @@ void Client::send_chatting()
 	packet.size = sizeof(packet);
 
 	size_t sent;
-	if (sf::Socket::Done != m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent)) {
-		printf("클라이언트 송신 오류\n");
+	sf::Socket::Status ret = m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent);
+	if (sf::Socket::Status::NotReady == ret) {
+		for (int second = 1; second <= 10; ++second) {
+			sf::sleep(sf::seconds(1.f));
+			ret = m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent);
+			
+			if (ret != sf::Socket::Status::NotReady)
+				break;
+
+			printf("Try again...\n");
+		}
+	}
+
+	if (sf::Socket::Done != ret) {
+		printf("클라이언트 송신 오류 %d\n", static_cast<int>(ret));
+		exit(true);
 	}
 }
 
@@ -116,7 +113,21 @@ void Client::request_logout()
 	packet.size = sizeof(packet);
 
 	size_t sent;
-	if (sf::Socket::Done != m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent)) {
-		printf("클라이언트 송신 오류\n");
+	sf::Socket::Status ret = m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent);
+	if (sf::Socket::Status::NotReady == ret) {
+		for (int second = 1; second <= 10; ++second) {
+			sf::sleep(sf::seconds(1.f));
+			ret = m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent);
+
+			if (ret != sf::Socket::Status::NotReady)
+				break;
+			
+			printf("Try again...\n");
+		}
+	}
+
+	if (sf::Socket::Done != ret) {
+		printf("클라이언트 송신 오류 %d\n", static_cast<int>(ret));
+		exit(true);
 	}
 }
