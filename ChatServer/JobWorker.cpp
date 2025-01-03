@@ -115,13 +115,12 @@ void JobWorker::process_packet(int player_ticket, char* packet) {
 	switch (packet[1]) {
 	case C2S_PACKET_TYPE::SEND_CHAT_PACK: {
 		C2S_SEND_CHAT_PACK* chat_packet = reinterpret_cast<C2S_SEND_CHAT_PACK*>(packet);
-		char* content = new char[512];
+		const std::string message = std::format("[{}]: {}\n", player_ticket, chat_packet->str);
 		
-		printf("[%d]: %s\n", player_ticket, chat_packet->str);
-		break;
-		
-		const std::string message = std::format("[{}]: {}\n", player_ticket, content);
-		printf("%s\n", message.c_str());
+		if (player_ticket == 5) {
+			printf("%s", message.c_str());
+		}
+
 		write_to_chat_log(message);
 		break;
 	}
@@ -137,5 +136,5 @@ void JobWorker::process_packet(int player_ticket, char* packet) {
 
 void JobWorker::write_to_chat_log(const std::string& chat) {
 	std::lock_guard<std::mutex> lock(chat_log_mutex);
-	chat_log_file << chat << std::endl;
+	chat_log_file << chat;
 }
