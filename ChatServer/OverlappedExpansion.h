@@ -13,13 +13,13 @@ enum SOCKET_TYPE { ACCEPT, RECV, SEND, LOGOUT };
 class OverlappedExpansion {
 public:
 	OverlappedExpansion();
-	OverlappedExpansion(char* packet);
+	OverlappedExpansion(short* packet);
 	~OverlappedExpansion();
 
 public:
 	WSAOVERLAPPED overlapped;
 	WSABUF wsa_buffer;
-	char packet_buffer[BUF_SIZE];
+	short packet_buffer[BUF_SIZE];
 	SOCKET_TYPE socket_type;
 	int remain_packet_size;
 };

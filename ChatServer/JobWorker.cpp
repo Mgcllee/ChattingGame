@@ -8,7 +8,7 @@ JobWorker::JobWorker(
 	OverlappedExpansion* in_accept_overlapped_expansion,
 	std::atomic<int>& in_ticket_number,
 	std::unordered_map<int, Client>& in_clients,
-	std::ofstream& in_chat_log_file
+	std::wofstream& in_chat_log_file
 )
 	: server_socket(in_server_socket)
 	, accept_client_socket(in_accept_client_socket)
@@ -89,7 +89,7 @@ bool JobWorker::check_exist_job(OverlappedExpansion* exoverlapped, BOOL GQCS_res
 void JobWorker::recv_client_packet(int client_ticket, OverlappedExpansion* exoverlapped, DWORD num_bytes) {
 	int remain_data = num_bytes + clients[client_ticket].remain_packet_size;
 
-	char* p = exoverlapped->packet_buffer;
+	short* p = exoverlapped->packet_buffer;
 	while (remain_data > 0) {
 		int packet_size = p[0];
 		if (packet_size <= remain_data) {
@@ -111,16 +111,14 @@ void JobWorker::recv_client_packet(int client_ticket, OverlappedExpansion* exove
 	clients[client_ticket].recv_packet();
 }
 
-void JobWorker::process_packet(int player_ticket, char* packet) {
+void JobWorker::process_packet(int player_ticket, short* packet) {
 	switch (packet[1]) {
 	case C2S_PACKET_TYPE::SEND_CHAT_PACK: {
 		C2S_SEND_CHAT_PACK* chat_packet = reinterpret_cast<C2S_SEND_CHAT_PACK*>(packet);
-		const std::string message = std::format("[{}]: {}\n", player_ticket, chat_packet->str);
+		const std::wstring message = std::format(L"[{}]: {}\n", player_ticket, chat_packet->str);
 		
-		if (player_ticket % 1'000 == 0) {
-			printf("%s", message.c_str());
-		}
-
+		std::wcout << message;
+		
 		write_to_chat_log(message);
 		break;
 	}
@@ -134,7 +132,7 @@ void JobWorker::process_packet(int player_ticket, char* packet) {
 	}
 }
 
-void JobWorker::write_to_chat_log(const std::string& chat) {
+void JobWorker::write_to_chat_log(const std::wstring& chat) {
 	std::lock_guard<std::mutex> lock(chat_log_mutex);
 	chat_log_file << chat;
 }

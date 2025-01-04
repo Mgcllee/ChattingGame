@@ -13,7 +13,7 @@ class GameSession
 	std::atomic<int> ticket_number;
 	std::unordered_map<int, Client> clients;
 
-	std::ofstream chat_log_file;
+	std::wofstream chat_log_file;
 
 public:
 	GameSession();

@@ -11,6 +11,6 @@ public:
 	Client() : client_socket(NULL) { }
 	Client(SOCKET in_socket) : client_socket(in_socket) { }
 
-	void send_packet(char* packet);
+	void send_packet(short* packet);
 	void recv_packet();
 };

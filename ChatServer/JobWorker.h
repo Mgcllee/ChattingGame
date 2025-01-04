@@ -18,7 +18,7 @@ class JobWorker
 
 	std::atomic<int>& ticket_number;
 
-	std::ofstream& chat_log_file;
+	std::wofstream& chat_log_file;
 
 public:
 	JobWorker(
@@ -27,7 +27,7 @@ public:
 		OverlappedExpansion* in_accept_overlapped_expansion,
 		std::atomic<int>& in_ticket_number,
 		std::unordered_map<int, Client>& in_clients,
-		std::ofstream& in_chat_log_file
+		std::wofstream& in_chat_log_file
 	);
 	~JobWorker();
 
@@ -35,7 +35,7 @@ public:
 	bool check_exist_job(OverlappedExpansion* exoverlapped, BOOL GQCS_result, int client_ticket);
 
 	void recv_client_packet(int client_ticket, OverlappedExpansion* exoverlapped, DWORD num_bytes);
-	void process_packet(int player_ticket, char* packet);
+	void process_packet(int player_ticket, short* packet);
 
-	void write_to_chat_log(const std::string& chat);
+	void write_to_chat_log(const std::wstring& chat);
 };

@@ -1,0 +1,108 @@
+[5]: again.
+[7]: break.
+[8]: Let's
+[6]: í˜ë“œë„¤ìš”.
+[2]: ê²Œì„
+[0]: party.
+[0]: help
+[6]: ê°€ì•¼
+[5]: tomorrow.
+[8]: íŒŒí‹°ì›
+[2]: should
+[7]: I'm
+[0]: I
+[6]: tomorrow.
+[2]: find
+[5]: ì‚¬
+[8]: ìˆë‚˜ìš”?
+[7]: ë„ì™€ì£¼ì‹¤
+[0]: party.
+[2]: ë˜ë‚˜ìš”?
+[6]: ê¸¸ì„
+[5]: This
+[8]: í•´ìš”?
+[7]: is
+[0]: time?
+[6]: I
+[5]: ìˆ˜
+[2]: tips?
+[7]: ì¥ë¹„
+[8]: break.
+[0]: join
+[5]: we
+[8]: Is
+[2]: How
+[6]: you
+[7]: have
+[0]: ë‹¤ìŒ
+[5]: ëë‚¬ì–´ìš”?
+[6]: ê¸°ë‹¤ë ¤
+[7]: ê¸°ë‹¤ë ¤
+[8]: good
+[2]: ê°€ìš”?
+[0]: ë°¥ì€
+[5]: Where
+[6]: ë‹¤ìŒ
+[2]: íƒœì›Œ
+[8]: speed
+[7]: cool.
+[0]: ì¬ë°Œì–´ìš”!
+[5]: quest.
+[6]: game
+[2]: quest.
+[8]: I'm
+[7]: ë­í•´ìš”?
+[0]: ë­í•´ìš”?
+[5]: find
+[6]: time?
+[2]: ì–´ë–»ê²Œ
+[8]: ì´
+[7]: weather
+[0]: this
+[5]: this
+[19]: What's
+[25]: Wait,
+[29]: í˜ë“œë„¤ìš”.
+[23]: Any
+[0]: I'm too slow! ì˜¤ëŠ˜ ë‚ ì”¨ ì¢‹ë„¤
+[8]: Is this your first time? ì´ê±° ì–´ë–»ê²Œ í•˜ë‚˜ìš”?
+[7]: [0]: Any good tips? Áö±İ ¾îµğ·Î °¡¾ß ÇØ
+[3]: I'm too slow! È­Àå½Ç °¬´Ù ¿Ã°Ô¿ä.
+[5]: Is this your first time? ÁÖ¸»¿¡ ¹¹ÇØ¿ä?
+[6]: Let's take a break. ¹ö½º Á» ÅÂ¿ö ÁÖ¼¼¿ä.
+[7]: È¤½Ã ¸¶ÀÌÅ© µÇ³ª¿ä? Nice weather today.
+[0]: This is exciting! Ã¤ÆÃÃ¢ÀÌ ³Ê¹« »¡¶ó¿ä.
+[3]: This is exciting! °°ÀÌ °¡ÀÚ!
+[5]: Can you help me? ±æÀ» ÀÒ¾ú¾î¿ä.
+[6]: ÀÌÁ¦ ½ÃÀÛÇØ¿ä? How muc
+[7]: I need better gear. ÀÌ°Å Àç¹Õ¾î¿ä!
+[3]: ¾È³çÇÏ¼¼¿ä! What should I do?
+[0]: Àåºñ ÃßÃµ Á» ÇØÁÖ¼¼¿ä. Let's finish this quest.
+[5]: How much is this item? µµ¿ÍÁÖ½Ç ¼ö ÀÖ³ª¿ä?
+[6]: ¾ÆÀÌÅÛ ¾î¶»°Ô ÇÏ³ª¿ä? Hello!
+[7]: Is this your first time? ¿ì¿Í, ´ë¹ÚÀÌ³×¿ä
+[0]: Let's take 
+[3]: Ã¤ÆÃÃ¢ÀÌ ³Ê¹« »¡¶ó¿ä. Nice weath
+[5]: ±æÀ» ÀÒ¾ú¾î¿ä. Hello!
+[6]: È¤½Ã ¸¶ÀÌÅ© µÇ³ª¿ä? Is this y
+[7]: What's your level? ¾ÆÀÌ
+[0]: ÀÌ °ÔÀÓ Ã³À½ ÇØºÁ¿ä. Let's speed up!
+[3]: ¾ÆÀÌÅÛ ¾î¶»°Ô ÇÏ³ª¿ä? Any good tips?
+[5]: Do you have time? È­Àå½Ç °¬´Ù ¿Ã°Ô¿ä.
+[6]: Àåºñ ÃßÃµ Á» ÇØÁÖ¼¼¿ä. Any good tips?
+[7]: Let's finish this quest. ¿À´Ã Èûµå³×¿ä.
+[0]: What should I upgrade? ÁÖ¸»¿¡ ¹¹ÇØ¿ä?
+[3]: ´Ùµé ¾îµğ °¡¼ÌÁÒ? Do you hear m
+[5]: ÀÌ °ÔÀÓ Ã³À½ ÇØºÁ¿ä. Anyone online?
+[6]: Let's explore together. ÀÌ°Å ¾î¶»°Ô ÇÏ³ª¿ä?
+[7]: Wait for me. Áö±İ ¾îµğ·Î °¡¾ß ÇØ¿ä?
+[0]: ¾ÆÀÌÅÛ ¾î¶»°Ô ÇÏ³ª¿ä? Where should we go?
+[3]: I'm a newbie. ÀÌ °ÔÀÓ Ã³À½ ÇØºÁ¿ä.
+[5]: °°ÀÌ °¡ÀÚ! Wait, I'm on my way.
+[6]: ¹ö½º Á» ÅÂ¿ö ÁÖ¼¼¿ä. Please join my party.
+[7]: I got lost again. ¿À´Ã Èûµå³×¿ä.
+[0]: Áö±İ ¾îµğ·Î °¡¾ß ÇØ¿ä? This game is cool.
+[3]: ÆÄÆ¼¿ø ±¸ÇÕ´Ï´Ù. Let's explore together.
+[5]: Äù½ºÆ® ³¡³µ¾î¿ä? Anyon
+[6]: ¿ì¿Í, ´ë¹ÚÀÌ³×¿ä! Let's find a party!
+[7]: ÀÌ°Å Àç¹Õ¾î¿ä! What should I do?
