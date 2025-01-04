@@ -1,4 +1,4 @@
-#include "Client.h"
+ï»¿#include "Client.h"
 
 Client::~Client()
 {
@@ -54,15 +54,16 @@ void Client::communicate_server(int i)
 
 void Client::send_chatting()
 {
-	// [Work I/O]: ¸Ş¸ğÀå(ReadOnly)¿¡¼­ ÀÏºÎ ¹ßÃéÇÏ¿© ÀĞ°í ±× ³»¿ëÀ» Àü¼Û
+	random_device rd;
+	mt19937 eng(rd());
+	uniform_int_distribution<> distr(0, 99'999);
+	int target = distr(eng);
 
-	const char* str = "Hello World!";
-	
 	C2S_SEND_CHAT_PACK packet;
 	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK;
-	packet.length = std::strlen(str) + 1;
-	strncpy_s(packet.str, str, packet.length);
-	packet.size = sizeof(packet);
+	packet.length = chat_sentences[target].length() + 1;
+	wcsncpy_s(packet.str, sizeof(packet.str) / sizeof(wchar_t), chat_sentences[target].c_str(), _TRUNCATE);
+	packet.size = static_cast<short>(sizeof(packet));
 
 	size_t sent;
 	sf::Socket::Status ret = m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent);
@@ -70,7 +71,7 @@ void Client::send_chatting()
 		for (int second = 1; second <= 10; ++second) {
 			sf::sleep(sf::seconds(1.f));
 			ret = m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent);
-			
+
 			if (ret != sf::Socket::Status::NotReady)
 				break;
 
@@ -79,14 +80,14 @@ void Client::send_chatting()
 	}
 
 	if (sf::Socket::Done != ret) {
-		printf("Å¬¶óÀÌ¾ğÆ® ¼Û½Å ¿À·ù %d\n", static_cast<int>(ret));
+		printf("í´ë¼ì´ì–¸íŠ¸ ì†¡ì‹  ì˜¤ë¥˜ %d\n", static_cast<int>(ret));
 		exit(true);
 	}
 }
 
 void Client::recv_chatting()
 {
-	// [Work I/O]: »õ·Ó°Ô ¹ŞÀº Ã¤ÆÃÀ» ±×·¡ÇÈÀ¸·Î Ãâ·Â(ÇÏ´Â ¸ğ½ÀÀÌ¶ó°í °¡Á¤)
+	// [Work I/O]: ìƒˆë¡­ê²Œ ë°›ì€ ì±„íŒ…ì„ ê·¸ë˜í”½ìœ¼ë¡œ ì¶œë ¥(í•˜ëŠ” ëª¨ìŠµì´ë¼ê³  ê°€ì •)
 
 	S2C_SEND_CHAT_LOG* packet = new S2C_SEND_CHAT_LOG();
 	size_t recved_size;
@@ -100,15 +101,16 @@ void Client::request_chat_log()
 
 void Client::request_logout()
 {
-	// [Work I/O]: ¸Ş¸ğÀå(ReadOnly)¿¡¼­ ÀÏºÎ ¹ßÃéÇÏ¿© ÀĞ°í ±× ³»¿ëÀ» Àü¼Û
-
-	const char* str = "Goodbye Server i'm leave";
+	random_device rd;
+	mt19937 eng(rd());
+	uniform_int_distribution<> distr(0, 99'999);
+	int target = distr(eng);
 
 	C2S_SEND_CHAT_PACK packet;
 	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK;
-	packet.length = std::strlen(str) + 1;
-	strncpy_s(packet.str, str, packet.length);
-	packet.size = sizeof(packet);
+	packet.length = chat_sentences[target].length() + 1;
+	wcsncpy_s(packet.str, sizeof(packet.str) / sizeof(wchar_t), chat_sentences[target].c_str(), _TRUNCATE);
+	packet.size = static_cast<short>(sizeof(packet));
 
 	size_t sent;
 	sf::Socket::Status ret = m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent);
@@ -119,13 +121,13 @@ void Client::request_logout()
 
 			if (ret != sf::Socket::Status::NotReady)
 				break;
-			
+
 			printf("Try again...\n");
 		}
 	}
 
 	if (sf::Socket::Done != ret) {
-		printf("Å¬¶óÀÌ¾ğÆ® ¼Û½Å ¿À·ù %d\n", static_cast<int>(ret));
+		printf("í´ë¼ì´ì–¸íŠ¸ ì†¡ì‹  ì˜¤ë¥˜ %d\n", static_cast<int>(ret));
 		exit(true);
 	}
 }

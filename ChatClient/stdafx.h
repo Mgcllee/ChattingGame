@@ -9,6 +9,10 @@
 #include <vector>
 #include <random>
 #include <memory>
+#include <fstream>
+#include <locale>
+#include <codecvt>
+#include <Windows.h>
 
 #include <SFML/Network.hpp>
 #include <SFML/System.hpp>
@@ -20,3 +24,5 @@
 using namespace std;
 
 #include "Common/Packet.h"
+
+extern vector<wstring> chat_sentences;
