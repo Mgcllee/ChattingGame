@@ -10,19 +10,19 @@ enum C2S_PACKET_TYPE {
 	REQUEST_CHAT_LOG_PACK
 };
 
-#pragma pack (push, 1)
+#pragma pack (push, 2)
 
 struct C2S_SEND_CHAT_PACK {
-	char size;
-	char type;
+	short size;
+	short type;
 	
-	char length;
-	char str[MAX_BUF];
+	short length;
+	wchar_t str[MAX_BUF];
 };
 
 struct C2S_REQUEST_CHAT_LOG_PACK {
-	char size;
-	char type;
+	short size;
+	short type;
 };
 
 #pragma pack (pop)
@@ -34,14 +34,14 @@ enum S2C_PACKET_TYPE {
 	
 };
 
-#pragma pack (push, 1)
+#pragma pack (push, 2)
 
 struct S2C_SEND_CHAT_LOG {
-	char size;
-	char type;
+	short size;
+	short type;
 
 	char length;
-	char str[MAX_BUF];
+	wchar_t str[MAX_BUF];
 };
 
 #pragma pack (pop)
