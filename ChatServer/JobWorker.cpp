@@ -117,7 +117,7 @@ void JobWorker::process_packet(int player_ticket, char* packet) {
 		C2S_SEND_CHAT_PACK* chat_packet = reinterpret_cast<C2S_SEND_CHAT_PACK*>(packet);
 		const std::string message = std::format("[{}]: {}\n", player_ticket, chat_packet->str);
 		
-		if (player_ticket == 5) {
+		if (player_ticket % 1'000 == 0) {
 			printf("%s", message.c_str());
 		}
 
