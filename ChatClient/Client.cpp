@@ -91,8 +91,6 @@ void Client::recv_chatting()
 	S2C_SEND_CHAT_LOG* packet = new S2C_SEND_CHAT_LOG();
 	size_t recved_size;
 	m_socket->receive(reinterpret_cast<void*>(packet), (size_t)sizeof(packet), recved_size);
-	
-	// printf("%s\n", packet->content);
 }
 
 void Client::request_chat_log()
