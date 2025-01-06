@@ -4,7 +4,7 @@ This repository is Multi-User chatting game program.
 
 This repository is a personal work piece to practice how multiple clients connect to the server and expedite tasks when multiple requests are made.  
 
-![Ã¤ÆÃ°á°ú](./ChatServer/Document/¼­¹ö_Ã¤ÆÃ°á°ú.png)  
+![ì±„íŒ…ê²°ê³¼](./ChatServer/Document/ì„œë²„_ì±„íŒ…ê²°ê³¼.png)
 
 <br/>
 
