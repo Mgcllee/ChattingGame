@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "OverlappedExpansion.h"
 
 class Client : public OverlappedExpansion
@@ -13,4 +14,8 @@ public:
 
 	void send_packet(short* packet);
 	void recv_packet();
+
+public:
+	std::wstring id;
+	std::wstring pw;
 };

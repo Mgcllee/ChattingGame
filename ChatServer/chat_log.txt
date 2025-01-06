@@ -1,108 +1,134 @@
-[5]: again.
-[7]: break.
-[8]: Let's
-[6]: í˜ë“œë„¤ìš”.
-[2]: ê²Œì„
-[0]: party.
-[0]: help
-[6]: ê°€ì•¼
-[5]: tomorrow.
-[8]: íŒŒí‹°ì›
-[2]: should
-[7]: I'm
-[0]: I
-[6]: tomorrow.
-[2]: find
-[5]: ì‚¬
-[8]: ìˆë‚˜ìš”?
-[7]: ë„ì™€ì£¼ì‹¤
-[0]: party.
-[2]: ë˜ë‚˜ìš”?
-[6]: ê¸¸ì„
-[5]: This
-[8]: í•´ìš”?
-[7]: is
-[0]: time?
-[6]: I
-[5]: ìˆ˜
-[2]: tips?
-[7]: ì¥ë¹„
-[8]: break.
-[0]: join
-[5]: we
-[8]: Is
-[2]: How
-[6]: you
-[7]: have
-[0]: ë‹¤ìŒ
-[5]: ëë‚¬ì–´ìš”?
-[6]: ê¸°ë‹¤ë ¤
-[7]: ê¸°ë‹¤ë ¤
-[8]: good
-[2]: ê°€ìš”?
-[0]: ë°¥ì€
-[5]: Where
-[6]: ë‹¤ìŒ
-[2]: íƒœì›Œ
-[8]: speed
-[7]: cool.
-[0]: ì¬ë°Œì–´ìš”!
-[5]: quest.
-[6]: game
-[2]: quest.
-[8]: I'm
-[7]: ë­í•´ìš”?
-[0]: ë­í•´ìš”?
-[5]: find
-[6]: time?
-[2]: ì–´ë–»ê²Œ
-[8]: ì´
-[7]: weather
-[0]: this
-[5]: this
-[19]: What's
-[25]: Wait,
-[29]: í˜ë“œë„¤ìš”.
-[23]: Any
-[0]: I'm too slow! ì˜¤ëŠ˜ ë‚ ì”¨ ì¢‹ë„¤
-[8]: Is this your first time? ì´ê±° ì–´ë–»ê²Œ í•˜ë‚˜ìš”?
-[7]: [0]: Any good tips? Áö±İ ¾îµğ·Î °¡¾ß ÇØ
-[3]: I'm too slow! È­Àå½Ç °¬´Ù ¿Ã°Ô¿ä.
-[5]: Is this your first time? ÁÖ¸»¿¡ ¹¹ÇØ¿ä?
-[6]: Let's take a break. ¹ö½º Á» ÅÂ¿ö ÁÖ¼¼¿ä.
-[7]: È¤½Ã ¸¶ÀÌÅ© µÇ³ª¿ä? Nice weather today.
-[0]: This is exciting! Ã¤ÆÃÃ¢ÀÌ ³Ê¹« »¡¶ó¿ä.
-[3]: This is exciting! °°ÀÌ °¡ÀÚ!
-[5]: Can you help me? ±æÀ» ÀÒ¾ú¾î¿ä.
-[6]: ÀÌÁ¦ ½ÃÀÛÇØ¿ä? How muc
-[7]: I need better gear. ÀÌ°Å Àç¹Õ¾î¿ä!
-[3]: ¾È³çÇÏ¼¼¿ä! What should I do?
-[0]: Àåºñ ÃßÃµ Á» ÇØÁÖ¼¼¿ä. Let's finish this quest.
-[5]: How much is this item? µµ¿ÍÁÖ½Ç ¼ö ÀÖ³ª¿ä?
-[6]: ¾ÆÀÌÅÛ ¾î¶»°Ô ÇÏ³ª¿ä? Hello!
-[7]: Is this your first time? ¿ì¿Í, ´ë¹ÚÀÌ³×¿ä
-[0]: Let's take 
-[3]: Ã¤ÆÃÃ¢ÀÌ ³Ê¹« »¡¶ó¿ä. Nice weath
-[5]: ±æÀ» ÀÒ¾ú¾î¿ä. Hello!
-[6]: È¤½Ã ¸¶ÀÌÅ© µÇ³ª¿ä? Is this y
-[7]: What's your level? ¾ÆÀÌ
-[0]: ÀÌ °ÔÀÓ Ã³À½ ÇØºÁ¿ä. Let's speed up!
-[3]: ¾ÆÀÌÅÛ ¾î¶»°Ô ÇÏ³ª¿ä? Any good tips?
-[5]: Do you have time? È­Àå½Ç °¬´Ù ¿Ã°Ô¿ä.
-[6]: Àåºñ ÃßÃµ Á» ÇØÁÖ¼¼¿ä. Any good tips?
-[7]: Let's finish this quest. ¿À´Ã Èûµå³×¿ä.
-[0]: What should I upgrade? ÁÖ¸»¿¡ ¹¹ÇØ¿ä?
-[3]: ´Ùµé ¾îµğ °¡¼ÌÁÒ? Do you hear m
-[5]: ÀÌ °ÔÀÓ Ã³À½ ÇØºÁ¿ä. Anyone online?
-[6]: Let's explore together. ÀÌ°Å ¾î¶»°Ô ÇÏ³ª¿ä?
-[7]: Wait for me. Áö±İ ¾îµğ·Î °¡¾ß ÇØ¿ä?
-[0]: ¾ÆÀÌÅÛ ¾î¶»°Ô ÇÏ³ª¿ä? Where should we go?
-[3]: I'm a newbie. ÀÌ °ÔÀÓ Ã³À½ ÇØºÁ¿ä.
-[5]: °°ÀÌ °¡ÀÚ! Wait, I'm on my way.
-[6]: ¹ö½º Á» ÅÂ¿ö ÁÖ¼¼¿ä. Please join my party.
-[7]: I got lost again. ¿À´Ã Èûµå³×¿ä.
-[0]: Áö±İ ¾îµğ·Î °¡¾ß ÇØ¿ä? This game is cool.
-[3]: ÆÄÆ¼¿ø ±¸ÇÕ´Ï´Ù. Let's explore together.
-[5]: Äù½ºÆ® ³¡³µ¾î¿ä? Anyon
-[6]: ¿ì¿Í, ´ë¹ÚÀÌ³×¿ä! Let's find a party!
-[7]: ÀÌ°Å Àç¹Õ¾î¿ä! What should I do?
+[wo5s0c]: See you tomorrow. ¹äÀº µå¼Ì¾î¿ä?
+[tMPPI2sg]: Let's find a party! È¤½Ã ¸¶ÀÌÅ© µÇ³ª¿ä?
+[SXmqX1D8C]: ¿À´Ã Èûµå³×¿ä. Let's 
+[YOlxnKvpCoz]: ÀÌ°Å ¾î¶»°Ô ÇÏ³ª¿ä? This is ex
+[Hid4VzxVnht]: ´Ùµé ¾îµğ °¡¼ÌÁÒ? I'm too slow!
+[wo5s0c]: How much is this item? Ã³À½ÀÌ¶ó Àß ¸ô¶ó¿ä.
+[tMPPI2sg]: ·¹º§ ¸îÀÌ¿¡¿ä? Anyone online?
+[SXmqX1D8C]: Nice weather today. ¾ÆÀÌÅÛ »ç°í ½Í¾î¿ä
+[YOlxnKvpCoz]: ÀÌ °ÔÀÓ Ã³À½ ÇØºÁ¿ä. Any good tips?
+[Hid4VzxVnht]: Let's finish this quest. °°ÀÌ °¡ÀÚ!
+[wo5s0c]: ¿À´Ã Èûµå³×¿ä. What should I upgrade?
+[tMPPI2sg]: µµ¿ÍÁÖ½Ç ¼ö ÀÖ³ª¿ä? Wait, I'm on my way.
+[SXmqX1D8C]: ¾ÆÀÌÅÛ »ç°í ½Í¾î¿ä. How much is this item?
+[YOlxnKvpCoz]: Can you help me? È­Àå½Ç °¬´Ù ¿Ã°Ô¿ä.
+[Hid4VzxVnht]: Ã¤ÆÃÃ¢ÀÌ ³Ê¹« »¡¶ó¿ä. Wait, I'm on my way.
+[wo5s0c]: È¤½Ã ¸¶ÀÌÅ© µÇ³ª¿ä? Let's finish this quest.
+[tMPPI2sg]: I need better gear. Áö±İ ¾îµğ·Î °¡¾ß ÇØ¿ä?
+[SXmqX1D8C]: ÀÌ°Å Àç¹Õ¾î¿ä! How much is this item?
+[YOlxnKvpCoz]: Let's take a break. ¿À´Ã Èûµå³×¿ä.
+[Hid4VzxVnht]: ÀÌÁ¦ ½ÃÀÛÇØ¿ä? I'm too s
+[wo5s0c]: ¹äÀº µå¼Ì¾î¿ä? This game is cool.
+[tMPPI2sg]: ¾È³çÇÏ¼¼¿ä! I'm a newbie.
+[SXmqX1D8C]: °°ÀÌ °¡ÀÚ! Wait for me.
+[YOlxnKvpCoz]: Do you have time? ¾È³çÇÏ¼¼¿ä!
+[Hid4VzxVnht]: Let's explore together. Àåºñ ÃßÃµ Á» ÇØÁÖ¼¼¿ä.
+[wo5s0c]: ¹äÀº µå¼Ì¾î¿ä? Let's explore together.
+[tMPPI2sg]: ÀÌ°Å ¾î¶»°Ô ÇÏ³ª¿ä? I need better gear.
+[SXmqX1D8C]: ¿ì¿Í, ´ë¹ÚÀÌ³×¿ä! See you tomorrow.
+[YOlxnKvpCoz]: I need better gear. ¾È³çÇÏ
+[Hid4VzxVnht]: ÀÌÁ¦ ½ÃÀÛÇØ¿ä? I got lost again.
+[wo5s0c]: I'm too slow! ¿ì¿Í, ´ë¹ÚÀÌ³×¿ä!
+[tMPPI2sg]: I'm too slow! °°ÀÌ °¡ÀÚ!
+[SXmqX1D8C]: What should I do? ¿À´Ã Èûµå³×¿ä.
+[YOlxnKvpCoz]: I got lost again. ¿À´Ã ³¯¾¾ ÁÁ³×¿ä.
+[Hid4VzxVnht]: Can you help me? Áö±İ ¾îµğ·Î °¡¾ß ÇØ¿ä?
+[wo5s0c]: I got lost ag
+[tMPPI2sg]: Is this your f
+[SXmqX1D8C]: Let's find a party! µµ¿ÍÁÖ½Ç ¼ö ÀÖ³ª¿ä?
+[YOlxnKvpCoz]: What should I upgrade? Àåºñ ÃßÃµ Á» ÇØÁÖ¼¼¿ä.
+[Hid4VzxVnht]: ¿ì¿Í, ´ë¹ÚÀÌ³×¿ä! I'm coming!
+[wo5s0c]: Ã¤ÆÃÃ¢ÀÌ ³Ê¹« »¡¶ó¿ä. Do you hear me?
+[tMPPI2sg]: ±æÀ» ÀÒ¾ú¾î¿ä. Anyone online?
+[SXmqX1D8C]: What should I upgrade? °°ÀÌ °¡ÀÚ!
+[YOlxnKvpCoz]: Nice weather 
+[Hid4VzxVnht]: ÆÄÆ¼¿ø ±¸ÇÕ´Ï´Ù. Wait for me.
+[wo5s0c]: Hello! ¿ì¿Í, ´ë¹ÚÀÌ³×¿ä!
+[tMPPI2sg]: Can you help me? ¹äÀº µå¼Ì¾î¿ä
+[SXmqX1D8C]: Àåºñ ÃßÃµ Á» ÇØÁÖ¼¼¿ä. Hello!
+[YOlxnKvpCoz]: ÀÌÁ¦ ½ÃÀÛÇØ¿ä? Wha
+[Hid4VzxVnht]: ÆÄÆ¼¿ø ±¸ÇÕ´Ï´Ù. Wai
+[iKLt2ipy7i]: ÀÌ°Å Àç¹Õ¾î¿ä! Can you help me?
+[fj2vDDGzU]: Let's speed up! ¿À´Ã ³¯¾¾ ÁÁ³×¿ä.
+[iRiXF0]: This is exciting! ¿ì¿Í, ´ë¹ÚÀÌ³×¿ä!
+[jbOr79cWAw]: Wait, I'm on my way. ÁÖ¸»¿¡ ¹¹ÇØ¿ä?
+[vxky4XiEyL]: ÀÌ°Å ¾î¶»°Ô ÇÏ³ª¿ä? Can you help me?
+[g6N3OdxwjVd]: Wait for me. ¾È³çÇÏ¼¼¿ä!
+[¸ğÇè712]: See you tomor
+[iKLt2ipy7i]: Can you help me? ¿ì¿Í, ´ë¹ÚÀÌ³×¿ä!
+[fj2vDDGzU]: I need better gear. °°ÀÌ °¡ÀÚ!
+[iRiXF0]: ÆÄÆ¼¿ø ±¸ÇÕ´Ï´Ù. Let's explore together.
+[jbOr79cWAw]: Ã³À½ÀÌ¶ó Àß ¸ô¶ó¿ä. Any good tips?
+[vxky4XiEyL]: See you tomorrow. ¹äÀº µå¼Ì¾î¿ä?
+[g6N3OdxwjVd]: ÀÌ°Å Àç¹Õ¾î¿ä! How much is this item?
+[¸ğÇè712]: ÀÌ°Å ¾î¶»°Ô ÇÏ³ª¿ä? This is exciting!
+[iKLt2ipy7i]: Hello! ¿À´Ã ³¯¾¾ ÁÁ³×¿ä.
+[fj2vDDGzU]: ´ÙÀ½ ´øÀü ¾ğÁ¦ °¡¿ä? This is exciting!
+[iRiXF0]: This game is cool. µµ¿ÍÁÖ½Ç ¼ö ÀÖ³ª¿ä?
+[jbOr79cWAw]: Do you have time? ¿À´Ã Èûµå³×¿ä.
+[vxky4XiEyL]: Äù½ºÆ® ³¡³µ¾î¿ä? 
+[g6N3OdxwjVd]: °°ÀÌ °¡ÀÚ! See you tomorrow.
+[¸ğÇè712]: ´Ùµé ¾îµğ °¡¼ÌÁÒ? Anyone online?
+[iKLt2ipy7i]: ÀÌ°Å Àç¹Õ¾î¿ä! Nice weather today.
+[fj2vDDGzU]: Wait, I'm on my way. µµ¿ÍÁÖ½Ç ¼ö ÀÖ³ª¿ä?
+[iRiXF0]: ¾ÆÀÌÅÛ »ç°í ½Í¾î¿ä. Do you have time?
+[jbOr79cWAw]: ·¹º§ ¸îÀÌ¿¡¿ä? Wait, I'm on my way.
+[vxky4XiEyL]: È­Àå½Ç °¬´Ù ¿Ã°Ô¿ä. I'm a newbie.
+[g6N3OdxwjVd]: Do you hear me? ¿À´Ã ³¯¾¾ ÁÁ³×¿ä.
+[¸ğÇè712]: Áö±İ ¾îµğ·Î °¡¾ß ÇØ¿ä? This game is cool.
+[iKLt2ipy7i]: ´ÙÀ½ ´øÀü ¾ğÁ¦ °¡¿ä? How much is this item?
+[fj2vDDGzU]: Wait for me. ¾ÆÀÌÅÛ ¾î¶»°Ô
+[iRiXF0]: Let's finish t
+[jbOr79cWAw]: Hello! ±æÀ» ÀÒ¾ú¾î¿ä.
+[vxky4XiEyL]: I'm a newbie. ¿À´Ã Èûµå³×¿ä.
+[g6N3OdxwjVd]: ¹äÀº µå¼Ì¾î¿ä? Let's find a party!
+[¸ğÇè712]: Let's speed up! È¤½Ã ¸¶ÀÌÅ© µÇ³ª¿ä?
+[iKLt2ipy7i]: What should I do? ¾ÆÀÌÅÛ ¾î¶»°Ô ÇÏ³ª¿ä?
+[fj2vDDGzU]: I'm a newbie. Ã¤ÆÃÃ¢ÀÌ ³Ê¹« »¡¶ó¿ä.
+[iRiXF0]: Do you hear me? ¿ì¿Í, ´ë¹ÚÀÌ³×¿ä!
+[jbOr79cWAw]: ¹ö½º Á» ÅÂ¿ö ÁÖ¼¼¿ä
+[vxky4XiEyL]: I'm too slow! È¤½Ã ¸¶ÀÌÅ© µÇ³ª¿ä?
+[g6N3OdxwjVd]: Ã³À½ÀÌ¶ó Àß ¸ô¶ó¿ä. I'm coming!
+[¸ğÇè712]: Any good tips? ¾ÆÀÌÅÛ ¾î¶»°Ô ÇÏ³ª¿ä?
+[iKLt2ipy7i]: Let's take a break. Áö±İ ¾îµğ·Î °¡¾ß ÇØ¿ä?
+[fj2vDDGzU]: Let's find a party!
+[iRiXF0]: ¿À´Ã ¹¹ ÇÏ¼¼¿ä? What's your level?
+[jbOr79cWAw]: ¹äÀº µå¼Ì¾î¿ä? I got lost again.
+[vxky4XiEyL]: ¾ÆÀÌÅÛ »ç°í ½Í¾î¿ä. What should I upgrade?
+[g6N3OdxwjVd]: È¤½Ã ¸¶ÀÌÅ© µÇ³ª¿ä? Let's finish this 
+[¸ğÇè712]: µµ¿ÍÁÖ½Ç ¼ö ÀÖ³ª¿ä? I'm too slow!
+[iKLt2ipy7i]: Áö±İ ¾îµğ·Î °¡¾ß ÇØ¿ä? I'm too slow!
+[fj2vDDGzU]: This game is cool. ÀÌ°Å ¾î¶»°Ô ÇÏ³ª¿ä?
+[iRiXF0]: Äù½ºÆ® ³¡³µ¾î¿ä? Anyone online?
+[jbOr79cWAw]: °°ÀÌ °¡ÀÚ! Let's take a break.
+[vxky4XiEyL]: Let's speed up! È¤½Ã ¸¶ÀÌÅ© µÇ³ª¿ä?
+[g6N3OdxwjVd]: Ã³À½ÀÌ¶ó Àß ¸ô¶ó¿ä. Anyone online?
+[¸ğÇè712]: Wait for me. ¾È³çÇÏ¼¼¿ä!
+[iKLt2ipy7i]: ÁÖ¸»¿¡ ¹¹ÇØ¿ä? Any good tips?
+[fj2vDDGzU]: µµ¿ÍÁÖ½Ç ¼ö ÀÖ³ª¿ä? I got lost again.
+[iRiXF0]: I'm coming! È­
+[jbOr79cWAw]: ¹äÀº µå¼Ì¾î¿ä? I'm coming!
+[vxky4XiEyL]: °°ÀÌ °¡ÀÚ! Let's speed
+[g6N3OdxwjVd]: What should I upgrade? Äù½ºÆ® ³¡³µ¾î¿ä?
+[¸ğÇè712]: Let's find a party! ¾ÆÀÌÅÛ »ç°í ½Í
+[iKLt2ipy7i]: ÀÌ°Å ¾î¶»°Ô ÇÏ³ª¿ä? Let's finish this quest.
+[fj2vDDGzU]: See you tomorrow. Àåºñ ÃßÃµ Á» ÇØÁÖ¼¼
+[iRiXF0]: Let's finish this quest
+[jbOr79cWAw]: Wait, I'm on my way. ±æÀ» ÀÒ¾ú¾î¿ä.
+[vxky4XiEyL]: ¿ì¿Í, ´ë¹ÚÀÌ³×¿ä! Let's find a party!
+[g6N3OdxwjVd]: ÀÌ °ÔÀÓ Ã³À½ ÇØºÁ¿ä. How much is this item?
+[¸ğÇè712]: µµ¿ÍÁÖ½Ç ¼ö ÀÖ³ª¿ä? Please join my party.
+[iKLt2ipy7i]: Nice weather today. ¹ö½º Á» ÅÂ¿ö ÁÖ¼¼¿ä.
+[fj2vDDGzU]: ÀÌ °ÔÀÓ Ã³À½ ÇØºÁ¿ä. Let's take a break.
+[iRiXF0]: È­Àå½Ç °¬´Ù ¿Ã°Ô¿ä. This game is cool.
+[jbOr79cWAw]: This game is cool. ¹ö½º Á» ÅÂ¿ö ÁÖ¼¼¿ä.
+[vxky4XiEyL]: ÀÌÁ¦ ½ÃÀÛÇØ¿ä? This game is cool.
+[g6N3OdxwjVd]: ÁÖ¸»¿¡ ¹¹ÇØ¿ä? I need better gear.
+[¸ğÇè712]: What should I do? ÀÌ°Å Àç¹Õ¾î¿ä!
+[iKLt2ipy7i]: ¿À´Ã Èûµå³×¿ä. Let's find a party!
+[fj2vDDGzU]: Please join my party. ´Ù
+[iRiXF0]: ±â´Ù·Á ÁÖ¼¼¿ä! I'm too slow!
+[jbOr79cWAw]: ±â´Ù·Á ÁÖ¼¼¿ä! Let's take a break.
+[vxky4XiEyL]: ¹äÀº µå¼Ì¾î¿ä? Let's explore together.
+[g6N3OdxwjVd]: ¹ö½º Á» ÅÂ¿ö ÁÖ¼¼¿ä. Is this your first time?
+[¸ğÇè712]: ·¹º§ ¸îÀÌ¿¡¿ä? Anyone 

@@ -115,8 +115,8 @@ void JobWorker::process_packet(int player_ticket, short* packet) {
 	switch (packet[1]) {
 	case C2S_PACKET_TYPE::SEND_CHAT_PACK: {
 		C2S_SEND_CHAT_PACK* chat_packet = reinterpret_cast<C2S_SEND_CHAT_PACK*>(packet);
-		const std::wstring message = std::format(L"[{}]: {}\n", player_ticket, chat_packet->str);
-		
+		const std::wstring message = std::format(L"[{}]: {}\n", clients[player_ticket].id, chat_packet->str);
+
 		std::wcout << message;
 		
 		write_to_chat_log(message);
@@ -126,6 +126,16 @@ void JobWorker::process_packet(int player_ticket, short* packet) {
 		S2C_SEND_CHAT_LOG log_pack;
 		log_pack.size = sizeof(S2C_SEND_CHAT_LOG);
 		log_pack.type = S2C_PACKET_TYPE::SEND_CHAT_LOG_PACK;
+
+		break;
+	}
+	case C2S_PACKET_TYPE::LOGIN_PACK: {
+		C2S_LOGIN_PACK* login_pack = reinterpret_cast<C2S_LOGIN_PACK*>(packet);
+		
+		std::wcout << login_pack->id << ", " << login_pack->pw << "\n";
+
+		clients[player_ticket].id = login_pack->id;
+		clients[player_ticket].pw = login_pack->pw;
 
 		break;
 	}
