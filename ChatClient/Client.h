@@ -28,6 +28,7 @@ public:
 
 	void communicate_server(int i);
 
+	void login_server();
 	void send_chatting();
 	void recv_chatting();
 

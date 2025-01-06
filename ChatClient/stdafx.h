@@ -25,4 +25,5 @@ using namespace std;
 
 #include "Common/Packet.h"
 
+extern vector<wstring> user_id;
 extern vector<wstring> chat_sentences;

@@ -49,6 +49,50 @@ void Client::communicate_server(int i)
 		// recv_chatting();
 		break;
 	}
+	case 3: {
+		if (m_socket->getRemoteAddress() == sf::IpAddress::None) {
+			break;
+		}
+
+		login_server();
+		break;
+	}
+	}
+}
+
+void Client::login_server() {
+	random_device rd;
+	mt19937 eng(rd());
+	uniform_int_distribution<> distr(0, 99'999);
+	int target = distr(eng);
+
+	C2S_LOGIN_PACK login_packet;
+	login_packet.size = static_cast<short>(sizeof(login_packet));
+	login_packet.type = C2S_PACKET_TYPE::LOGIN_PACK;
+	wcsncpy_s(login_packet.id, sizeof(login_packet.id) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
+	wcsncpy_s(login_packet.pw, sizeof(login_packet.pw) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
+	
+	size_t sent;
+	sf::Socket::Status ret = m_socket->send(reinterpret_cast<const void*>(&login_packet), (size_t)login_packet.size, sent);
+	if (sf::Socket::Status::NotReady == ret) {
+		for (int second = 1; second <= 10; ++second) {
+			sf::sleep(sf::seconds(1.f));
+			target = distr(eng);
+			wcsncpy_s(login_packet.id, sizeof(login_packet.id) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
+			wcsncpy_s(login_packet.pw, sizeof(login_packet.pw) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
+
+			ret = m_socket->send(reinterpret_cast<const void*>(&login_packet), (size_t)login_packet.size, sent);
+
+			if (ret != sf::Socket::Status::NotReady)
+				break;
+
+			printf("Try again...\n");
+		}
+	}
+
+	if (sf::Socket::Done != ret) {
+		printf("클라이언트 송신 오류 %d\n", static_cast<int>(ret));
+		exit(true);
 	}
 }
 
@@ -61,7 +105,7 @@ void Client::send_chatting()
 
 	C2S_SEND_CHAT_PACK packet;
 	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK;
-	packet.length = chat_sentences[target].length() + 1;
+	packet.length = static_cast<short>(chat_sentences[target].length() + 1);
 	wcsncpy_s(packet.str, sizeof(packet.str) / sizeof(wchar_t), chat_sentences[target].c_str(), _TRUNCATE);
 	packet.size = static_cast<short>(sizeof(packet));
 
@@ -107,8 +151,8 @@ void Client::request_logout()
 	int target = distr(eng);
 
 	C2S_SEND_CHAT_PACK packet;
-	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK;
-	packet.length = chat_sentences[target].length() + 1;
+	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK; 
+	packet.length = static_cast<short>(chat_sentences[target].length() + 1);
 	wcsncpy_s(packet.str, sizeof(packet.str) / sizeof(wchar_t), chat_sentences[target].c_str(), _TRUNCATE);
 	packet.size = static_cast<short>(sizeof(packet));
 
