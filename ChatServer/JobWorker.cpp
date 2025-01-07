@@ -113,6 +113,35 @@ void JobWorker::recv_client_packet(int client_ticket, OverlappedExpansion* exove
 
 void JobWorker::process_packet(int player_ticket, short* packet) {
 	switch (packet[1]) {
+	case C2S_PACKET_TYPE::LOGIN_PACK: {
+		C2S_LOGIN_PACK* login_pack = reinterpret_cast<C2S_LOGIN_PACK*>(packet);
+
+		S2C_LOGIN_RESULT_PACK result_packet;
+		result_packet.size = sizeof(result_packet);
+		result_packet.type = S2C_PACKET_TYPE::LOGIN_RESULT_PACK;
+
+		login_user_mutex.lock();
+		if (login_user_list.insert(login_pack->id).second) {
+			login_user_mutex.unlock();
+			std::wcout << login_pack->id << ", " << login_pack->pw << "\n";
+
+			clients[player_ticket].id = login_pack->id;
+			clients[player_ticket].pw = login_pack->pw;
+
+			const wchar_t* reason = L"로그인 성공! 어서오세요!\n";
+			wcsncpy_s(result_packet.result, sizeof(result_packet.result) / sizeof(wchar_t), reason, _TRUNCATE);
+		}
+		else {
+			login_user_mutex.unlock();
+			const wchar_t* reason = L"로그인 실패! 중복된 이름이 사용중입니다...\n";
+			wcsncpy_s(result_packet.result, sizeof(result_packet.result) / sizeof(wchar_t), reason, _TRUNCATE);
+		}
+		
+		clients[player_ticket].send_packet(&result_packet);
+		// TODO: 유저가 로그인을 시도한 아이디가 현재 사용중인지 확인 필요. 만약 사용중이라면, 로그인 실패를 반환
+
+		break;
+	}
 	case C2S_PACKET_TYPE::SEND_CHAT_PACK: {
 		C2S_SEND_CHAT_PACK* chat_packet = reinterpret_cast<C2S_SEND_CHAT_PACK*>(packet);
 		const std::wstring message = std::format(L"[{}]: {}\n", clients[player_ticket].id, chat_packet->str);
@@ -123,19 +152,9 @@ void JobWorker::process_packet(int player_ticket, short* packet) {
 		break;
 	}
 	case C2S_PACKET_TYPE::REQUEST_CHAT_LOG_PACK: {
-		S2C_SEND_CHAT_LOG log_pack;
-		log_pack.size = sizeof(S2C_SEND_CHAT_LOG);
+		S2C_SEND_CHAT_LOG_PACK log_pack;
+		log_pack.size = sizeof(S2C_SEND_CHAT_LOG_PACK);
 		log_pack.type = S2C_PACKET_TYPE::SEND_CHAT_LOG_PACK;
-
-		break;
-	}
-	case C2S_PACKET_TYPE::LOGIN_PACK: {
-		C2S_LOGIN_PACK* login_pack = reinterpret_cast<C2S_LOGIN_PACK*>(packet);
-		
-		std::wcout << login_pack->id << ", " << login_pack->pw << "\n";
-
-		clients[player_ticket].id = login_pack->id;
-		clients[player_ticket].pw = login_pack->pw;
 
 		break;
 	}

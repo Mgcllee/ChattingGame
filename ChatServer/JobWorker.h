@@ -4,6 +4,11 @@
 #include "Client.h"
 
 static std::mutex chat_log_mutex;
+static std::mutex login_user_mutex;
+
+#include <unordered_set>
+#include <cstdlib>
+static std::unordered_set<std::wstring> login_user_list;
 
 class JobWorker
 {

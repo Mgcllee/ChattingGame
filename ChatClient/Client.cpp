@@ -30,6 +30,10 @@ void Client::communicate_server(int i)
 	uniform_int_distribution<> distr(1, 2);
 
 	int order = distr(eng);
+
+	// TODO: 사용자 이름 중복 확인
+	order = 3;
+
 	switch (order) {
 	case 1: {	// disconnect
 		if (m_socket->getRemoteAddress() == sf::IpAddress::None) {
@@ -55,6 +59,9 @@ void Client::communicate_server(int i)
 		}
 
 		login_server();
+		if (login_result()) {
+			
+		}
 		break;
 	}
 	}
@@ -65,6 +72,11 @@ void Client::login_server() {
 	mt19937 eng(rd());
 	uniform_int_distribution<> distr(0, 99'999);
 	int target = distr(eng);
+
+	
+	// TODO: 사용자 이름 중복 확인
+	target = 0;
+
 
 	C2S_LOGIN_PACK login_packet;
 	login_packet.size = static_cast<short>(sizeof(login_packet));
@@ -94,6 +106,20 @@ void Client::login_server() {
 		printf("클라이언트 송신 오류 %d\n", static_cast<int>(ret));
 		exit(true);
 	}
+}
+
+bool Client::login_result()
+{
+	S2C_LOGIN_RESULT_PACK packet;
+	size_t recv_size;
+	m_socket->receive(&packet, sizeof(packet), recv_size);
+
+	if (packet.result == L"로그인 성공! 어서오세요!\n") {
+		return true;
+	}
+
+	wcout << packet.result;
+	return false;
 }
 
 void Client::send_chatting()

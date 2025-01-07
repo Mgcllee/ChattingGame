@@ -2,7 +2,7 @@
 
 #include "Client.h"
 
-void Client::send_packet(short* packet)
+void Client::send_packet(void* packet)
 {
     if (packet == nullptr || client_socket == NULL) 
         return;
