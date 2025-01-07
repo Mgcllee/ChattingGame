@@ -40,13 +40,21 @@ struct C2S_REQUEST_CHAT_LOG_PACK {
 
 
 enum S2C_PACKET_TYPE {
-	SEND_CHAT_LOG_PACK = 1,
+	LOGIN_RESULT_PACK = 1,
+	SEND_CHAT_LOG_PACK,
 	
 };
 
 #pragma pack (push, 2)
 
-struct S2C_SEND_CHAT_LOG {
+struct S2C_LOGIN_RESULT_PACK {
+	short size;
+	short type;
+
+	wchar_t result[MAX_BUF];
+};
+
+struct S2C_SEND_CHAT_LOG_PACK {
 	short size;
 	short type;
 

@@ -133,7 +133,7 @@ void Client::recv_chatting()
 {
 	// [Work I/O]: 새롭게 받은 채팅을 그래픽으로 출력(하는 모습이라고 가정)
 
-	S2C_SEND_CHAT_LOG* packet = new S2C_SEND_CHAT_LOG();
+	S2C_SEND_CHAT_LOG_PACK* packet = new S2C_SEND_CHAT_LOG_PACK();
 	size_t recved_size;
 	m_socket->receive(reinterpret_cast<void*>(packet), (size_t)sizeof(packet), recved_size);
 }
