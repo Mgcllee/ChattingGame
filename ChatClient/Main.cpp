@@ -17,7 +17,6 @@ int main() {
 	for (int i = 0; i < MAX_CLIENT; ++i) {
 		clients.emplace_back();
 		clients[i].connect_to_server(SERVER_ADDR, PORT_NUM, i);
-		clients[i].login_server();
 	}
 	printf("Complete all client connect to server and login success\n");
 

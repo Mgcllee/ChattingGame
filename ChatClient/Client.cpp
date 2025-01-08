@@ -23,82 +23,48 @@ void Client::disconnect_to_server()
 	m_socket->disconnect();
 }
 
-void Client::communicate_server(int i)
-{
+void Client::communicate_server(int key) {
+	if (m_socket->getRemoteAddress() == sf::IpAddress::None) {
+		connect_to_server(SERVER_ADDR, PORT_NUM, key);
+		return;
+	}
+
+	if (wstring(id).empty()) {
+		login_server();
+		return;
+	}
+
 	random_device rd;
 	mt19937 eng(rd());
-	uniform_int_distribution<> distr(1, 2);
+	uniform_int_distribution<> distr(JOB_TYPE::USER_LOGIN, JOB_TYPE::USER_LOGOUT);
 
 	int order = distr(eng);
 
-	// TODO: 사용자 이름 중복 확인
-	order = 3;
-
 	switch (order) {
-	case 1: {	// disconnect
-		if (m_socket->getRemoteAddress() == sf::IpAddress::None) {
-			break;
-		}
-		
-		request_logout();
-		//m_socket->disconnect();
-		break;
-	}
-	case 2: {	// send chat and recv new chat
-		if (m_socket->getRemoteAddress() == sf::IpAddress::None) {
-			break;
-		}
-		
+	case JOB_TYPE::SEND_CHAT: {
 		send_chatting();
-		// recv_chatting();
 		break;
 	}
-	case 3: {
-		if (m_socket->getRemoteAddress() == sf::IpAddress::None) {
-			break;
-		}
-
-		login_server();
-		if (login_result()) {
-			
-		}
+	case JOB_TYPE::USER_LOGOUT: {
+		// request_logout();
 		break;
 	}
 	}
 }
 
-void Client::login_server() {
-	random_device rd;
-	mt19937 eng(rd());
-	uniform_int_distribution<> distr(0, 99'999);
-	int target = distr(eng);
+void Client::send_packet(BASIC_PACK& packet) {
+	if (packet.size <= 0 || m_socket->getRemoteAddress() == sf::IpAddress::None)
+		return;
 
-	
-	// TODO: 사용자 이름 중복 확인
-	target = 0;
-
-
-	C2S_LOGIN_PACK login_packet;
-	login_packet.size = static_cast<short>(sizeof(login_packet));
-	login_packet.type = C2S_PACKET_TYPE::LOGIN_PACK;
-	wcsncpy_s(login_packet.id, sizeof(login_packet.id) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
-	wcsncpy_s(login_packet.pw, sizeof(login_packet.pw) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
-	
 	size_t sent;
-	sf::Socket::Status ret = m_socket->send(reinterpret_cast<const void*>(&login_packet), (size_t)login_packet.size, sent);
+	sf::Socket::Status ret = m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent);
 	if (sf::Socket::Status::NotReady == ret) {
 		for (int second = 1; second <= 10; ++second) {
-			sf::sleep(sf::seconds(1.f));
-			target = distr(eng);
-			wcsncpy_s(login_packet.id, sizeof(login_packet.id) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
-			wcsncpy_s(login_packet.pw, sizeof(login_packet.pw) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
-
-			ret = m_socket->send(reinterpret_cast<const void*>(&login_packet), (size_t)login_packet.size, sent);
+			sf::sleep(sf::seconds(0.01f));
+			ret = m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent);
 
 			if (ret != sf::Socket::Status::NotReady)
 				break;
-
-			printf("Try again...\n");
 		}
 	}
 
@@ -108,22 +74,80 @@ void Client::login_server() {
 	}
 }
 
-bool Client::login_result()
+template<typename T>
+void Client::recv_packet(T& packet)
 {
-	S2C_LOGIN_RESULT_PACK packet;
-	size_t recv_size;
-	m_socket->receive(&packet, sizeof(packet), recv_size);
+	if (m_socket->getRemoteAddress() == sf::IpAddress::None)
+		return;
 
-	if (packet.result == L"로그인 성공! 어서오세요!\n") {
-		return true;
+	size_t recv_size;
+	sf::Socket::Status ret = m_socket->receive(&packet, sizeof(packet), recv_size);
+	if (sf::Socket::Status::NotReady == ret) {
+		printf("수신 대기중...");
+		for (int second = 1; second <= 10; ++second) {
+			sf::sleep(sf::seconds(0.01f));
+			ret = m_socket->receive(&packet, sizeof(packet), recv_size);
+
+			if (ret != sf::Socket::Status::NotReady)
+				break;
+			else if (ret == sf::Socket::Status::NotReady)
+				second = 1;
+		}
+		printf("수신 완료!\n");
 	}
 
-	wcout << packet.result;
-	return false;
+	if (sf::Socket::Done != ret) {
+		printf("클라이언트 수신 오류 %d\n", static_cast<int>(ret));
+	}
 }
 
-void Client::send_chatting()
-{
+void Client::login_server() {
+	if (m_socket->getRemoteAddress() == sf::IpAddress::None)
+		return;
+
+	random_device rd;
+	mt19937 eng(rd());
+	// uniform_int_distribution<> distr(0, 99'999);
+	uniform_int_distribution<> distr(1, 50);
+
+	C2S_LOGIN_PACK login_packet;
+	login_packet.size = static_cast<short>(sizeof(login_packet));
+	login_packet.type = C2S_PACKET_TYPE::LOGIN_PACK;
+	
+	for (int time = 0; time < 10; ++time) {
+		int target = distr(eng);
+		wcsncpy_s(login_packet.id, sizeof(login_packet.id) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
+		wcsncpy_s(login_packet.pw, sizeof(login_packet.pw) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
+	
+		send_packet(login_packet);
+		sf::sleep(sf::seconds(0.02f));
+		if (process_login_result()) {
+			wcsncpy_s(id, sizeof(id) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
+			wcsncpy_s(pw, sizeof(pw) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
+			break;
+		}
+		else {
+			wcout << L"동일한 ID(" << user_id[target].c_str() << L")때문에 로그인 실패\n";
+			sf::sleep(sf::seconds(0.01f));
+		}
+	}
+}
+
+bool Client::process_login_result() {
+	S2C_LOGIN_RESULT_PACK packet{};
+	recv_packet(packet);
+
+	if (packet.size <= 0) return false;
+
+	wcout << packet.result << "\n";
+
+	if(wcscmp(packet.result, L"로그인 성공! 어서오세요!") == 0) {
+		return true;
+	}
+	else return false;
+}
+
+void Client::send_chatting() {
 	random_device rd;
 	mt19937 eng(rd());
 	uniform_int_distribution<> distr(0, 99'999);
@@ -135,24 +159,7 @@ void Client::send_chatting()
 	wcsncpy_s(packet.str, sizeof(packet.str) / sizeof(wchar_t), chat_sentences[target].c_str(), _TRUNCATE);
 	packet.size = static_cast<short>(sizeof(packet));
 
-	size_t sent;
-	sf::Socket::Status ret = m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent);
-	if (sf::Socket::Status::NotReady == ret) {
-		for (int second = 1; second <= 10; ++second) {
-			sf::sleep(sf::seconds(1.f));
-			ret = m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent);
-
-			if (ret != sf::Socket::Status::NotReady)
-				break;
-
-			printf("Try again...\n");
-		}
-	}
-
-	if (sf::Socket::Done != ret) {
-		printf("클라이언트 송신 오류 %d\n", static_cast<int>(ret));
-		exit(true);
-	}
+	send_packet(packet);
 }
 
 void Client::recv_chatting()
@@ -169,35 +176,12 @@ void Client::request_chat_log()
 	
 }
 
-void Client::request_logout()
-{
-	random_device rd;
-	mt19937 eng(rd());
-	uniform_int_distribution<> distr(0, 99'999);
-	int target = distr(eng);
+void Client::request_logout() {
+	C2S_LOGOUT_PACK logout_packet;
+	logout_packet.size = sizeof(logout_packet);
+	logout_packet.type = C2S_PACKET_TYPE::LOGOUT_PACK;
+	wcsncpy_s(logout_packet.id, sizeof(logout_packet.id) / sizeof(wchar_t), id, _TRUNCATE);
+	wcsncpy_s(logout_packet.pw, sizeof(logout_packet.pw) / sizeof(wchar_t), pw, _TRUNCATE);
 
-	C2S_SEND_CHAT_PACK packet;
-	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK; 
-	packet.length = static_cast<short>(chat_sentences[target].length() + 1);
-	wcsncpy_s(packet.str, sizeof(packet.str) / sizeof(wchar_t), chat_sentences[target].c_str(), _TRUNCATE);
-	packet.size = static_cast<short>(sizeof(packet));
-
-	size_t sent;
-	sf::Socket::Status ret = m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent);
-	if (sf::Socket::Status::NotReady == ret) {
-		for (int second = 1; second <= 10; ++second) {
-			sf::sleep(sf::seconds(1.f));
-			ret = m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent);
-
-			if (ret != sf::Socket::Status::NotReady)
-				break;
-
-			printf("Try again...\n");
-		}
-	}
-
-	if (sf::Socket::Done != ret) {
-		printf("클라이언트 송신 오류 %d\n", static_cast<int>(ret));
-		exit(true);
-	}
+	send_packet(logout_packet);
 }

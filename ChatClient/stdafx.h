@@ -27,3 +27,11 @@ using namespace std;
 
 extern vector<wstring> user_id;
 extern vector<wstring> chat_sentences;
+
+enum JOB_TYPE {
+	USER_LOGIN = 1,
+	SEND_CHAT,
+	RECV_CHAT,
+	REQUEST_CHAT_LOG,
+	USER_LOGOUT	// JOB_TYPE 개수 확인용으로 반드시 마지막에 위치.
+};
