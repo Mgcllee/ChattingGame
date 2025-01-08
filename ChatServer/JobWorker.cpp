@@ -60,6 +60,10 @@ void JobWorker::job_worker(HANDLE h_iocp) {
 			recv_client_packet(static_cast<int>(key), exoverlapped, num_bytes);
 			break;
 		}
+		case SOCKET_TYPE::SEND: {
+
+			break;
+		}
 		default: {
 			printf("[Error]: Packet Type Error!\n");
 			break;
@@ -123,23 +127,22 @@ void JobWorker::process_packet(int player_ticket, short* packet) {
 		login_user_mutex.lock();
 		if (login_user_list.insert(login_pack->id).second) {
 			login_user_mutex.unlock();
-			std::wcout << login_pack->id << ", " << login_pack->pw << "\n";
 
 			clients[player_ticket].id = login_pack->id;
 			clients[player_ticket].pw = login_pack->pw;
 
-			const wchar_t* reason = L"로그인 성공! 어서오세요!\n";
+			const wchar_t* reason = L"로그인 성공! 어서오세요!";
 			wcsncpy_s(result_packet.result, sizeof(result_packet.result) / sizeof(wchar_t), reason, _TRUNCATE);
+			std::wcout << login_pack->id << L"님 어서오세요!\n";
 		}
 		else {
 			login_user_mutex.unlock();
-			const wchar_t* reason = L"로그인 실패! 중복된 이름이 사용중입니다...\n";
+			const wchar_t* reason = L"로그인 실패! 중복된 이름이 사용중입니다...";
+			std::wcout << reason << "\n";
 			wcsncpy_s(result_packet.result, sizeof(result_packet.result) / sizeof(wchar_t), reason, _TRUNCATE);
 		}
-		
 		clients[player_ticket].send_packet(&result_packet);
-		// TODO: 유저가 로그인을 시도한 아이디가 현재 사용중인지 확인 필요. 만약 사용중이라면, 로그인 실패를 반환
-
+		printf("로그인 결과 송신\n");
 		break;
 	}
 	case C2S_PACKET_TYPE::SEND_CHAT_PACK: {
