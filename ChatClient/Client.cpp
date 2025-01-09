@@ -8,7 +8,7 @@ Client::~Client()
 sf::Socket::Status Client::connect_to_server(string addr, unsigned short port, int i)
 {
 	sf::Socket::Status status = m_socket->connect(addr, port);
-	m_socket->setBlocking(false);
+	m_socket->setBlocking(true);
 
 	if (m_socket->getRemoteAddress() == sf::IpAddress::None) {
 		printf("Error first connect_to_server function!\n");
@@ -70,7 +70,6 @@ void Client::send_packet(BASIC_PACK& packet) {
 
 	if (sf::Socket::Done != ret) {
 		printf("클라이언트 송신 오류 %d\n", static_cast<int>(ret));
-		exit(true);
 	}
 }
 
@@ -83,17 +82,13 @@ void Client::recv_packet(T& packet)
 	size_t recv_size;
 	sf::Socket::Status ret = m_socket->receive(&packet, sizeof(packet), recv_size);
 	if (sf::Socket::Status::NotReady == ret) {
-		printf("수신 대기중...");
-		for (int second = 1; second <= 10; ++second) {
+		for (int second = 1; second <= 5; ++second) {
 			sf::sleep(sf::seconds(0.01f));
 			ret = m_socket->receive(&packet, sizeof(packet), recv_size);
 
 			if (ret != sf::Socket::Status::NotReady)
 				break;
-			else if (ret == sf::Socket::Status::NotReady)
-				second = 1;
 		}
-		printf("수신 완료!\n");
 	}
 
 	if (sf::Socket::Done != ret) {
@@ -107,8 +102,7 @@ void Client::login_server() {
 
 	random_device rd;
 	mt19937 eng(rd());
-	// uniform_int_distribution<> distr(0, 99'999);
-	uniform_int_distribution<> distr(1, 50);
+	uniform_int_distribution<> distr(1, 100);
 
 	C2S_LOGIN_PACK login_packet;
 	login_packet.size = static_cast<short>(sizeof(login_packet));
@@ -121,9 +115,20 @@ void Client::login_server() {
 	
 		send_packet(login_packet);
 		sf::sleep(sf::seconds(0.02f));
-		if (process_login_result()) {
+		wcout << user_id[target].c_str() << L" 로 로그인 시도\n";
+
+		// int buf = getchar();
+
+		size_t recv_size = 0;
+		S2C_LOGIN_RESULT_PACK packet{};
+		sf::Socket::Status ret = m_socket->receive(&packet, sizeof(packet), recv_size);
+		wcout << packet.result << L" (" << recv_size << L")\n";
+		wstring result(packet.result);
+		// if (process_login_result()) {
+		if (result.find(L"로그인 성공! 어서오세요!") != wstring::npos) {
 			wcsncpy_s(id, sizeof(id) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
 			wcsncpy_s(pw, sizeof(pw) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
+			wcout << id << L" 님 로그인 성공!\n";
 			break;
 		}
 		else {
@@ -140,8 +145,9 @@ bool Client::process_login_result() {
 	if (packet.size <= 0) return false;
 
 	wcout << packet.result << "\n";
-
-	if(wcscmp(packet.result, L"로그인 성공! 어서오세요!") == 0) {
+	
+	wstring result(packet.result);
+	if(result.find(L"로그인 성공! 어서오세요!") != wstring::npos) {
 		return true;
 	}
 	else return false;
