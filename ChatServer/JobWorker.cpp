@@ -2,6 +2,8 @@
 
 #include "JobWorker.h"
 
+std::mutex login_user_mutex;
+
 JobWorker::JobWorker(
 	SOCKET in_server_socket,
 	SOCKET in_accept_client_socket, 
@@ -49,7 +51,10 @@ void JobWorker::job_worker(HANDLE h_iocp) {
 
 			ZeroMemory(&accept_overlapped_expansion->overlapped, sizeof(accept_overlapped_expansion->overlapped));
 			accept_client_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
-
+			
+			BOOL option = TRUE;
+			setsockopt(accept_client_socket, IPPROTO_TCP, TCP_NODELAY, (const char*)&option, sizeof(option));
+			
 			int addr_size = sizeof(SOCKADDR_IN);
 			AcceptEx(server_socket, accept_client_socket,
 				accept_overlapped_expansion->packet_buffer, 0, addr_size + 16, addr_size + 16,
@@ -124,23 +129,30 @@ void JobWorker::process_packet(int player_ticket, short* packet) {
 		result_packet.size = sizeof(result_packet);
 		result_packet.type = S2C_PACKET_TYPE::LOGIN_RESULT_PACK;
 
+		std::wcout << L"서버에서 " << login_pack->id << L" 로 로그인 시도 수신\n";
+
+		// TODO: prob dead lock state
 		login_user_mutex.lock();
+
+
 		if (login_user_list.insert(login_pack->id).second) {
-			login_user_mutex.unlock();
+			// login_user_mutex.unlock();
 
 			clients[player_ticket].id = login_pack->id;
 			clients[player_ticket].pw = login_pack->pw;
 
-			const wchar_t* reason = L"로그인 성공! 어서오세요!";
-			wcsncpy_s(result_packet.result, sizeof(result_packet.result) / sizeof(wchar_t), reason, _TRUNCATE);
+			std::wstring reason = L"로그인 성공! 어서오세요!";
+			reason += login_pack->id;
+			wcsncpy_s(result_packet.result, sizeof(result_packet.result) / sizeof(wchar_t), reason.c_str(), _TRUNCATE);
 			std::wcout << login_pack->id << L"님 어서오세요!\n";
 		}
 		else {
-			login_user_mutex.unlock();
 			const wchar_t* reason = L"로그인 실패! 중복된 이름이 사용중입니다...";
 			std::wcout << reason << "\n";
 			wcsncpy_s(result_packet.result, sizeof(result_packet.result) / sizeof(wchar_t), reason, _TRUNCATE);
 		}
+		login_user_mutex.unlock();
+
 		clients[player_ticket].send_packet(&result_packet);
 		printf("로그인 결과 송신\n");
 		break;

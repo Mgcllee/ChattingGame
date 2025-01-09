@@ -6,9 +6,9 @@
 class Client : public OverlappedExpansion
 {
 private:
-	SOCKET client_socket;
 
 public:
+	SOCKET client_socket;
 	Client() : client_socket(NULL) { }
 	Client(SOCKET in_socket) : client_socket(in_socket) { }
 

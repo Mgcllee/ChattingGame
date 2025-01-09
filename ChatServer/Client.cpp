@@ -4,8 +4,6 @@
 
 void Client::send_packet(void* packet)
 {
-    wsa_buffer;
-
     OverlappedExpansion* sendoverlapped = new OverlappedExpansion(reinterpret_cast<short*>(packet));
     WSASend(client_socket, &sendoverlapped->wsa_buffer, 1, 0, 0, &sendoverlapped->overlapped, 0);
 }
