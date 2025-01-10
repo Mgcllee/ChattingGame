@@ -8,7 +8,7 @@ Client::~Client()
 sf::Socket::Status Client::connect_to_server(string addr, unsigned short port, int i)
 {
 	sf::Socket::Status status = m_socket->connect(addr, port);
-	m_socket->setBlocking(true);
+	m_socket->setBlocking(false);
 
 	if (m_socket->getRemoteAddress() == sf::IpAddress::None) {
 		printf("Error first connect_to_server function!\n");
@@ -102,7 +102,7 @@ void Client::login_server() {
 
 	random_device rd;
 	mt19937 eng(rd());
-	uniform_int_distribution<> distr(1, 100);
+	uniform_int_distribution<> distr(1, 11);
 
 	C2S_LOGIN_PACK login_packet;
 	login_packet.size = static_cast<short>(sizeof(login_packet));
