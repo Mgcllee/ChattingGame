@@ -16,8 +16,8 @@ class JobWorker
 
 	std::unordered_map<int, Client>& clients;
 
-	SOCKET server_socket;
-	SOCKET accept_client_socket;
+	SOCKET& server_socket;
+	SOCKET& accept_client_socket;
 
 	OverlappedExpansion* accept_overlapped_expansion;
 
@@ -27,8 +27,8 @@ class JobWorker
 
 public:
 	JobWorker(
-		SOCKET in_server_socket,
-		SOCKET in_accept_client_socket,
+		SOCKET& in_server_socket,
+		SOCKET& in_accept_client_socket,
 		OverlappedExpansion* in_accept_overlapped_expansion,
 		std::atomic<int>& in_ticket_number,
 		std::unordered_map<int, Client>& in_clients,

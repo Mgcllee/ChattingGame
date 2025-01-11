@@ -5,8 +5,8 @@
 std::mutex login_user_mutex;
 
 JobWorker::JobWorker(
-	SOCKET in_server_socket,
-	SOCKET in_accept_client_socket, 
+	SOCKET& in_server_socket,
+	SOCKET& in_accept_client_socket, 
 	OverlappedExpansion* in_accept_overlapped_expansion,
 	std::atomic<int>& in_ticket_number,
 	std::unordered_map<int, Client>& in_clients,

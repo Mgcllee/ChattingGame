@@ -52,7 +52,7 @@ void GameSession::run_game_session() {
 	ticket_number.store(0);
 
 	std::vector<std::thread> worker_threads;
-	int num_threads = 2;
+	int num_threads = 8;
 	
 	for (int i = 0; i < num_threads; ++i) {
 		worker_threads.emplace_back(
