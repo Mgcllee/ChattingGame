@@ -4,7 +4,7 @@ This repository is Multi-User chatting game program.
 
 This repository is a personal work piece to practice how multiple clients connect to the server and expedite tasks when multiple requests are made.  
 
-![채팅결과](./ChatServer/Document/서버_채팅결과.png)
+![채팅결과](./Document/서버_클라이언트_로그인_채팅결과.png)
 
 <br/>
 
