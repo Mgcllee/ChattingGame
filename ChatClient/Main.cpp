@@ -1,8 +1,5 @@
 ﻿#pragma once 
 
-#define MAX_CLIENT 10
-#define MAX_SENTENCE 100'000
-
 #include "Client.h"
 
 vector<wstring> user_id;

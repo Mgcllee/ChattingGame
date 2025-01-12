@@ -102,7 +102,7 @@ void Client::login_server() {
 
 	random_device rd;
 	mt19937 eng(rd());
-	uniform_int_distribution<> distr(1, 11);
+	uniform_int_distribution<> distr(0, MAX_CLIENT + 5);
 
 	C2S_LOGIN_PACK login_packet;
 	login_packet.size = static_cast<short>(sizeof(login_packet));
@@ -117,15 +117,7 @@ void Client::login_server() {
 		sf::sleep(sf::seconds(0.02f));
 		wcout << user_id[target].c_str() << L" 로 로그인 시도\n";
 
-		// int buf = getchar();
-
-		size_t recv_size = 0;
-		S2C_LOGIN_RESULT_PACK packet{};
-		sf::Socket::Status ret = m_socket->receive(&packet, sizeof(packet), recv_size);
-		wcout << packet.result << L" (" << recv_size << L")\n";
-		wstring result(packet.result);
-		// if (process_login_result()) {
-		if (result.find(L"로그인 성공! 어서오세요!") != wstring::npos) {
+		if (process_login_result()) {
 			wcsncpy_s(id, sizeof(id) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
 			wcsncpy_s(pw, sizeof(pw) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
 			wcout << id << L" 님 로그인 성공!\n";
