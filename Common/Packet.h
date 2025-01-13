@@ -55,8 +55,11 @@ struct S2C_LOGIN_RESULT_PACK : BASIC_PACK {
 };
 
 struct S2C_SEND_CHAT_LOG_PACK : BASIC_PACK {
-	char length;
 	wchar_t str[MAX_BUF];
+};
+
+struct S2C_LOGOUT_RESULT_PACK : BASIC_PACK {
+	wchar_t result[MAX_BUF];
 };
 
 #pragma pack (pop)
