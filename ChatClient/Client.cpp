@@ -46,7 +46,7 @@ void Client::communicate_server(int key) {
 		break;
 	}
 	case JOB_TYPE::USER_LOGOUT: {
-		// request_logout();
+		request_logout();
 		break;
 	}
 	}
@@ -175,11 +175,24 @@ void Client::request_chat_log()
 }
 
 void Client::request_logout() {
+	if (sizeof(id) <= 0 && sizeof(pw) <= 0) return;
+
 	C2S_LOGOUT_PACK logout_packet;
 	logout_packet.size = sizeof(logout_packet);
 	logout_packet.type = C2S_PACKET_TYPE::LOGOUT_PACK;
 	wcsncpy_s(logout_packet.id, sizeof(logout_packet.id) / sizeof(wchar_t), id, _TRUNCATE);
 	wcsncpy_s(logout_packet.pw, sizeof(logout_packet.pw) / sizeof(wchar_t), pw, _TRUNCATE);
-
 	send_packet(logout_packet);
+
+	S2C_LOGOUT_RESULT_PACK result_packet{};
+	recv_packet(result_packet);
+
+	if (packet.size <= 0) return;
+
+	wstring result(packet.result);
+	if (result.find(L"로그아웃 성공") != wstring::npos) {
+		wcout << packet.result << "\n";
+		return;
+	}
+	else return;
 }
