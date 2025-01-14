@@ -45,7 +45,7 @@ struct C2S_LOGOUT_PACK : BASIC_PACK {
 enum S2C_PACKET_TYPE {
 	LOGIN_RESULT_PACK = 1,
 	SEND_CHAT_LOG_PACK,
-	
+	LOGOUT_RESULT_PACK
 };
 
 #pragma pack (push, 2)
