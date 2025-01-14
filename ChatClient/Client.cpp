@@ -187,11 +187,11 @@ void Client::request_logout() {
 	S2C_LOGOUT_RESULT_PACK result_packet{};
 	recv_packet(result_packet);
 
-	if (packet.size <= 0) return;
+	if (result_packet.size <= 0) return;
 
-	wstring result(packet.result);
+	wstring result(result_packet.result);
 	if (result.find(L"로그아웃 성공") != wstring::npos) {
-		wcout << packet.result << "\n";
+		wcout << result_packet.result << "\n";
 		return;
 	}
 	else return;
