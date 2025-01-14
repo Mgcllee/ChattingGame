@@ -171,6 +171,37 @@ void JobWorker::process_packet(int player_ticket, short* packet) {
 
 		break;
 	}
+	case C2S_PACKET_TYPE::LOGOUT_PACK: {
+		C2S_LOGOUT_PACK* user_info = reinterpret_cast<C2S_LOGOUT_PACK*>(packet);
+		const std::wstring message = std::format(L"[{}] {} 님이 서버로 로그아웃 요청\n", user_info->id, user_info->id);
+
+		std::wcout << message;
+
+		S2C_LOGOUT_RESULT_PACK result_packet;
+		result_packet.size = sizeof(result_packet);
+		result_packet.type = S2C_PACKET_TYPE::LOGOUT_RESULT_PACK;
+
+		login_user_mutex.lock();
+		auto user_it = login_user_list.find(user_info->id);
+		if (user_it != login_user_list.end()) {
+			login_user_list.erase(user_it);
+			login_user_mutex.unlock();
+
+			const wchar_t* reason = L"로그아웃 성공! 안녕히 가세요 b^o^d";
+			wcsncpy_s(result_packet.result, sizeof(result_packet.result) / sizeof(wchar_t), reason, _TRUNCATE);
+		}
+		else {
+			login_user_mutex.unlock();
+
+			const wchar_t* reason = L"로그아웃 실패!";
+			wcsncpy_s(result_packet.result, sizeof(result_packet.result) / sizeof(wchar_t), reason, _TRUNCATE);
+		}
+		std::wcout << result_packet.result << "\n";
+
+		clients[player_ticket].send_packet(&result_packet);
+		printf("로그아웃 결과 송신\n");
+		break;
+	}
 	}
 }
 
