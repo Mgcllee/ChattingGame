@@ -20,6 +20,8 @@ sf::Socket::Status Client::connect_to_server(string addr, unsigned short port, i
 
 void Client::disconnect_to_server()
 {
+	id.clear();
+	pw.clear();
 	m_socket->disconnect();
 }
 
@@ -29,7 +31,7 @@ void Client::communicate_server(int key) {
 		return;
 	}
 
-	if (wstring(id).empty()) {
+	if (id.empty()) {
 		login_server();
 		return;
 	}
@@ -39,6 +41,9 @@ void Client::communicate_server(int key) {
 	uniform_int_distribution<> distr(JOB_TYPE::USER_LOGIN, JOB_TYPE::USER_LOGOUT);
 
 	int order = distr(eng);
+
+	if (order != JOB_TYPE::SEND_CHAT) 
+		order = JOB_TYPE::USER_LOGOUT;
 
 	switch (order) {
 	case JOB_TYPE::SEND_CHAT: {
@@ -118,8 +123,8 @@ void Client::login_server() {
 		wcout << user_id[target].c_str() << L" 로 로그인 시도\n";
 
 		if (process_login_result()) {
-			wcsncpy_s(id, sizeof(id) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
-			wcsncpy_s(pw, sizeof(pw) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
+			id = user_id[target];
+			pw = user_id[target];
 			wcout << id << L" 님 로그인 성공!\n";
 			break;
 		}
@@ -180,8 +185,8 @@ void Client::request_logout() {
 	C2S_LOGOUT_PACK logout_packet;
 	logout_packet.size = sizeof(logout_packet);
 	logout_packet.type = C2S_PACKET_TYPE::LOGOUT_PACK;
-	wcsncpy_s(logout_packet.id, sizeof(logout_packet.id) / sizeof(wchar_t), id, _TRUNCATE);
-	wcsncpy_s(logout_packet.pw, sizeof(logout_packet.pw) / sizeof(wchar_t), pw, _TRUNCATE);
+	wcsncpy_s(logout_packet.id, sizeof(logout_packet.id) / sizeof(wchar_t), id.c_str(), _TRUNCATE);
+	wcsncpy_s(logout_packet.pw, sizeof(logout_packet.pw) / sizeof(wchar_t), pw.c_str(), _TRUNCATE);
 	send_packet(logout_packet);
 
 	S2C_LOGOUT_RESULT_PACK result_packet{};
@@ -192,6 +197,7 @@ void Client::request_logout() {
 	wstring result(result_packet.result);
 	if (result.find(L"로그아웃 성공") != wstring::npos) {
 		wcout << result_packet.result << "\n";
+		disconnect_to_server();
 		return;
 	}
 	else return;
