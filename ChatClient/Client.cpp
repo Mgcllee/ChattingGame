@@ -42,6 +42,7 @@ void Client::communicate_server(int key) {
 
 	int order = distr(eng);
 
+	// TODO: Add other job type
 	if (order != JOB_TYPE::SEND_CHAT) 
 		order = JOB_TYPE::USER_LOGOUT;
 

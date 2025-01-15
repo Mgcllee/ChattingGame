@@ -200,6 +200,9 @@ void JobWorker::process_packet(int player_ticket, short* packet) {
 
 		clients[player_ticket].send_packet(&result_packet);
 		printf("로그아웃 결과 송신\n");
+
+		clients.erase(player_ticket);
+
 		break;
 	}
 	}
