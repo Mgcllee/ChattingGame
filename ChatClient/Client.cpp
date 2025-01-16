@@ -88,8 +88,8 @@ void Client::recv_packet(T& packet)
 	size_t recv_size;
 	sf::Socket::Status ret = m_socket->receive(&packet, sizeof(packet), recv_size);
 	if (sf::Socket::Status::NotReady == ret) {
-		for (int second = 1; second <= 5; ++second) {
-			sf::sleep(sf::seconds(0.01f));
+		for (int second = 1; second <= 10; ++second) {
+			sf::sleep(sf::seconds(0.1f));
 			ret = m_socket->receive(&packet, sizeof(packet), recv_size);
 
 			if (ret != sf::Socket::Status::NotReady)
