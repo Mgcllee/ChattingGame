@@ -29,6 +29,10 @@ struct C2S_SEND_CHAT_PACK : BASIC_PACK {
 	wchar_t str[MAX_BUF];
 };
 
+struct C2S_REQUEST_SHORTCUT_PATH : BASIC_PACK {
+
+};
+
 struct C2S_REQUEST_CHAT_LOG_PACK : BASIC_PACK {
 	
 };
