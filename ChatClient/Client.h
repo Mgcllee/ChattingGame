@@ -8,8 +8,8 @@ private:
 	unique_ptr<sf::TcpSocket> m_socket;
 
 public:
-	wchar_t id[MAX_BUF] = L"";
-	wchar_t pw[MAX_BUF] = L"";
+	wstring id = L"";
+	wstring pw = L"";
 
 public:
 	Client() : m_socket(make_unique<sf::TcpSocket>()) {}
