@@ -42,13 +42,13 @@ void Client::communicate_server(int key) {
 
 	int order = distr(eng);
 
-	// TODO: Add other job type
-	if (order != JOB_TYPE::SEND_CHAT) 
-		order = JOB_TYPE::USER_LOGOUT;
-
 	switch (order) {
 	case JOB_TYPE::SEND_CHAT: {
 		send_chatting();
+		break;
+	}
+	case JOB_TYPE::REQUEST_SHORTEST_PATH: {
+		request_shortest_path();
 		break;
 	}
 	case JOB_TYPE::USER_LOGOUT: {
@@ -202,4 +202,17 @@ void Client::request_logout() {
 		return;
 	}
 	else return;
+}
+
+void Client::request_shortest_path()
+{
+	C2S_REQUEST_SHORTCUT_PATH packet;
+	packet.size = sizeof(packet);
+	packet.type = C2S_PACKET_TYPE::REQUEST_SHORTEST_PATH;
+
+	packet.start_x;
+	packet.start_y;
+	packet.start_z;
+
+	// send_packet(packet);
 }
