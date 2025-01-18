@@ -9,6 +9,7 @@ enum C2S_PACKET_TYPE {
 	LOGIN_PACK = 1,
 	SEND_CHAT_PACK,
 	REQUEST_CHAT_LOG_PACK,
+	REQUEST_SHORTEST_PATH,
 	LOGOUT_PACK
 };
 
@@ -30,7 +31,8 @@ struct C2S_SEND_CHAT_PACK : BASIC_PACK {
 };
 
 struct C2S_REQUEST_SHORTCUT_PATH : BASIC_PACK {
-
+	short start_x, start_y, start_z;
+	short goal_x, goal_y, goal_z;
 };
 
 struct C2S_REQUEST_CHAT_LOG_PACK : BASIC_PACK {
