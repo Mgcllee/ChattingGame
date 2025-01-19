@@ -206,7 +206,7 @@ void Client::request_logout() {
 
 void Client::request_shortest_path()
 {
-	C2S_REQUEST_SHORTCUT_PATH packet;
+	C2S_REQUEST_SHORTCUT_PATH_PACK packet;
 	packet.size = sizeof(packet);
 	packet.type = C2S_PACKET_TYPE::REQUEST_SHORTEST_PATH;
 
