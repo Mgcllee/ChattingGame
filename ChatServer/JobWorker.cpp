@@ -6,11 +6,12 @@ std::mutex login_user_mutex;
 
 JobWorker::JobWorker(
 	SOCKET& in_server_socket,
-	SOCKET& in_accept_client_socket, 
+	SOCKET& in_accept_client_socket,
 	OverlappedExpansion* in_accept_overlapped_expansion,
 	std::atomic<int>& in_ticket_number,
 	std::unordered_map<int, Client>& in_clients,
-	std::wofstream& in_chat_log_file
+	std::wofstream& in_chat_log_file,
+	xlnt::worksheet& in_ws
 )
 	: server_socket(in_server_socket)
 	, accept_client_socket(in_accept_client_socket)
@@ -18,6 +19,7 @@ JobWorker::JobWorker(
 	, ticket_number(in_ticket_number)
 	, clients(in_clients)
 	, chat_log_file(in_chat_log_file)
+	, ws(in_ws)
 {
 
 }
@@ -172,7 +174,14 @@ void JobWorker::process_packet(int player_ticket, short* packet) {
 		break;
 	}
 	case C2S_PACKET_TYPE::REQUEST_SHORTEST_PATH: {
-		
+		C2S_REQUEST_SHORTCUT_PATH_PACK* path_packet = reinterpret_cast<C2S_REQUEST_SHORTCUT_PATH_PACK*>(packet);
+		path_packet->start_x;
+		path_packet->start_y;
+		path_packet->start_z;
+
+		path_packet->goal_x;
+		path_packet->goal_y;
+		path_packet->goal_z;
 		break;
 	}
 	case C2S_PACKET_TYPE::REQUEST_ITEM_DATA_PACK: {

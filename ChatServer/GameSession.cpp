@@ -42,6 +42,9 @@ GameSession::GameSession()
 
 
 	chat_log_file.open("chat_log.txt", std::ios::out | std::ios::app);
+
+	wb.load("map.xlsx");
+	ws = wb.active_sheet();
 }
 
 GameSession::~GameSession()
@@ -56,10 +59,10 @@ void GameSession::run_game_session() {
 	
 	for (int i = 0; i < num_threads; ++i) {
 		worker_threads.emplace_back(
-			&JobWorker::job_worker, 
-			new JobWorker(server_socket, accept_client_socket, accept_overlapped_expansion, 
+			&JobWorker::job_worker,
+			new JobWorker(server_socket, accept_client_socket, accept_overlapped_expansion,
 				ticket_number, clients,
-				chat_log_file),
+				chat_log_file, ws),
 			h_iocp);
 	}
 

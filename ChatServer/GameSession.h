@@ -14,6 +14,8 @@ class GameSession
 	std::unordered_map<int, Client> clients;
 
 	std::wofstream chat_log_file;
+	xlnt::workbook wb;
+	xlnt::worksheet ws;
 
 public:
 	GameSession();
