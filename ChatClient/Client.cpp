@@ -108,7 +108,7 @@ void Client::login_server() {
 
 	random_device rd;
 	mt19937 eng(rd());
-	uniform_int_distribution<> distr(0, MAX_CLIENT + 5);
+	uniform_int_distribution<> distr(0, MAX_CLIENT);
 
 	C2S_LOGIN_PACK login_packet;
 	login_packet.size = static_cast<short>(sizeof(login_packet));
@@ -210,9 +210,17 @@ void Client::request_shortest_path()
 	packet.size = sizeof(packet);
 	packet.type = C2S_PACKET_TYPE::REQUEST_SHORTEST_PATH;
 
-	packet.start_x;
-	packet.start_y;
-	packet.start_z;
+	packet.start_x = 0;
+	packet.start_y = 0;
+	packet.start_z = 0;
 
-	// send_packet(packet);
+	random_device rd;
+	mt19937 eng(rd());
+	uniform_int_distribution<> distr(0, MAX_CLIENT + 5);
+
+	packet.goal_x = distr(eng);
+	packet.goal_y = distr(eng);
+	packet.goal_z = distr(eng);
+
+	send_packet(packet);
 }
