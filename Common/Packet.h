@@ -2,6 +2,7 @@
 
 #define SERVER_PORT 9785
 #define BUF_SIZE 1024
+#define MAX_MAP_SIZE 1000
 
 #define MAX_BUF 100
 
