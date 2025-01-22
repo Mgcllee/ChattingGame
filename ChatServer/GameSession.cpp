@@ -44,7 +44,13 @@ GameSession::GameSession()
 	chat_log_file.open("chat_log.txt", std::ios::out | std::ios::app);
 
 	wb.load("map.xlsx");
+	map.assign(MAX_MAP_SIZE, std::vector<int>(MAX_MAP_SIZE, MAX_MAP_SIZE));
 	ws = wb.active_sheet();
+	for (std::uint32_t row = 1; row <= ws.highest_row(); ++row) {
+		for (std::uint32_t col = 1; col <= ws.highest_column(); ++col) {
+			map[row][col] = ws.cell(xlnt::cell_reference(col, row)).value<int>();
+		}
+	}
 }
 
 GameSession::~GameSession()
@@ -62,7 +68,7 @@ void GameSession::run_game_session() {
 			&JobWorker::job_worker,
 			new JobWorker(server_socket, accept_client_socket, accept_overlapped_expansion,
 				ticket_number, clients,
-				chat_log_file, ws),
+				chat_log_file, map),
 			h_iocp);
 	}
 

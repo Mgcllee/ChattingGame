@@ -11,7 +11,7 @@ JobWorker::JobWorker(
 	std::atomic<int>& in_ticket_number,
 	std::unordered_map<int, Client>& in_clients,
 	std::wofstream& in_chat_log_file,
-	xlnt::worksheet& in_ws
+	std::vector<std::vector<int>>& in_map
 )
 	: server_socket(in_server_socket)
 	, accept_client_socket(in_accept_client_socket)
@@ -19,7 +19,7 @@ JobWorker::JobWorker(
 	, ticket_number(in_ticket_number)
 	, clients(in_clients)
 	, chat_log_file(in_chat_log_file)
-	, ws(in_ws)
+	, map(in_map)
 {
 
 }

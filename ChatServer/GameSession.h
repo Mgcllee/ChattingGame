@@ -16,6 +16,7 @@ class GameSession
 	std::wofstream chat_log_file;
 	xlnt::workbook wb;
 	xlnt::worksheet ws;
+	std::vector<std::vector<int>> map;
 
 public:
 	GameSession();

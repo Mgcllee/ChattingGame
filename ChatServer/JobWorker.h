@@ -24,7 +24,7 @@ class JobWorker
 	std::atomic<int>& ticket_number;
 
 	std::wofstream& chat_log_file;
-	xlnt::worksheet& ws;
+	std::vector<std::vector<int>>& map;
 
 public:
 	JobWorker(
@@ -34,7 +34,7 @@ public:
 		std::atomic<int>& in_ticket_number,
 		std::unordered_map<int, Client>& in_clients,
 		std::wofstream& in_chat_log_file,
-		xlnt::worksheet& in_ws
+		std::vector<std::vector<int>>& in_map
 	);
 	~JobWorker();
 
