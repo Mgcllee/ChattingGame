@@ -8,8 +8,12 @@ class ChatRoomSession
 private:
 
 public:
-	ChatRoomSession(std::vector<Client> clients) {} ;
+	std::wstring room_name;
+
+	ChatRoomSession(std::wstring new_room_name);
 	~ChatRoomSession() {};
+
+	void enter_room(Client& new_client);
 
 	void sync_all_chat() {};
 	void sync_one_chat() {};

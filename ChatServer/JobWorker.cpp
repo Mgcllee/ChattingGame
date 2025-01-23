@@ -157,6 +157,10 @@ void JobWorker::process_packet(int player_ticket, short* packet) {
 		printf("로그인 결과 송신\n");
 		break;
 	}
+	case C2S_PACKET_TYPE::REQUEST_JOIN_ROOM_PACK: {
+
+		break;
+	}
 	case C2S_PACKET_TYPE::SEND_CHAT_PACK: {
 		C2S_SEND_CHAT_PACK* chat_packet = reinterpret_cast<C2S_SEND_CHAT_PACK*>(packet);
 		const std::wstring message = std::format(L"[{}]: {}\n", clients[player_ticket].id, chat_packet->str);
