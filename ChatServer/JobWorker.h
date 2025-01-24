@@ -2,12 +2,14 @@
 
 #include "stdafx.h"
 #include "Client.h"
+#include "ChatRoomSession.h"
 
 static std::mutex chat_log_mutex;
 extern std::mutex login_user_mutex;
 
 #include <unordered_set>
 #include <cstdlib>
+
 static std::unordered_set<std::wstring> login_user_list;
 
 class JobWorker
@@ -26,6 +28,8 @@ class JobWorker
 	std::wofstream& chat_log_file;
 	std::vector<std::vector<int>>& map;
 
+	std::unordered_map<std::wstring, ChatRoomSession>& room_list;
+
 public:
 	JobWorker(
 		SOCKET& in_server_socket,
@@ -34,7 +38,8 @@ public:
 		std::atomic<int>& in_ticket_number,
 		std::unordered_map<int, Client>& in_clients,
 		std::wofstream& in_chat_log_file,
-		std::vector<std::vector<int>>& in_map
+		std::vector<std::vector<int>>& in_map,
+		std::unordered_map<std::wstring, ChatRoomSession>& in_room_list
 	);
 	~JobWorker();
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "JobWorker.h"
+#include "ChatRoomSession.h"
 
 class GameSession
 {
@@ -17,6 +18,8 @@ class GameSession
 	xlnt::workbook wb;
 	xlnt::worksheet ws;
 	std::vector<std::vector<int>> map;
+
+	std::unordered_map<std::wstring, ChatRoomSession> room_list;
 
 public:
 	GameSession();

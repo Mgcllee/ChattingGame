@@ -68,7 +68,8 @@ void GameSession::run_game_session() {
 			&JobWorker::job_worker,
 			new JobWorker(server_socket, accept_client_socket, accept_overlapped_expansion,
 				ticket_number, clients,
-				chat_log_file, map),
+				chat_log_file, map,
+				room_list),
 			h_iocp);
 	}
 
