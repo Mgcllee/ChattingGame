@@ -54,7 +54,26 @@ int main() {
 
 		clients[0].send_packet(packet);
 
+		S2C_RESPONSE_JOIN_ROOM_PACK rs_join_room_packet;
+		clients[0].recv_packet(rs_join_room_packet);
+		
+		wstring res = rs_join_room_packet.result;
+		wcout << res << L"\n";
+		if (res == "어서오세요!") {
+			
+		}
+		else {
+			wcout << L"입력하신 이름으로 방을 만드시겠습니까?[y/n]";
+			wchar_t order;
+			wcin >> order;
 
+			if (order == L"y") {
+
+			}
+			else {
+
+			}
+		}
 	}
 	return 0;
 }
