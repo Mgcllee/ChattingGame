@@ -19,8 +19,8 @@ int main() {
 		cin >> user_type;
 		if (user_type == 'y' || user_type == 'n'
 			|| user_type == 'Y' || user_type == 'N')
-			continue;
-		else printf("잘못된 입력입니다. y 혹은 n 중 하나만 입력해주세요.")
+			break;
+		else printf("잘못된 입력입니다. y 혹은 n 중 하나만 입력해주세요.");
 	}
 
 	if (user_type == 'N' || user_type == 'n') {
@@ -68,7 +68,14 @@ int main() {
 			wcin >> order;
 
 			if (order == L"y") {
+				C2S_REQUEST_MAKE_ROOM_PACK rq_make_room_packet;
+				rq_make_room_packet.size = sizeof(rq_make_room_packet);
+				rq_make_room_packet.type = C2S_PACKET_TYPE::REQUEST_MAKE_ROOM_PACK;
 
+				wcsncpy_s(rq_make_room_packet.str, sizeof(rq_make_room_packet.str) / sizeof(wchar_t),
+					packet.room_name, _TRUNCATE);
+
+				clients[0].send_packet(rq_make_room_packet);
 			}
 			else {
 
