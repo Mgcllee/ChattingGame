@@ -35,10 +35,11 @@ struct C2S_REQUEST_JOIN_ROOM_PACK : BASIC_PACK {
 
 struct C2S_REQUEST_MAKE_ROOM_PACK : BASIC_PACK {
 	wchar_t room_name[MAX_BUF];
+	short maximum_member_count;
 };
 
 struct C2S_SEND_CHAT_PACK : BASIC_PACK {
-	short length;
+	short length;			// double check str length
 	wchar_t str[MAX_BUF];
 };
 
