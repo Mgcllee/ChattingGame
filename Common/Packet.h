@@ -48,6 +48,7 @@ struct C2S_REQUEST_CHAT_LOG_PACK : BASIC_PACK {
 };
 
 struct C2S_REQUEST_SHORTCUT_PATH_PACK : BASIC_PACK {
+	// TODO: delete or upgrade shortcut path requester
 	short start_x, start_y, start_z;
 	short goal_x, goal_y, goal_z;
 };
