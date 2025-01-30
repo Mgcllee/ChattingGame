@@ -47,10 +47,6 @@ void Client::communicate_server(int key) {
 		send_chatting();
 		break;
 	}
-	case JOB_TYPE::REQUEST_SHORTEST_PATH: {
-		request_shortest_path();
-		break;
-	}
 	case JOB_TYPE::USER_LOGOUT: {
 		request_logout();
 		break;
@@ -202,25 +198,4 @@ void Client::request_logout() {
 		return;
 	}
 	else return;
-}
-
-void Client::request_shortest_path()
-{
-	C2S_REQUEST_SHORTCUT_PATH_PACK packet;
-	packet.size = sizeof(packet);
-	packet.type = C2S_PACKET_TYPE::REQUEST_SHORTEST_PATH;
-
-	packet.start_x = 0;
-	packet.start_y = 0;
-	packet.start_z = 0;
-
-	random_device rd;
-	mt19937 eng(rd());
-	uniform_int_distribution<> distr(0, MAX_CLIENT + 5);
-
-	packet.goal_x = distr(eng);
-	packet.goal_y = distr(eng);
-	packet.goal_z = distr(eng);
-
-	send_packet(packet);
 }
