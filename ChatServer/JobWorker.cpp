@@ -200,17 +200,6 @@ void JobWorker::process_packet(int player_ticket, short* packet) {
 
 		break;
 	}
-	case C2S_PACKET_TYPE::REQUEST_SHORTEST_PATH: {
-		C2S_REQUEST_SHORTCUT_PATH_PACK* path_packet = reinterpret_cast<C2S_REQUEST_SHORTCUT_PATH_PACK*>(packet);
-		path_packet->start_x;
-		path_packet->start_y;
-		path_packet->start_z;
-
-		path_packet->goal_x;
-		path_packet->goal_y;
-		path_packet->goal_z;
-		break;
-	}
 	case C2S_PACKET_TYPE::REQUEST_ITEM_DATA_PACK: {
 
 		break;
