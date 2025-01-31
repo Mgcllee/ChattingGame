@@ -200,10 +200,6 @@ void JobWorker::process_packet(int player_ticket, short* packet) {
 
 		break;
 	}
-	case C2S_PACKET_TYPE::REQUEST_ITEM_DATA_PACK: {
-
-		break;
-	}
 	case C2S_PACKET_TYPE::LOGOUT_PACK: {
 		C2S_LOGOUT_PACK* user_info = reinterpret_cast<C2S_LOGOUT_PACK*>(packet);
 		const std::wstring message = std::format(L"[{}] {} 님이 서버로 로그아웃 요청\n", user_info->id, user_info->id);
