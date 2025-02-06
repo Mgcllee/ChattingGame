@@ -163,25 +163,17 @@ void JobWorker::process_packet(int player_ticket, short* packet) {
 		C2S_REQUEST_JOIN_ROOM_PACK* rq_room_info = reinterpret_cast<C2S_REQUEST_JOIN_ROOM_PACK*>(packet);
 		std::wstring rq_room_name = rq_room_info->room_name;
 
-		S2C_RESPONSE_JOIN_ROOM_PACK rs_room_info;
-		rs_room_info.size = sizeof(rs_room_info);
-		rs_room_info.type = S2C_PACKET_TYPE::RESPONSE_JOIN_ROOM_PACK;
-
-		// TODO: Request Lock or thread safe logic
-
 		if (room_list.find(rq_room_name) == room_list.end()) {
+			S2C_RESPONSE_JOIN_ROOM_PACK rs_room_info;
+			rs_room_info.size = sizeof(rs_room_info);
+			rs_room_info.type = S2C_PACKET_TYPE::RESPONSE_JOIN_ROOM_PACK;
 			const wchar_t* reason = L"입력하신 이름의 채팅방이 없습니다.";
 			wcsncpy_s(rs_room_info.result, sizeof(rs_room_info.result) / sizeof(wchar_t), reason, _TRUNCATE);
+			clients[player_ticket].send_packet(&re_room_info);
 		}
 		else {
-			// TODO: 채팅방의 인원 수 확인 필요.
-
 			room_list[rq_room_name].join_client(clients[player_ticket]);
-			const wchar_t* reason = L"어서오세요!";
-			wcsncpy_s(rs_room_info.result, sizeof(rs_room_info.result) / sizeof(wchar_t), reason, _TRUNCATE);
 		}
-
-		clients[player_ticket].send_packet(&re_room_info);
 		break;
 	}
 	case C2S_PACKET_TYPE::SEND_CHAT_PACK: {
