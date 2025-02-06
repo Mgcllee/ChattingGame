@@ -6,6 +6,7 @@
 class ChatRoomSession
 {
 private:
+	std::vector<Client&> room_member;
 
 public:
 	std::wstring room_name;

@@ -37,12 +37,13 @@ struct C2S_REQUEST_MAKE_ROOM_PACK : BASIC_PACK {
 };
 
 struct C2S_SEND_CHAT_PACK : BASIC_PACK {
-	short length;			// double check str length
+	short length;			
 	wchar_t str[MAX_BUF];
 };
 
 struct C2S_REQUEST_CHAT_LOG_PACK : BASIC_PACK {
-
+	wchar_t start_time[MAX_BUF];
+	wchar_t end_time[MAX_BUF];
 };
 
 struct C2S_LOGOUT_PACK : BASIC_PACK {
@@ -58,7 +59,8 @@ enum S2C_PACKET_TYPE {
 	LOGIN_RESULT_PACK = 1,
 	RESPONSE_JOIN_ROOM_PACK,
 	RESPONSE_MAKE_ROOM_PACK,
-	SEND_CHAT_LOG_PACK,
+	SEND_CHAT_PACK,
+	RESPONSE_CHAT_LOG_PACK,
 	LOGOUT_RESULT_PACK
 };
 
