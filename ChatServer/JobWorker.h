@@ -26,7 +26,6 @@ class JobWorker
 	std::atomic<int>& ticket_number;
 
 	std::wofstream& chat_log_file;
-	std::vector<std::vector<int>>& map;
 
 	std::unordered_map<std::wstring, ChatRoomSession>& room_list;
 
@@ -38,7 +37,6 @@ public:
 		std::atomic<int>& in_ticket_number,
 		std::unordered_map<int, Client>& in_clients,
 		std::wofstream& in_chat_log_file,
-		std::vector<std::vector<int>>& in_map,
 		std::unordered_map<std::wstring, ChatRoomSession>& in_room_list
 	);
 	~JobWorker();

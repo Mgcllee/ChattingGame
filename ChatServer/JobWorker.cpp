@@ -4,14 +4,30 @@
 
 std::mutex login_user_mutex;
 
+/*
+[현재 Jobworker의 작업 내용]
+1. 새로운 클라이언트에 대한 Accept 처리
+2. 서버 전용 티켓 사용 처리
+3. 채팅 로그파일 관리
+4. 채팅룸 관리
+
+---
+
+[개선할 JobWorker -> NetsocketWorker(이름 개선)]
+[NetSocketWorker, JobWorker 모델로 분리]
+1. 클래스 분리
+소켓 처리 클래스
+프로세스 처리 클래스
+*/
+
 JobWorker::JobWorker(
 	SOCKET& in_server_socket,
 	SOCKET& in_accept_client_socket,
 	OverlappedExpansion* in_accept_overlapped_expansion,
+	
 	std::atomic<int>& in_ticket_number,
 	std::unordered_map<int, Client>& in_clients,
 	std::wofstream& in_chat_log_file,
-	std::vector<std::vector<int>>& in_map,
 	std::unordered_map<std::wstring, ChatRoomSession>& in_room_list
 )
 	: server_socket(in_server_socket)
@@ -20,14 +36,14 @@ JobWorker::JobWorker(
 	, ticket_number(in_ticket_number)
 	, clients(in_clients)
 	, chat_log_file(in_chat_log_file)
-	, map(in_map)
 	, room_list(in_room_list)
 {
-
+	
 }
 
 JobWorker::~JobWorker()
 {
+	
 }
 
 void JobWorker::job_worker(HANDLE h_iocp) {
