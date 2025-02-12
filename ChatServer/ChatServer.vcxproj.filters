@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Grains">
+      <UniqueIdentifier>{8c797fe3-22f1-4eec-9702-13c49f67c831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Grains">
+      <UniqueIdentifier>{31c24d31-af78-4a0f-b8ff-8c75f3aff35b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -30,8 +36,23 @@
     <ClInclude Include="JobWorker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameSession.h">
+    <ClInclude Include="GameServerSilo.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ChatRoomWorkerGrain.h">
+      <Filter>Header Files\Grains</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientWorkerGrain.h">
+      <Filter>Header Files\Grains</Filter>
+    </ClInclude>
+    <ClInclude Include="DataBaseWorkerGrain.h">
+      <Filter>Header Files\Grains</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkWorkerGrain.h">
+      <Filter>Header Files\Grains</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkManagerGrain.h">
+      <Filter>Header Files\Grains</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -50,8 +71,23 @@
     <ClCompile Include="JobWorker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameSession.cpp">
+    <ClCompile Include="GameServerSilo.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatRoomWorkerGrain.cpp">
+      <Filter>Source Files\Grains</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkWorkerGrain.cpp">
+      <Filter>Source Files\Grains</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientWorkerGrain.cpp">
+      <Filter>Source Files\Grains</Filter>
+    </ClCompile>
+    <ClCompile Include="DataBaseWorkerGrain.cpp">
+      <Filter>Source Files\Grains</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkManagerGrain.cpp">
+      <Filter>Source Files\Grains</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
