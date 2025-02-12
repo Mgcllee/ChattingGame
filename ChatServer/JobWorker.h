@@ -12,15 +12,12 @@ extern std::mutex login_user_mutex;
 
 static std::unordered_set<std::wstring> login_user_list;
 
-class JobWorker
+class NetSocketWorker
 {
 	HANDLE h_iocp;
 
-	std::unordered_map<int, Client>& clients;
-
 	SOCKET& server_socket;
 	SOCKET& accept_client_socket;
-
 	OverlappedExpansion* accept_overlapped_expansion;
 
 	std::atomic<int>& ticket_number;
@@ -30,16 +27,12 @@ class JobWorker
 	std::unordered_map<std::wstring, ChatRoomSession>& room_list;
 
 public:
-	JobWorker(
+	NetSocketWorker(
 		SOCKET& in_server_socket,
 		SOCKET& in_accept_client_socket,
-		OverlappedExpansion* in_accept_overlapped_expansion,
-		std::atomic<int>& in_ticket_number,
-		std::unordered_map<int, Client>& in_clients,
-		std::wofstream& in_chat_log_file,
-		std::unordered_map<std::wstring, ChatRoomSession>& in_room_list
+		OverlappedExpansion* in_accept_overlapped_expansion
 	);
-	~JobWorker();
+	~NetSocketWorker();
 
 	void job_worker(HANDLE h_iocp);
 	bool check_exist_job(OverlappedExpansion* exoverlapped, BOOL GQCS_result, int client_ticket);

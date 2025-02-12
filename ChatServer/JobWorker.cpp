@@ -18,35 +18,33 @@ std::mutex login_user_mutex;
 1. 클래스 분리
 소켓 처리 클래스
 프로세스 처리 클래스
+
+2. 멀티 쓰레드를 (과거)JobWorker만 사용했기 떄문에
+Jobworker가 무거워졌던 것.
+이를 해결하기 위해서 쓰레드별로 나눌 것.
+NetSocketWorker - 4 thread
+JobWorker - 8 thread
+DB - 4 thread
+
 */
 
-JobWorker::JobWorker(
+NetSocketWorker::NetSocketWorker(
 	SOCKET& in_server_socket,
 	SOCKET& in_accept_client_socket,
-	OverlappedExpansion* in_accept_overlapped_expansion,
-	
-	std::atomic<int>& in_ticket_number,
-	std::unordered_map<int, Client>& in_clients,
-	std::wofstream& in_chat_log_file,
-	std::unordered_map<std::wstring, ChatRoomSession>& in_room_list
-)
+	OverlappedExpansion* in_accept_overlapped_expansion)
 	: server_socket(in_server_socket)
 	, accept_client_socket(in_accept_client_socket)
 	, accept_overlapped_expansion(in_accept_overlapped_expansion)
-	, ticket_number(in_ticket_number)
-	, clients(in_clients)
-	, chat_log_file(in_chat_log_file)
-	, room_list(in_room_list)
 {
 	
 }
 
-JobWorker::~JobWorker()
+NetSocketWorker::~NetSocketWorker()
 {
 	
 }
 
-void JobWorker::job_worker(HANDLE h_iocp) {
+void NetSocketWorker::job_worker(HANDLE h_iocp) {
 	DWORD num_bytes;
 	ULONG_PTR key;
 	WSAOVERLAPPED* overlapped;
@@ -62,6 +60,7 @@ void JobWorker::job_worker(HANDLE h_iocp) {
 
 		switch (exoverlapped->socket_type) {
 		case SOCKET_TYPE::ACCEPT: {
+			// TODO: 두 줄 사이에 다른 쓰레드가 들어올 수 있지만 ticket에 저장하므로 전체 로직에서는 무관
 			int ticket = ticket_number.load();
 			ticket_number.fetch_add(1);
 
