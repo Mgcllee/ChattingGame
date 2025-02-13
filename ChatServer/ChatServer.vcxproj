@@ -141,6 +141,7 @@
     <ClInclude Include="ClientWorkerGrain.h" />
     <ClInclude Include="DataBaseWorkerGrain.h" />
     <ClInclude Include="GameServerSilo.h" />
+    <ClInclude Include="IGrain.h" />
     <ClInclude Include="JobWorker.h" />
     <ClInclude Include="NetworkManagerGrain.h" />
     <ClInclude Include="NetworkWorkerGrain.h" />

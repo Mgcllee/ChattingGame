@@ -8,7 +8,7 @@
 
 #include "Common/Packet.h"
 
-enum SOCKET_TYPE { ACCEPT, RECV, SEND, LOGOUT };
+enum OVERLAPPED_TYPE { CLIENT_ACCEPT, PACKET_RECV, PACKET_SEND, LOGOUT };
 
 class OverlappedExpansion {
 public:
@@ -20,6 +20,6 @@ public:
 	WSAOVERLAPPED overlapped;
 	WSABUF wsa_buffer;
 	short packet_buffer[BUF_SIZE];
-	SOCKET_TYPE socket_type;
+	OVERLAPPED_TYPE overlapped_type;
 	int remain_packet_size;
 };

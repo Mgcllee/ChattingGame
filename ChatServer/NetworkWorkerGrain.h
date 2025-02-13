@@ -1,8 +1,9 @@
 #pragma once
 
+#include "Igrain"
 #include "NetworkManagerGrain.h"
 
-class NetworkWorkerGrain
+class NetworkWorkerGrain : public IGrain
 {
 protected:
 	SOCKET& server_socket;
@@ -15,8 +16,8 @@ public:
 		, accept_client_socket = std::get<1>(networking.get_socket_variable())
 		, accept_overlapped_expansion = std::get<2>(networking.get_socket_variable());
 
-	void network_packet_worker(HANDLE& h_iocp_network, HANDLE& h_iocp_clients);
+	virtual void packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE> h_iocps) override;
 
 protected:
-	bool is_exist_GQCS_result(OverlappedExpansion* exoverlapped, BOOL GQCS_result);
+	virtual bool is_exist_GQCS_result(OverlappedExpansion* exoverlapped, BOOL GQCS_result) override;
 };

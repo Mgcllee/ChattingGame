@@ -1,9 +1,10 @@
 #pragma once
 
 #include "stdafx.h"
+#include "IGrain.h"
 #include "OverlappedExpansion.h"
 
-class NetworkManagerGrain
+class NetworkManagerGrain : public IGrain
 {
 protected:
 	SOCKET server_socket;

@@ -19,7 +19,7 @@ GameServerSilo::~GameServerSilo() {
 	// free windows handle
 }
 
-void GameServerSilo::run_gameserver_silo() {
+void GameServerSilo::run_game_logic_grains() {
 	NetworkManagerGrain networksetting("127.0.0.1", h_iocp_network);
 
 	std::vector<std::thread> grain_threads;
@@ -35,6 +35,8 @@ void GameServerSilo::run_gameserver_silo() {
 		);
 	}
 
+	std::tuple<HANDLE, HANDLE, HANDLE, HANDLE> h_iocps
+		{ h_iocp_network, h_iocp_clients, h_iocp_chatroom, h_iocp_database };
 	for (int i = 0; i < count_clients_grain; ++i) {
 		grain_threads.emplace_back(
 			&ClientWorkerGrain::job_worker, new ClientWorkerGrain(), h_iocp_clients

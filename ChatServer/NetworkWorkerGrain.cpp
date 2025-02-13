@@ -8,8 +8,10 @@ NetworkWorkerGrain::NetworkWorkerGrain(NetworkManagerGrain& networking)
 
 }
 
-void NetworkWorkerGrain::network_packet_worker(HANDLE& h_iocp_network, HANDLE& h_iocp_clients)
+void NetworkWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE> h_iocps)
 {
+	auto [h_iocp_network, h_iocp_clients, h_iocp_chatroom, h_iocp_database] = h_iocps;
+
 	DWORD num_bytes;
 	ULONG_PTR key;
 	WSAOVERLAPPED* overlapped;
@@ -24,13 +26,10 @@ void NetworkWorkerGrain::network_packet_worker(HANDLE& h_iocp_network, HANDLE& h
 
 		// TODO: check exist value
 		DWORD bytesTransferred = sizeof(overlapped);
-		ULONG_PTR completionKey = client_ticket;
+		ULONG_PTR completionKey = 0;
 
-		switch (exoverlapped->socket_type) {
-		case SOCKET_TYPE::ACCEPT: {
-			int ticket = 0; // ticket_number.load();
-			// ticket_number.fetch_add(1);
-			
+		switch (exoverlapped->overlapped_type) {
+		case OVERLAPPED_TYPE::CLIENT_ACCEPT: {
 			PostQueuedCompletionStatus(h_iocp_clients, bytesTransferred, completionKey, overlapped);
 
 			ZeroMemory(&accept_overlapped_expansion->overlapped, sizeof(accept_overlapped_expansion->overlapped));
@@ -45,11 +44,11 @@ void NetworkWorkerGrain::network_packet_worker(HANDLE& h_iocp_network, HANDLE& h
 				0, &accept_overlapped_expansion->overlapped);
 			break;
 		}
-		case SOCKET_TYPE::RECV: {
+		case OVERLAPPED_TYPE::PACKET_RECV: {
 			PostQueuedCompletionStatus(h_iocp_clients, bytesTransferred, completionKey, overlapped);
 			break;
 		}
-		case SOCKET_TYPE::SEND: {
+		case OVERLAPPED_TYPE::PACKET_SEND: {
 			delete exoverlapped;
 			break;
 		}

@@ -17,5 +17,5 @@ public:
 	GameServerSilo();
 	~GameServerSilo();
 
-	void run_gameserver_silo();
+	void run_game_logic_grains();
 };

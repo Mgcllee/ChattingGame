@@ -19,6 +19,9 @@
     <Filter Include="Source Files\Grains">
       <UniqueIdentifier>{31c24d31-af78-4a0f-b8ff-8c75f3aff35b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Interface">
+      <UniqueIdentifier>{62ca718a-d586-4b1b-a2b7-e63f0258f2b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -53,6 +56,9 @@
     </ClInclude>
     <ClInclude Include="NetworkManagerGrain.h">
       <Filter>Header Files\Grains</Filter>
+    </ClInclude>
+    <ClInclude Include="IGrain.h">
+      <Filter>Header Files\Interface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
