@@ -41,3 +41,13 @@ std::tuple<SOCKET&, SOCKET&, OverlappedExpansion*> NetworkManagerGrain::get_sock
     return std::tuple<SOCKET&, SOCKET&, OverlappedExpansion*>
         (server_socket, accept_client_socket, accept_overlapped_expansion);
 }
+
+void NetworkManagerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE> h_iocps)
+{
+
+}
+
+bool NetworkManagerGrain::is_exist_GQCS_result(OverlappedExpansion* exoverlapped, BOOL GQCS_result)
+{
+	return false;
+}

@@ -16,7 +16,10 @@ GameServerSilo::GameServerSilo() {
 }
 
 GameServerSilo::~GameServerSilo() {
-	// free windows handle
+	CloseHandle(h_iocp_network);
+	CloseHandle(h_iocp_clients);
+	CloseHandle(h_iocp_chatroom);
+	CloseHandle(h_iocp_database);
 }
 
 void GameServerSilo::run_game_logic_grains() {
@@ -28,10 +31,11 @@ void GameServerSilo::run_game_logic_grains() {
 	const short count_chatroom_grain = 8;
 	const short count_database_grain = 4;
 	
+	std::tuple<HANDLE, HANDLE, HANDLE, HANDLE> h_iocps
+		{ h_iocp_network, h_iocp_clients, h_iocp_chatroom, h_iocp_database };
 	for (int i = 0; i < count_network_grain; ++i) {
 		grain_threads.emplace_back(
-			&NetworkWorkerGrain::network_packet_worker, new NetworkWorkerGrain(networksetting), 
-			h_iocp_network, h_iocp_clients
+			&NetworkWorkerGrain::packet_worker, new NetworkWorkerGrain(networksetting), h_iocps
 		);
 	}
 
@@ -39,19 +43,19 @@ void GameServerSilo::run_game_logic_grains() {
 		{ h_iocp_network, h_iocp_clients, h_iocp_chatroom, h_iocp_database };
 	for (int i = 0; i < count_clients_grain; ++i) {
 		grain_threads.emplace_back(
-			&ClientWorkerGrain::job_worker, new ClientWorkerGrain(), h_iocp_clients
+			&ClientWorkerGrain::packet_worker, new ClientWorkerGrain(), h_iocps
 		);
 	}
 
 	for (int i = 0; i < count_chatroom_grain; ++i) {
 		grain_threads.emplace_back(
-			&ChatRoomWorkerGrain::job_worker, new ChatRoomWorkerGrain(), h_iocp_chatroom
+			&ChatRoomWorkerGrain::packet_worker, new ChatRoomWorkerGrain(), h_iocps
 		);
 	}
 
 	for (int i = 0; i < count_database_grain; ++i) {
 		grain_threads.emplace_back(
-			&DataBaseWorkerGrain::job_worker, new DataBaseWorkerGrain(), h_iocp_database
+			&DataBaseWorkerGrain::packet_worker, new DataBaseWorkerGrain(), h_iocps
 		);
 	}
 
