@@ -39,8 +39,6 @@ void GameServerSilo::run_game_logic_grains() {
 		);
 	}
 
-	std::tuple<HANDLE, HANDLE, HANDLE, HANDLE> h_iocps
-		{ h_iocp_network, h_iocp_clients, h_iocp_chatroom, h_iocp_database };
 	for (int i = 0; i < count_clients_grain; ++i) {
 		grain_threads.emplace_back(
 			&ClientWorkerGrain::packet_worker, new ClientWorkerGrain(), h_iocps

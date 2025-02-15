@@ -8,7 +8,14 @@
 
 #include "Common/Packet.h"
 
-enum OVERLAPPED_TYPE { CLIENT_ACCEPT, PACKET_RECV, PACKET_SEND, LOGOUT };
+enum OVERLAPPED_TYPE { 
+	CLIENT_ACCEPT
+	, PACKET_RECV
+	, PACKET_SEND
+	, LOGOUT 
+
+	
+};
 
 class OverlappedExpansion {
 public:

@@ -26,7 +26,7 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 
 		switch (exoverlapped->overlapped_type) {
 			OVERLAPPED_TYPE::CLIENT_ACCEPT: {
-
+				
 				break;
 			}
 		}

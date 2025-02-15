@@ -8,7 +8,9 @@ class ClientWorkerGrain : public IGrain
 {
 private:
 	std::atomic<int> ticket_number;
-	std::unordered_map<int, Client> clients;
+
+	// TODO: client login/logout log는 redis(in memory) 사용해보기
+	// std::unordered_map<int, Client> clients;
 	
 public:
 	ClientWorkerGrain();
