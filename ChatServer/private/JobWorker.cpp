@@ -1,6 +1,6 @@
 #pragma once
 
-#include "JobWorker.h"
+#include "ChatServer/public/JobWorker.h"
 
 std::mutex login_user_mutex;
 

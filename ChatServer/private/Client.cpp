@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Client.h"
+#include "ChatServer/public/Client.h"
 
 void Client::send_packet(void* packet)
 {

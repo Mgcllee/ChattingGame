@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IGrain.h"
+#include "ChatServer/public/Interface/IGrain.h"
 
 class ChatRoomWorkerGrain : public IGrain
 {

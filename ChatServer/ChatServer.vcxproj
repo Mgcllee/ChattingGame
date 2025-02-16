@@ -135,34 +135,34 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ChatRoomSession.h" />
-    <ClInclude Include="ChatRoomWorkerGrain.h" />
-    <ClInclude Include="Client.h" />
-    <ClInclude Include="ClientWorkerGrain.h" />
-    <ClInclude Include="DataBaseWorkerGrain.h" />
-    <ClInclude Include="GameServerSilo.h" />
-    <ClInclude Include="IGrain.h" />
-    <ClInclude Include="JobWorker.h" />
-    <ClInclude Include="NetworkManagerGrain.h" />
-    <ClInclude Include="NetworkWorkerGrain.h" />
-    <ClInclude Include="OverlappedExpansion.h" />
-    <ClInclude Include="stdafx.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="ChatRoomSession.cpp" />
-    <ClCompile Include="ChatRoomWorkerGrain.cpp" />
-    <ClCompile Include="Client.cpp" />
-    <ClCompile Include="ClientWorkerGrain.cpp" />
-    <ClCompile Include="DataBaseWorkerGrain.cpp" />
-    <ClCompile Include="GameServerSilo.cpp" />
-    <ClCompile Include="JobWorker.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="NetworkManagerGrain.cpp" />
-    <ClCompile Include="NetworkWorkerGrain.cpp" />
-    <ClCompile Include="OverlappedExpansion.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="readme.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="public\ChatRoomSession.h" />
+    <ClInclude Include="public\Client.h" />
+    <ClInclude Include="public\Grain\ChatRoomWorkerGrain.h" />
+    <ClInclude Include="public\Grain\ClientWorkerGrain.h" />
+    <ClInclude Include="public\Grain\DataBaseWorkerGrain.h" />
+    <ClInclude Include="public\Grain\NetworkManagerGrain.h" />
+    <ClInclude Include="public\Grain\NetworkWorkerGrain.h" />
+    <ClInclude Include="public\Interface\IGrain.h" />
+    <ClInclude Include="public\JobWorker.h" />
+    <ClInclude Include="public\OverlappedExpansion.h" />
+    <ClInclude Include="public\Silo\GameServerSilo.h" />
+    <ClInclude Include="public\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="private\ChatRoomSession.cpp" />
+    <ClCompile Include="private\Client.cpp" />
+    <ClCompile Include="private\Grain\ChatRoomWorkerGrain.cpp" />
+    <ClCompile Include="private\Grain\ClientWorkerGrain.cpp" />
+    <ClCompile Include="private\Grain\DataBaseWorkerGrain.cpp" />
+    <ClCompile Include="private\Grain\NetworkManagerGrain.cpp" />
+    <ClCompile Include="private\Grain\NetworkWorkerGrain.cpp" />
+    <ClCompile Include="private\JobWorker.cpp" />
+    <ClCompile Include="private\OverlappedExpansion.cpp" />
+    <ClCompile Include="private\Silo\GameServerSilo.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

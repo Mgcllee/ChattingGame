@@ -1,4 +1,6 @@
-#include "ChatRoomWorkerGrain.h"
+#pragma once
+
+#include "ChatServer/public/Grain/ChatRoomWorkerGrain.h"
 
 ChatRoomWorkerGrain::ChatRoomWorkerGrain()
 {

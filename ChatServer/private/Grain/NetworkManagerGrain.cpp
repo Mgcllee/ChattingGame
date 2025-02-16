@@ -1,4 +1,6 @@
-#include "NetworkManagerGrain.h"
+#pragma once
+
+#include "ChatServer/public/Grain/NetworkManagerGrain.h"
 
 NetworkManagerGrain::NetworkManagerGrain(std::string accpet_addr, HANDLE& h_iocp_network)
 {

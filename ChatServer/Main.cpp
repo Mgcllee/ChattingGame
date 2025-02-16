@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameServerSilo.h"
+#include "Public/Silo/GameServerSilo.h"
 
 int main() {
 	std::locale::global(std::locale(""));

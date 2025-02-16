@@ -1,8 +1,8 @@
 #pragma once
 
-#include "stdafx.h"
-#include "IGrain.h"
-#include "Client.h"
+#include "ChatServer/public/stdafx.h"
+#include "ChatServer/public/Interface/IGrain.h"
+#include "ChatServer/public/Client.h"
 
 class ClientWorkerGrain : public IGrain
 {

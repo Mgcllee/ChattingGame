@@ -1,4 +1,6 @@
-#include "DataBaseWorkerGrain.h"
+#pragma once
+
+#include "ChatServer/public/Grain/DataBaseWorkerGrain.h"
 
 DataBaseWorkerGrain::DataBaseWorkerGrain()
 {

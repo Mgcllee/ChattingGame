@@ -13,90 +13,96 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Grains">
-      <UniqueIdentifier>{8c797fe3-22f1-4eec-9702-13c49f67c831}</UniqueIdentifier>
+    <Filter Include="Source Files\Silo">
+      <UniqueIdentifier>{5149fbbe-4722-4ef8-980e-1f40915b3741}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Grains">
-      <UniqueIdentifier>{31c24d31-af78-4a0f-b8ff-8c75f3aff35b}</UniqueIdentifier>
+    <Filter Include="Source Files\Grain">
+      <UniqueIdentifier>{d8aceb1a-c829-41b8-a9dc-67aa9a58e281}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Grain">
+      <UniqueIdentifier>{8a341df6-365b-4ca9-8784-992f13e1f5cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Silo">
+      <UniqueIdentifier>{b1712db1-d543-4e64-b1b6-bb891fca0aff}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Interface">
-      <UniqueIdentifier>{62ca718a-d586-4b1b-a2b7-e63f0258f2b5}</UniqueIdentifier>
+      <UniqueIdentifier>{dd004a43-b9d7-4ea6-86a5-056b092248d6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
+    <None Include="readme.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="public\ChatRoomSession.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Client.h">
+    <ClInclude Include="public\Client.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ChatRoomSession.h">
+    <ClInclude Include="public\JobWorker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OverlappedExpansion.h">
+    <ClInclude Include="public\OverlappedExpansion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="JobWorker.h">
+    <ClInclude Include="public\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameServerSilo.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="public\Grain\ChatRoomWorkerGrain.h">
+      <Filter>Header Files\Grain</Filter>
     </ClInclude>
-    <ClInclude Include="ChatRoomWorkerGrain.h">
-      <Filter>Header Files\Grains</Filter>
+    <ClInclude Include="public\Grain\ClientWorkerGrain.h">
+      <Filter>Header Files\Grain</Filter>
     </ClInclude>
-    <ClInclude Include="ClientWorkerGrain.h">
-      <Filter>Header Files\Grains</Filter>
+    <ClInclude Include="public\Grain\DataBaseWorkerGrain.h">
+      <Filter>Header Files\Grain</Filter>
     </ClInclude>
-    <ClInclude Include="DataBaseWorkerGrain.h">
-      <Filter>Header Files\Grains</Filter>
+    <ClInclude Include="public\Grain\NetworkManagerGrain.h">
+      <Filter>Header Files\Grain</Filter>
     </ClInclude>
-    <ClInclude Include="NetworkWorkerGrain.h">
-      <Filter>Header Files\Grains</Filter>
+    <ClInclude Include="public\Grain\NetworkWorkerGrain.h">
+      <Filter>Header Files\Grain</Filter>
     </ClInclude>
-    <ClInclude Include="NetworkManagerGrain.h">
-      <Filter>Header Files\Grains</Filter>
+    <ClInclude Include="public\Silo\GameServerSilo.h">
+      <Filter>Header Files\Silo</Filter>
     </ClInclude>
-    <ClInclude Include="IGrain.h">
+    <ClInclude Include="public\Interface\IGrain.h">
       <Filter>Header Files\Interface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="private\ChatRoomSession.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="private\Client.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="private\JobWorker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="private\OverlappedExpansion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Client.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="private\Grain\ChatRoomWorkerGrain.cpp">
+      <Filter>Source Files\Grain</Filter>
     </ClCompile>
-    <ClCompile Include="ChatRoomSession.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="private\Grain\ClientWorkerGrain.cpp">
+      <Filter>Source Files\Grain</Filter>
     </ClCompile>
-    <ClCompile Include="OverlappedExpansion.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="private\Grain\DataBaseWorkerGrain.cpp">
+      <Filter>Source Files\Grain</Filter>
     </ClCompile>
-    <ClCompile Include="JobWorker.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="private\Grain\NetworkManagerGrain.cpp">
+      <Filter>Source Files\Grain</Filter>
     </ClCompile>
-    <ClCompile Include="GameServerSilo.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="private\Grain\NetworkWorkerGrain.cpp">
+      <Filter>Source Files\Grain</Filter>
     </ClCompile>
-    <ClCompile Include="ChatRoomWorkerGrain.cpp">
-      <Filter>Source Files\Grains</Filter>
+    <ClCompile Include="private\Silo\GameServerSilo.cpp">
+      <Filter>Source Files\Silo</Filter>
     </ClCompile>
-    <ClCompile Include="NetworkWorkerGrain.cpp">
-      <Filter>Source Files\Grains</Filter>
-    </ClCompile>
-    <ClCompile Include="ClientWorkerGrain.cpp">
-      <Filter>Source Files\Grains</Filter>
-    </ClCompile>
-    <ClCompile Include="DataBaseWorkerGrain.cpp">
-      <Filter>Source Files\Grains</Filter>
-    </ClCompile>
-    <ClCompile Include="NetworkManagerGrain.cpp">
-      <Filter>Source Files\Grains</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="readme.md" />
   </ItemGroup>
 </Project>

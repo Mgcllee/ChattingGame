@@ -1,12 +1,12 @@
 #pragma once
 
-#include "GameServerSilo.h"
+#include "ChatServer/public/Silo/GameServerSilo.h"
 
-#include "NetworkManagerGrain.h"
-#include "NetworkWorkerGrain.h"
-#include "ClientWorkerGrain.h"
-#include "ChatRoomWorkerGrain.h"
-#include "DataBaseWorkerGrain.h"
+#include "ChatServer/public/Grain/NetworkManagerGrain.h"
+#include "ChatServer/public/Grain/NetworkWorkerGrain.h"
+#include "ChatServer/public/Grain/ClientWorkerGrain.h"
+#include "ChatServer/public/Grain/ChatRoomWorkerGrain.h"
+#include "ChatServer/public/Grain/DataBaseWorkerGrain.h"
 
 GameServerSilo::GameServerSilo() {
 	h_iocp_network = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);

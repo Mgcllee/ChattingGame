@@ -1,4 +1,6 @@
-#include "NetworkWorkerGrain.h"
+#pragma once
+
+#include "ChatServer/public/Grain/NetworkWorkerGrain.h"
 
 NetworkWorkerGrain::NetworkWorkerGrain(NetworkManagerGrain& networking)
 	: server_socket = std::get<0>(networking.get_socket_variable())

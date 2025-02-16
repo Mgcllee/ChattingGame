@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Igrain"
-#include "NetworkManagerGrain.h"
+#include "ChatServer/public/Interface/IGrain.h"
+#include "ChatServer/public/Grain/NetworkManagerGrain.h"
 
 class NetworkWorkerGrain : public IGrain
 {
