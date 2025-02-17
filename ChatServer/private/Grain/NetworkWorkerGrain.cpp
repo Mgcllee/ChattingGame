@@ -26,13 +26,9 @@ void NetworkWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE
 			continue;
 		}
 
-		// TODO: check exist value
-		DWORD bytesTransferred = sizeof(overlapped);
-		ULONG_PTR completionKey = 0;
-
 		switch (exoverlapped->overlapped_type) {
 		case OVERLAPPED_TYPE::CLIENT_ACCEPT: {
-			PostQueuedCompletionStatus(h_iocp_clients, bytesTransferred, completionKey, overlapped);
+			PostQueuedCompletionStatus(h_iocp_clients, num_bytes, key, overlapped);
 
 			ZeroMemory(&accept_overlapped_expansion->overlapped, sizeof(accept_overlapped_expansion->overlapped));
 			accept_client_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
@@ -47,7 +43,7 @@ void NetworkWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE
 			break;
 		}
 		case OVERLAPPED_TYPE::PACKET_RECV: {
-			PostQueuedCompletionStatus(h_iocp_clients, bytesTransferred, completionKey, overlapped);
+			PostQueuedCompletionStatus(h_iocp_clients, num_bytes, key, overlapped);
 			break;
 		}
 		case OVERLAPPED_TYPE::PACKET_SEND: {

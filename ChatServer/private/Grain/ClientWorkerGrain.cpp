@@ -28,7 +28,9 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 
 		switch (exoverlapped->overlapped_type) {
 			OVERLAPPED_TYPE::CLIENT_ACCEPT: {
-				
+				// TODO: Redis 사용
+				// -> 문제 발생: Redis는 기본적으로 Windows를 지원하지 않음.
+				// --> 대책 강구 필요
 				break;
 			}
 		}
