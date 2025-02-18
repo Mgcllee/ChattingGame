@@ -14,7 +14,11 @@ enum OVERLAPPED_TYPE {
 	, PACKET_SEND
 	, LOGOUT 
 
-	
+	, REQUEST_MAKE_ROOM
+	, REQUEST_JOIN_ROOM
+	, REQUEST_LEAVE_ROOM
+
+	, REQUEST_CHAT_LOG
 };
 
 class OverlappedExpansion {
