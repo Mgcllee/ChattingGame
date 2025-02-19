@@ -17,6 +17,10 @@ This repository is a personal work piece to practice how multiple clients connec
 
 <br/>
 
+## The limitations of the current project
+1. Use a variety of Windows APIs. Therefore, it only works when the operating system is Windows.
+
+<br/>
 
 ## License
 
