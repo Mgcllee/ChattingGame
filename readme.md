@@ -19,6 +19,7 @@ This repository is a personal work piece to practice how multiple clients connec
 
 ## The limitations of the current project
 1. Use a variety of Windows APIs. Therefore, it only works when the operating system is Windows.
+2. I planned to manage the user information I accessed with Redis, but it's not possible because Redis doesn't support Windows
 
 <br/>
 
