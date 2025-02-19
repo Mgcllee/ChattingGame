@@ -26,7 +26,7 @@ NetworkManagerGrain::NetworkManagerGrain(std::string accpet_addr, HANDLE& h_iocp
 	setsockopt(accept_client_socket, IPPROTO_TCP, TCP_NODELAY, (const char*)&option, sizeof(option));
 
 	accept_overlapped_expansion = new OverlappedExpansion();
-	accept_overlapped_expansion->socket_type = SOCKET_TYPE::ACCEPT;
+	accept_overlapped_expansion->overlapped_type = OVERLAPPED_TYPE::CLIENT_ACCEPT;
 
 	h_iocp_network = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
 	CreateIoCompletionPort(reinterpret_cast<HANDLE>(server_socket), h_iocp_network, (ULONG_PTR)accept_overlapped_expansion, 0);

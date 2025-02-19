@@ -23,6 +23,6 @@ void Client::recv_packet()
     wsa_buffer.len = BUF_SIZE - remain_packet_size;
     wsa_buffer.buf = reinterpret_cast<CHAR*>(packet_buffer + remain_packet_size);
 
-    socket_type = RECV;
+    overlapped_type = OVERLAPPED_TYPE::PACKET_RECV;
     WSARecv(client_socket, &wsa_buffer, 1, 0, &recv_flag, &overlapped, 0);
 }

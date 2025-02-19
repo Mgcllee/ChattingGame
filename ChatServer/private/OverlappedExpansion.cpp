@@ -3,7 +3,7 @@
 #include "ChatServer/public/OverlappedExpansion.h"
 
 OverlappedExpansion::OverlappedExpansion() {
-	socket_type = SOCKET_TYPE::RECV;
+	overlapped_type = OVERLAPPED_TYPE::PACKET_RECV;
 	ZeroMemory(&overlapped, sizeof(overlapped));
 	wsa_buffer.len = BUF_SIZE;
 	ZeroMemory(&packet_buffer, sizeof(packet_buffer));
@@ -12,7 +12,7 @@ OverlappedExpansion::OverlappedExpansion() {
 }
 
 OverlappedExpansion::OverlappedExpansion(short* packet) {
-	socket_type = SOCKET_TYPE::SEND;
+	overlapped_type = OVERLAPPED_TYPE::PACKET_SEND;
 	ZeroMemory(&overlapped, sizeof(overlapped));
 	memcpy(packet_buffer, packet, packet[0]);
 	wsa_buffer.len = packet[0];

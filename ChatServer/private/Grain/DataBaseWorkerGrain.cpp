@@ -25,13 +25,6 @@ void DataBaseWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDL
 		if (false == is_exist_GQCS_result(exoverlapped, GQCS_result)) {
 			continue;
 		}
-
-		switch (exoverlapped->overlapped_type) {
-			OVERLAPPED_TYPE::CLIENT_ACCEPT: {
-
-				break;
-			}
-		}
 	}
 }
 

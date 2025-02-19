@@ -7,10 +7,7 @@
 class ClientWorkerGrain : public IGrain
 {
 private:
-	std::atomic<int> ticket_number;
-
-	// TODO: client login/logout log는 redis(in memory) 사용해보기
-	// std::unordered_map<int, Client> clients;
+	inline static std::unordered_map<int, Client> clients;
 	
 public:
 	ClientWorkerGrain();
@@ -20,4 +17,7 @@ public:
 
 protected:
 	virtual bool is_exist_GQCS_result(OverlappedExpansion* exoverlapped, BOOL GQCS_result) override;
+
+	void construct_receive_packet(int client_ticket, OverlappedExpansion* exoverlapped, DWORD num_bytes);
+	void process_packet(int player_ticket, short* packet);
 };

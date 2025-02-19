@@ -146,7 +146,6 @@
     <ClInclude Include="public\Grain\NetworkManagerGrain.h" />
     <ClInclude Include="public\Grain\NetworkWorkerGrain.h" />
     <ClInclude Include="public\Interface\IGrain.h" />
-    <ClInclude Include="public\JobWorker.h" />
     <ClInclude Include="public\OverlappedExpansion.h" />
     <ClInclude Include="public\Silo\GameServerSilo.h" />
     <ClInclude Include="public\stdafx.h" />
@@ -160,7 +159,6 @@
     <ClCompile Include="private\Grain\DataBaseWorkerGrain.cpp" />
     <ClCompile Include="private\Grain\NetworkManagerGrain.cpp" />
     <ClCompile Include="private\Grain\NetworkWorkerGrain.cpp" />
-    <ClCompile Include="private\JobWorker.cpp" />
     <ClCompile Include="private\OverlappedExpansion.cpp" />
     <ClCompile Include="private\Silo\GameServerSilo.cpp" />
   </ItemGroup>

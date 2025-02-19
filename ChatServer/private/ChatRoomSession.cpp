@@ -17,7 +17,7 @@ void ChatRoomSession::join_client(Client& new_client)
 	packet.size = sizeof(packet);
 	packet.type = S2C_PACKET_TYPE::RESPONSE_JOIN_ROOM_PACK;
 	
-	if (room_member_id.find(new_client.id) != room_member_id.end() && room_member_id.count() <= MAX_ROOM_MEMBER_COUNT) {
+	/*if (room_member_id.find(new_client.id) != room_member_id.end() && room_member_id.count() <= MAX_ROOM_MEMBER_COUNT) {
 		room_member_id.insert(new_clinet);
 		const wchar_t* result = L"Chat Room Join Success";
 		wcsncpy_s(result_packet.result, sizeof(result_packet.result) / sizeof(wchar_t), result, _TRUNCATE);
@@ -25,7 +25,7 @@ void ChatRoomSession::join_client(Client& new_client)
 	else {
 		const wchar_t* result = L"Chat Room Join Fail";
 		wcsncpy_s(result_packet.result, sizeof(result_packet.result) / sizeof(wchar_t), result, _TRUNCATE);
-	}
+	}*/
 
-	new_client.send_packet(packet);
+	// new_client.send_packet(packet);
 }

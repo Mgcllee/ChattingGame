@@ -1,6 +1,7 @@
 #pragma once
 
-#include "ChatServer/public/JobWorker.h"
+#include "ChatServer/public/stdafx.h"
+#include "ChatServer/public/OverlappedExpansion.h"
 
 class GameServerSilo {
 private:

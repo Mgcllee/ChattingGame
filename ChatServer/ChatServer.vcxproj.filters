@@ -39,9 +39,6 @@
     <ClInclude Include="public\Client.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="public\JobWorker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="public\OverlappedExpansion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -75,9 +72,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="private\Client.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="private\JobWorker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="private\OverlappedExpansion.cpp">

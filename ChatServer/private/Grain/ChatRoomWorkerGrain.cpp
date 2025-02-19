@@ -27,7 +27,7 @@ void ChatRoomWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDL
 		}
 
 		switch (exoverlapped->overlapped_type) {
-			OVERLAPPED_TYPE::CLIENT_ACCEPT: {
+			case OVERLAPPED_TYPE::CLIENT_ACCEPT: {
 
 				break;
 			}

@@ -3,9 +3,9 @@
 #include "ChatServer/public/Grain/NetworkWorkerGrain.h"
 
 NetworkWorkerGrain::NetworkWorkerGrain(NetworkManagerGrain& networking)
-	: server_socket = std::get<0>(networking.get_socket_variable())
-	, accept_client_socket = std::get<1>(networking.get_socket_variable())
-	, accept_overlapped_expansion = std::get<2>(networking.get_socket_variable())
+	: server_socket(std::get<0>(networking.get_socket_variable()))
+	, accept_client_socket(std::get<1>(networking.get_socket_variable()))
+	, accept_overlapped_expansion(std::get<2>(networking.get_socket_variable()))
 {
 
 }
@@ -28,6 +28,7 @@ void NetworkWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE
 
 		switch (exoverlapped->overlapped_type) {
 		case OVERLAPPED_TYPE::CLIENT_ACCEPT: {
+			key = accept_client_socket;
 			PostQueuedCompletionStatus(h_iocp_clients, num_bytes, key, overlapped);
 
 			ZeroMemory(&accept_overlapped_expansion->overlapped, sizeof(accept_overlapped_expansion->overlapped));
