@@ -37,7 +37,7 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 			break;
 		}
 		case OVERLAPPED_TYPE::PACKET_RECV: {
-			construct_receive_packet(key, exoverlapped, num_bytes);
+			construct_receive_packet(ticket, exoverlapped, num_bytes);
 			break;
 		}
 		case OVERLAPPED_TYPE::PACKET_SEND: {
@@ -100,6 +100,11 @@ void ClientWorkerGrain::process_packet(int player_ticket, short* packet)
 				L"로그인 성공! 어서오세요!", _TRUNCATE);
 		}
 		clients[player_ticket].send_packet(&result_pack);
+		break;
+	}
+	case C2S_PACKET_TYPE::SEND_CHAT_PACK: {
+		C2S_SEND_CHAT_PACK* chat = reinterpret_cast<C2S_SEND_CHAT_PACK*>(packet);
+		std::wcout << chat->str << L'\n';
 		break;
 	}
 	}
