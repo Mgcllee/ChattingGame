@@ -7,6 +7,7 @@
 class ClientWorkerGrain : public IGrain
 {
 private:
+	inline static std::unordered_set<std::wstring> login_users;
 	inline static std::unordered_map<int, Client> clients;
 	
 public:

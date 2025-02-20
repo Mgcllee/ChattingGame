@@ -89,8 +89,17 @@ void ClientWorkerGrain::process_packet(int player_ticket, short* packet)
 {
 	switch (packet[1]) {
 	case C2S_PACKET_TYPE::LOGIN_PACK: {
+		S2C_LOGIN_RESULT_PACK result_pack;
+		result_pack.type = S2C_PACKET_TYPE::LOGIN_RESULT_PACK;
+		result_pack.size = sizeof(result_pack);
+		
 		C2S_LOGIN_PACK* login_pack = reinterpret_cast<C2S_LOGIN_PACK*>(packet);
-		std::wcout << login_pack->id << L'\n';
+		if (login_users.find(login_pack->id) == login_users.end()) {
+			login_users.insert(login_pack->id);
+			wcsncpy_s(result_pack.result, sizeof(result_pack.result) / sizeof(wchar_t),
+				L"로그인 성공! 어서오세요!", _TRUNCATE);
+		}
+		clients[player_ticket].send_packet(&result_pack);
 		break;
 	}
 	}
