@@ -32,8 +32,8 @@ public:
 	
 	void communicate_server(int i);
 	void send_packet(BASIC_PACK& packet);
-	template<typename T>
-	void recv_packet(T& packet);
+	
+	void recv_packet(BASIC_PACK& packet);
 	
 	void login_server();
 	bool process_login_result();

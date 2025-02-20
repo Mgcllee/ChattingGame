@@ -75,8 +75,7 @@ void Client::send_packet(BASIC_PACK& packet) {
 	}
 }
 
-template<typename T>
-void Client::recv_packet(T& packet)
+void Client::recv_packet(BASIC_PACK& packet)
 {
 	if (m_socket->getRemoteAddress() == sf::IpAddress::None)
 		return;

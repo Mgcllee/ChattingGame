@@ -46,7 +46,7 @@ int main() {
 		clients[0].connect_to_server(SERVER_ADDR, PORT_NUM, 0);
 
 		C2S_REQUEST_JOIN_ROOM_PACK packet;
-		packet.size = sizeof(pakcet);
+		packet.size = sizeof(packet);
 		packet.type = C2S_PACKET_TYPE::REQUEST_JOIN_ROOM_PACK;
 		
 		printf("입장할 방의 이름을 입력해주세요: ");
@@ -59,20 +59,21 @@ int main() {
 		
 		wstring res = rs_join_room_packet.result;
 		wcout << res << L"\n";
-		if (res == "어서오세요!") {
+		if (res == L"어서오세요!") {
 			
 		}
 		else {
 			wcout << L"입력하신 이름으로 방을 만드시겠습니까?[y/n]";
 			wchar_t order;
+			wchar_t yes = L'y';
 			wcin >> order;
 
-			if (order == L"y") {
+			if (order == L'y') {
 				C2S_REQUEST_MAKE_ROOM_PACK rq_make_room_packet;
 				rq_make_room_packet.size = sizeof(rq_make_room_packet);
 				rq_make_room_packet.type = C2S_PACKET_TYPE::REQUEST_MAKE_ROOM_PACK;
 
-				wcsncpy_s(rq_make_room_packet.str, sizeof(rq_make_room_packet.str) / sizeof(wchar_t),
+				wcsncpy_s(rq_make_room_packet.room_name, sizeof(rq_make_room_packet.room_name) / sizeof(wchar_t),
 					packet.room_name, _TRUNCATE);
 
 				clients[0].send_packet(rq_make_room_packet);
