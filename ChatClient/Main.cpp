@@ -55,7 +55,7 @@ int main() {
 		clients[0].send_packet(packet);
 
 		S2C_RESPONSE_JOIN_ROOM_PACK rs_join_room_packet;
-		clients[0].recv_packet(rs_join_room_packet);
+		// clients[0].recv_packet(rs_join_room_packet);
 		
 		wstring res = rs_join_room_packet.result;
 		wcout << res << L"\n";

@@ -75,7 +75,8 @@ void Client::send_packet(BASIC_PACK& packet) {
 	}
 }
 
-void Client::recv_packet(BASIC_PACK& packet)
+template<typename T>
+void Client::recv_packet(T& packet)
 {
 	if (m_socket->getRemoteAddress() == sf::IpAddress::None)
 		return;
@@ -140,7 +141,7 @@ bool Client::process_login_result() {
 	wcout << packet.result << "\n";
 	
 	wstring result(packet.result);
-	if(result.find(L"로그인 성공! 어서오세요!") != wstring::npos) {
+	if(result.find(L"로그인 성공!") != wstring::npos) {
 		return true;
 	}
 	else return false;
