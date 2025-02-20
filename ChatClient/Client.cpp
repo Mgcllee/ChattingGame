@@ -48,7 +48,7 @@ void Client::communicate_server(int key) {
 		break;
 	}
 	case JOB_TYPE::USER_LOGOUT: {
-		request_logout();
+		// request_logout();
 		break;
 	}
 	}
