@@ -6,6 +6,7 @@
 #pragma comment(lib, "WS2_32.lib")
 #pragma comment(lib, "MSWSock.lib")
 
+#include <string>
 #include "Common/Packet.h"
 
 enum OVERLAPPED_TYPE { 
@@ -19,6 +20,8 @@ enum OVERLAPPED_TYPE {
 	, REQUEST_LEAVE_ROOM
 
 	, REQUEST_CHAT_LOG
+	
+	, PRINT_CHAT_LOG
 };
 
 class OverlappedExpansion {
@@ -33,4 +36,16 @@ public:
 	short packet_buffer[BUF_SIZE];
 	OVERLAPPED_TYPE overlapped_type;
 	int remain_packet_size;
+};
+
+struct DBOverlapped : WSAOVERLAPPED {
+	DBOverlapped(std::wstring in_chat, OVERLAPPED_TYPE type)
+		: chat_log(in_chat) 
+		, overlapped_type(type)
+	{ 
+		
+	}
+
+	OVERLAPPED_TYPE overlapped_type;
+	std::wstring chat_log;
 };

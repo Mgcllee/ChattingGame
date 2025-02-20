@@ -12,7 +12,7 @@ ClientWorkerGrain::~ClientWorkerGrain()
 
 void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE> h_iocps)
 {
-	auto [h_iocp_network, h_iocp_clients, h_iocp_chatroom, h_iocp_database] = h_iocps;
+	std::tie(h_iocp_network, h_iocp_clients, h_iocp_chatroom, h_iocp_database) = h_iocps;
 
 	DWORD num_bytes;
 	ULONG_PTR key;
@@ -55,7 +55,6 @@ bool ClientWorkerGrain::is_exist_GQCS_result(OverlappedExpansion* exoverlapped, 
 		// TODO: add error type log
 		return false;
 	}
-
 	return true;
 }
 
@@ -67,15 +66,11 @@ void ClientWorkerGrain::construct_receive_packet(int client_ticket, OverlappedEx
 	while (remain_data > 0) {
 		int packet_size = p[0];
 		if (packet_size <= remain_data) {
-
 			process_packet(client_ticket, p);
-
 			p = p + packet_size;
 			remain_data = remain_data - packet_size;
 		}
-		else {
-			break;
-		}
+		else break;
 	}
 
 	clients[client_ticket].remain_packet_size = remain_data;
@@ -96,17 +91,46 @@ void ClientWorkerGrain::process_packet(int player_ticket, short* packet)
 		C2S_LOGIN_PACK* login_pack = reinterpret_cast<C2S_LOGIN_PACK*>(packet);
 		if (login_users.find(login_pack->id) == login_users.end()) {
 			login_users.insert(login_pack->id);
+			clients[player_ticket].id = login_pack->id;
+			
 			wcsncpy_s(result_pack.result, sizeof(result_pack.result) / sizeof(wchar_t),
 				L"로그인 성공! 어서오세요!", _TRUNCATE);
+			
+			std::wstring chat_log = std::format(L"[{}]: {}", clients[player_ticket].id, result_pack.result);
+			DBOverlapped* dboverlapped = new DBOverlapped(chat_log, OVERLAPPED_TYPE::PRINT_CHAT_LOG);
+			DWORD num_bytes = sizeof(chat_log);
+			PostQueuedCompletionStatus(h_iocp_database, num_bytes, 0, dboverlapped);
 		}
 		clients[player_ticket].send_packet(&result_pack);
 		break;
 	}
 	case C2S_PACKET_TYPE::SEND_CHAT_PACK: {
 		C2S_SEND_CHAT_PACK* chat = reinterpret_cast<C2S_SEND_CHAT_PACK*>(packet);
-		std::wcout << chat->str << L'\n';
+		
+		std::wstring chat_log = std::format(L"[{}]: {}", clients[player_ticket].id, chat->str);
+		DBOverlapped* dboverlapped = new DBOverlapped(chat_log, OVERLAPPED_TYPE::PRINT_CHAT_LOG);
+		DWORD num_bytes = sizeof(chat_log);
+		PostQueuedCompletionStatus(h_iocp_database, num_bytes, 0, dboverlapped);
+		break;
+	}
+	case C2S_PACKET_TYPE::LOGOUT_PACK: {
+		S2C_LOGOUT_RESULT_PACK result_pack;
+		result_pack.type = S2C_PACKET_TYPE::LOGOUT_RESULT_PACK;
+		result_pack.size = sizeof(result_pack);
+
+		C2S_LOGOUT_PACK* info = reinterpret_cast<C2S_LOGOUT_PACK*>(packet);
+		if (login_users.find(info->id) != login_users.end()) {
+			login_users.erase(info->id);
+			wcsncpy_s(result_pack.result, sizeof(result_pack.result) / sizeof(wchar_t),
+				L"로그아웃 성공! 안녕히가세요!", _TRUNCATE);
+
+			std::wstring chat_log = std::format(L"[{}]: {}", clients[player_ticket].id, result_pack.result);
+			DBOverlapped* dboverlapped = new DBOverlapped(chat_log, OVERLAPPED_TYPE::PRINT_CHAT_LOG);
+			DWORD num_bytes = sizeof(chat_log);
+			PostQueuedCompletionStatus(h_iocp_database, num_bytes, 0, dboverlapped);
+		}
+		clients[player_ticket].send_packet(&result_pack);
 		break;
 	}
 	}
 }
-

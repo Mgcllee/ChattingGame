@@ -10,6 +10,8 @@ private:
 	inline static std::unordered_set<std::wstring> login_users;
 	inline static std::unordered_map<int, Client> clients;
 	
+	HANDLE h_iocp_network, h_iocp_clients, h_iocp_chatroom, h_iocp_database;
+
 public:
 	ClientWorkerGrain();
 	~ClientWorkerGrain();
