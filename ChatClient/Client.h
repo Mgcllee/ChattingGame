@@ -43,4 +43,6 @@ public:
 
 	void request_chat_log();
 	void request_logout();
+
+
 };

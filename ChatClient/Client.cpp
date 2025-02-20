@@ -11,7 +11,7 @@ sf::Socket::Status Client::connect_to_server(string addr, unsigned short port, i
 	m_socket->setBlocking(false);
 
 	if (m_socket->getRemoteAddress() == sf::IpAddress::None) {
-		printf("Error first connect_to_server function!\n");
+		wprintf(L"Error first connect_to_server function!\n");
 		exit(true);
 	}
 
@@ -71,7 +71,7 @@ void Client::send_packet(BASIC_PACK& packet) {
 	}
 
 	if (sf::Socket::Done != ret) {
-		printf("클라이언트 송신 오류 %d\n", static_cast<int>(ret));
+		wprintf(L"클라이언트 송신 오류 %d\n", static_cast<int>(ret));
 	}
 }
 
@@ -94,7 +94,7 @@ void Client::recv_packet(T& packet)
 	}
 
 	if (sf::Socket::Done != ret) {
-		printf("클라이언트 수신 오류 %d\n", static_cast<int>(ret));
+		wprintf(L"클라이언트 수신 오류 %d\n", static_cast<int>(ret));
 	}
 }
 
@@ -117,16 +117,16 @@ void Client::login_server() {
 	
 		send_packet(login_packet);
 		sf::sleep(sf::seconds(0.02f));
-		wcout << user_id[target].c_str() << L" 로 로그인 시도\n";
+		wprintf(L"%s 로그인 시도\n", user_id[target].c_str());
 
 		if (process_login_result()) {
 			id = user_id[target];
 			pw = user_id[target];
-			wcout << id << L" 님 로그인 성공!\n";
+			wprintf(L"%s님 로그인 성공!\n", id.c_str());
 			break;
 		}
 		else {
-			wcout << L"동일한 ID(" << user_id[target].c_str() << L")때문에 로그인 실패\n";
+			wprintf(L"동일한 ID(%s)때문에 로그인 실패\n", user_id[target].c_str());
 			sf::sleep(sf::seconds(0.01f));
 		}
 	}
@@ -138,7 +138,7 @@ bool Client::process_login_result() {
 
 	if (packet.size <= 0) return false;
 
-	wcout << packet.result << "\n";
+	// wcout << packet.result << "\n";
 	
 	wstring result(packet.result);
 	if(result.find(L"로그인 성공!") != wstring::npos) {
@@ -193,7 +193,7 @@ void Client::request_logout() {
 
 	wstring result(result_packet.result);
 	if (result.find(L"로그아웃 성공") != wstring::npos) {
-		wcout << result_packet.result << "\n";
+		wprintf(L"%s\n", result_packet.result);
 		disconnect_to_server();
 		return;
 	}

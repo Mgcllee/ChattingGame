@@ -8,81 +8,27 @@ vector<Client> clients;
 
 void read_files();
 
+
 int main() {
 	read_files();
 
-	char user_type;
-	while (true) {
-		printf("[유저 모드]: 유저가 직접 채팅을 사용하기 위해 접속\n");
-		printf("[기본 모드]: %d 개수의 더미 클라이언트가 접속\n", MAX_CLIENT);
-		printf("유저 모드로 접속하시겠습니까?(y/n): ");
-		cin >> user_type;
-		if (user_type == 'y' || user_type == 'n'
-			|| user_type == 'Y' || user_type == 'N')
-			break;
-		else printf("잘못된 입력입니다. y 혹은 n 중 하나만 입력해주세요.");
-	}
-
-	if (user_type == 'N' || user_type == 'n') {
-		for (int i = 0; i < MAX_CLIENT; ++i) {
-			clients.emplace_back();
-			clients[i].connect_to_server(SERVER_ADDR, PORT_NUM, i);
-		}
-		printf("Complete all client connect to server and login success\n");
-
-		while (true) {
-			sf::sleep(sf::seconds(1.f));
-			for (int i = 0; i < MAX_CLIENT; ++i) {
-				clients[i].communicate_server(i);
-			}
-		}
-
-		for (int i = 0; i < MAX_CLIENT; ++i) {
-			clients[i].disconnect_to_server();
-		}
-	}
-	else if (user_type == 'Y' || user_type == 'y') {
+	for (int i = 0; i < MAX_CLIENT; ++i) {
 		clients.emplace_back();
-		clients[0].connect_to_server(SERVER_ADDR, PORT_NUM, 0);
+		clients[i].connect_to_server(SERVER_ADDR, PORT_NUM, i);
+	}
+	wprintf(L"Complete all client connect to server and login success\n");
 
-		C2S_REQUEST_JOIN_ROOM_PACK packet;
-		packet.size = sizeof(packet);
-		packet.type = C2S_PACKET_TYPE::REQUEST_JOIN_ROOM_PACK;
-		
-		printf("입장할 방의 이름을 입력해주세요: ");
-		wcin >> packet.room_name;
-
-		clients[0].send_packet(packet);
-
-		S2C_RESPONSE_JOIN_ROOM_PACK rs_join_room_packet;
-		// clients[0].recv_packet(rs_join_room_packet);
-		
-		wstring res = rs_join_room_packet.result;
-		wcout << res << L"\n";
-		if (res == L"어서오세요!") {
-			
-		}
-		else {
-			wcout << L"입력하신 이름으로 방을 만드시겠습니까?[y/n]";
-			wchar_t order;
-			wchar_t yes = L'y';
-			wcin >> order;
-
-			if (order == L'y') {
-				C2S_REQUEST_MAKE_ROOM_PACK rq_make_room_packet;
-				rq_make_room_packet.size = sizeof(rq_make_room_packet);
-				rq_make_room_packet.type = C2S_PACKET_TYPE::REQUEST_MAKE_ROOM_PACK;
-
-				wcsncpy_s(rq_make_room_packet.room_name, sizeof(rq_make_room_packet.room_name) / sizeof(wchar_t),
-					packet.room_name, _TRUNCATE);
-
-				clients[0].send_packet(rq_make_room_packet);
-			}
-			else {
-
-			}
+	while (true) {
+		sf::sleep(sf::seconds(0.01f));
+		for (int i = 0; i < MAX_CLIENT; ++i) {
+			clients[i].communicate_server(i);
 		}
 	}
+
+	for (int i = 0; i < MAX_CLIENT; ++i) {
+		clients[i].disconnect_to_server();
+	}
+
 	return 0;
 }
 
@@ -102,7 +48,7 @@ void read_files() {
 		readFile.close();
 	}
 	else {
-		printf("Can't read mixed_sentences file...\n");
+		wprintf(L"Can't read mixed_sentences file...\n");
 		return;
 	}
 
@@ -118,7 +64,7 @@ void read_files() {
 		readFile.close();
 	}
 	else {
-		printf("Can't read valid_game_names_with_korean_words file...\n");
+		wprintf(L"Can't read valid_game_names_with_korean_words file...\n");
 		return;
 	}
 }
