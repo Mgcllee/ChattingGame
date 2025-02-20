@@ -25,10 +25,11 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 		if (false == is_exist_GQCS_result(exoverlapped, GQCS_result)) {
 			continue;
 		}
+		
+		int ticket = static_cast<int>(key);
 
 		switch (exoverlapped->overlapped_type) {
 		case OVERLAPPED_TYPE::CLIENT_ACCEPT: {
-			int ticket = static_cast<int>(key);
 			SOCKET accept_client_socket = static_cast<SOCKET>(key);
 			clients[ticket] = Client(accept_client_socket);
 			CreateIoCompletionPort(reinterpret_cast<HANDLE>(accept_client_socket), h_iocp_clients, ticket, 0);
@@ -36,7 +37,7 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 			break;
 		}
 		case OVERLAPPED_TYPE::PACKET_RECV: {
-
+			construct_receive_packet(key, exoverlapped, num_bytes);
 			break;
 		}
 		case OVERLAPPED_TYPE::PACKET_SEND: {
@@ -88,7 +89,8 @@ void ClientWorkerGrain::process_packet(int player_ticket, short* packet)
 {
 	switch (packet[1]) {
 	case C2S_PACKET_TYPE::LOGIN_PACK: {
-
+		C2S_LOGIN_PACK* login_pack = reinterpret_cast<C2S_LOGIN_PACK*>(packet);
+		std::wcout << login_pack->id << L'\n';
 		break;
 	}
 	}
