@@ -3,7 +3,7 @@
 #define SERVER_ADDR "127.0.0.1"
 #define PORT_NUM 9785
 
-#define MAX_CLIENT 10 // 50'000
+#define MAX_CLIENT 3 // 50'000
 #define MAX_SENTENCE 100'000
 
 #include <iostream>

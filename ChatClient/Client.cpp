@@ -42,6 +42,12 @@ void Client::communicate_server(int key) {
 
 	int order = distr(eng);
 
+	BASIC_PACK recv_pack{};
+	recv_packet(recv_pack);
+	if (recv_pack.type == S2C_PACKET_TYPE::CHECK_EXIST_USER) {
+
+	}
+
 	switch (order) {
 	case JOB_TYPE::SEND_CHAT: {
 		send_chatting();
@@ -93,6 +99,9 @@ void Client::recv_packet(T& packet)
 		}
 	}
 
+	if (packet.type == S2C_PACKET_TYPE::CHECK_EXIST_USER || sf::Socket::NotReady == ret) {
+		return;
+	}
 	if (sf::Socket::Done != ret) {
 		wprintf(L"클라이언트 수신 오류 %d\n", static_cast<int>(ret));
 	}
@@ -104,7 +113,7 @@ void Client::login_server() {
 
 	random_device rd;
 	mt19937 eng(rd());
-	uniform_int_distribution<> distr(0, MAX_CLIENT);
+	uniform_int_distribution<> distr(0, MAX_SENTENCE);
 
 	C2S_LOGIN_PACK login_packet;
 	login_packet.size = static_cast<short>(sizeof(login_packet));
