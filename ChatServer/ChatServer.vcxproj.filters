@@ -66,6 +66,9 @@
     <ClInclude Include="public\Interface\IGrain.h">
       <Filter>Header Files\Interface</Filter>
     </ClInclude>
+    <ClInclude Include="public\Grain\TimerGrain.h">
+      <Filter>Header Files\Grain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="private\ChatRoomSession.cpp">
@@ -97,6 +100,9 @@
     </ClCompile>
     <ClCompile Include="private\Silo\GameServerSilo.cpp">
       <Filter>Source Files\Silo</Filter>
+    </ClCompile>
+    <ClCompile Include="private\Grain\TimerGrain.cpp">
+      <Filter>Source Files\Grain</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

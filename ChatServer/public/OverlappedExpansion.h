@@ -22,23 +22,22 @@ enum OVERLAPPED_TYPE {
 	, REQUEST_CHAT_LOG
 	
 	, PRINT_CHAT_LOG
+	, CHECK_EXIST_CLIENTS
 };
 
-class OverlappedExpansion {
-public:
+struct OverlappedExpansion {
 	OverlappedExpansion();
 	OverlappedExpansion(short* packet);
 	~OverlappedExpansion();
 
-public:
 	WSAOVERLAPPED overlapped;
 	WSABUF wsa_buffer;
-	short packet_buffer[BUF_SIZE];
 	OVERLAPPED_TYPE overlapped_type;
+	short packet_buffer[BUF_SIZE];
 	int remain_packet_size;
 };
 
-struct DBOverlapped : WSAOVERLAPPED {
+struct DBOverlapped : OverlappedExpansion {
 	DBOverlapped(std::wstring in_chat, OVERLAPPED_TYPE type)
 		: chat_log(in_chat) 
 		, overlapped_type(type)
@@ -48,4 +47,8 @@ struct DBOverlapped : WSAOVERLAPPED {
 
 	OVERLAPPED_TYPE overlapped_type;
 	std::wstring chat_log;
+};
+
+struct TIMEROverlapped : OverlappedExpansion {
+	OVERLAPPED_TYPE overlapped_type;
 };

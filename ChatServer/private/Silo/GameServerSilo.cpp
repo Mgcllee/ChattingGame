@@ -7,6 +7,7 @@
 #include "ChatServer/public/Grain/ClientWorkerGrain.h"
 #include "ChatServer/public/Grain/ChatRoomWorkerGrain.h"
 #include "ChatServer/public/Grain/DataBaseWorkerGrain.h"
+#include "ChatServer/public/Grain/TimerGrain.h"
 
 GameServerSilo::GameServerSilo() {
 	h_iocp_network = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
@@ -26,13 +27,16 @@ void GameServerSilo::run_game_logic_grains() {
 	NetworkManagerGrain networksetting("127.0.0.1", h_iocp_network);
 
 	std::vector<std::thread> grain_threads;
-	const short count_network_grain = 4;
-	const short count_clients_grain = 8;
-	const short count_chatroom_grain = 8;
-	const short count_database_grain = 4;
+	const short count_network_grain = 2;
+	const short count_clients_grain = 4;
+	const short count_chatroom_grain = 4;
+	const short count_database_grain = 1;
 	
 	std::tuple<HANDLE, HANDLE, HANDLE, HANDLE> h_iocps
 		{ h_iocp_network, h_iocp_clients, h_iocp_chatroom, h_iocp_database };
+
+	grain_threads.emplace_back(&TimerGrain::packet_worker, new TimerGrain(), h_iocps);
+
 	for (int i = 0; i < count_network_grain; ++i) {
 		grain_threads.emplace_back(
 			&NetworkWorkerGrain::packet_worker, new NetworkWorkerGrain(networksetting), h_iocps

@@ -45,6 +45,43 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 			break;
 		}
 		}
+
+		/*TIMEROverlapped* timeroverlapped = reinterpret_cast<TIMEROverlapped*>(overlapped);
+		switch (timeroverlapped->overlapped_type) {
+		case OVERLAPPED_TYPE::CHECK_EXIST_CLIENTS: {
+			if (login_users.empty()) {
+				wprintf(L"login user is empty\n");
+				break;
+			}
+
+			int connection_status;
+			std::unordered_map<int, std::wstring> disconnect_clients;
+			
+			BASIC_PACK check_exist_user_packet;
+			check_exist_user_packet.size = sizeof(check_exist_user_packet);
+			check_exist_user_packet.type = S2C_PACKET_TYPE::CHECK_EXIST_USER;
+
+			for (auto& [ticket, client] : clients) {
+				if (ticket == 0) continue;
+				connection_status = clients[ticket].send_packet(&check_exist_user_packet);
+				if (0 > connection_status) {
+					disconnect_clients[ticket] = client.id;
+					client.disconnect_server();
+				}
+			}
+
+			for (const auto& [ticket, id] : disconnect_clients) {
+				login_users.erase(id);
+				clients.erase(ticket);
+			}
+
+			std::wstring chat_log = std::format(L"\n\n현재 접속중인 멤버: {}", login_users.size());
+			DBOverlapped* dboverlapped = new DBOverlapped(chat_log, OVERLAPPED_TYPE::PRINT_CHAT_LOG);
+			DWORD num_bytes = sizeof(chat_log);
+			PostQueuedCompletionStatus(h_iocp_database, num_bytes, 0, dboverlapped);
+			break;
+		}
+		}*/
 	}
 }
 
@@ -97,9 +134,12 @@ void ClientWorkerGrain::process_packet(int player_ticket, short* packet)
 				L"로그인 성공! 어서오세요!", _TRUNCATE);
 			
 			std::wstring chat_log = std::format(L"[{}]: {}", clients[player_ticket].id, result_pack.result);
-			DBOverlapped* dboverlapped = new DBOverlapped(chat_log, OVERLAPPED_TYPE::PRINT_CHAT_LOG);
+			OverlappedExpansion* dboverlapped = new OverlappedExpansion();
+			dboverlapped->overlapped_type = OVERLAPPED_TYPE::PRINT_CHAT_LOG;
+			memcpy_s(dboverlapped->packet_buffer, sizeof(chat_log) / sizeof(wchar_t),
+				chat_log.c_str(), sizeof(chat_log) / sizeof(wchar_t));
 			DWORD num_bytes = sizeof(chat_log);
-			PostQueuedCompletionStatus(h_iocp_database, num_bytes, 0, dboverlapped);
+			PostQueuedCompletionStatus(h_iocp_database, num_bytes, 0, &dboverlapped->overlapped);
 		}
 		clients[player_ticket].send_packet(&result_pack);
 		break;
@@ -108,9 +148,12 @@ void ClientWorkerGrain::process_packet(int player_ticket, short* packet)
 		C2S_SEND_CHAT_PACK* chat = reinterpret_cast<C2S_SEND_CHAT_PACK*>(packet);
 		
 		std::wstring chat_log = std::format(L"[{}]: {}", clients[player_ticket].id, chat->str);
-		DBOverlapped* dboverlapped = new DBOverlapped(chat_log, OVERLAPPED_TYPE::PRINT_CHAT_LOG);
+		OverlappedExpansion* dboverlapped = new OverlappedExpansion();
+		dboverlapped->overlapped_type = OVERLAPPED_TYPE::PRINT_CHAT_LOG;
+		memcpy_s(dboverlapped->packet_buffer, sizeof(chat_log) / sizeof(wchar_t),
+			chat_log.c_str(), sizeof(chat_log) / sizeof(wchar_t));
 		DWORD num_bytes = sizeof(chat_log);
-		PostQueuedCompletionStatus(h_iocp_database, num_bytes, 0, dboverlapped);
+		PostQueuedCompletionStatus(h_iocp_database, num_bytes, 0, &dboverlapped->overlapped);
 		break;
 	}
 	case C2S_PACKET_TYPE::LOGOUT_PACK: {
@@ -125,9 +168,12 @@ void ClientWorkerGrain::process_packet(int player_ticket, short* packet)
 				L"로그아웃 성공! 안녕히가세요!", _TRUNCATE);
 
 			std::wstring chat_log = std::format(L"[{}]: {}", clients[player_ticket].id, result_pack.result);
-			DBOverlapped* dboverlapped = new DBOverlapped(chat_log, OVERLAPPED_TYPE::PRINT_CHAT_LOG);
+			OverlappedExpansion* dboverlapped = new OverlappedExpansion();
+			dboverlapped->overlapped_type = OVERLAPPED_TYPE::PRINT_CHAT_LOG;
+			memcpy_s(dboverlapped->packet_buffer, sizeof(chat_log) / sizeof(wchar_t),
+				chat_log.c_str(), sizeof(chat_log) / sizeof(wchar_t));
 			DWORD num_bytes = sizeof(chat_log);
-			PostQueuedCompletionStatus(h_iocp_database, num_bytes, 0, dboverlapped);
+			PostQueuedCompletionStatus(h_iocp_database, num_bytes, 0, &dboverlapped->overlapped);
 		}
 		clients[player_ticket].send_packet(&result_pack);
 		break;

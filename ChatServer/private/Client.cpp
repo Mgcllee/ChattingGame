@@ -2,7 +2,7 @@
 
 #include "ChatServer/public/Client.h"
 
-void Client::send_packet(void* packet)
+int Client::send_packet(void* packet)
 {
     OverlappedExpansion* sendoverlapped = new OverlappedExpansion(reinterpret_cast<short*>(packet));
 
@@ -11,11 +11,12 @@ void Client::send_packet(void* packet)
     int ret = WSASend(client_socket, &sendoverlapped->wsa_buffer, 1, sent_byte, 0, &sendoverlapped->overlapped, 0);
     if ((ret == SOCKET_ERROR) &&
         (WSA_IO_PENDING != (err = WSAGetLastError()))) {
-        printf("WSASend failed with error: %d\n", err);
+        wprintf(L"WSASend failed with error: %d\n", err);
     }
+    return ret;
 }
 
-void Client::recv_packet()
+int Client::recv_packet()
 {
     DWORD recv_flag = 0;
     memset(&overlapped, 0, sizeof(overlapped));
@@ -24,5 +25,12 @@ void Client::recv_packet()
     wsa_buffer.buf = reinterpret_cast<CHAR*>(packet_buffer + remain_packet_size);
 
     overlapped_type = OVERLAPPED_TYPE::PACKET_RECV;
-    WSARecv(client_socket, &wsa_buffer, 1, 0, &recv_flag, &overlapped, 0);
+    return WSARecv(client_socket, &wsa_buffer, 1, 0, &recv_flag, &overlapped, 0);
+}
+
+void Client::disconnect_server()
+{
+    closesocket(client_socket);
+    id = L"";
+    pw = L"";
 }
