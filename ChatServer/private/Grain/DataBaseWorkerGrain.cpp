@@ -20,7 +20,7 @@ void DataBaseWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDL
 
 	while (true) {
 		BOOL GQCS_result = GetQueuedCompletionStatus(h_iocp_database, &num_bytes, &key, &overlapped, static_cast<DWORD>(INFINITY));
-		DBOverlapped* dboverlapped = reinterpret_cast<DBOverlapped*>(overlapped);
+		OverlappedExpansion* dboverlapped = reinterpret_cast<OverlappedExpansion*>(overlapped);
 
 		if (false == is_exist_GQCS_result(reinterpret_cast<OverlappedExpansion*>(overlapped), GQCS_result)) {
 			continue;
@@ -28,7 +28,8 @@ void DataBaseWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDL
 
 		switch (dboverlapped->overlapped_type) {
 		case OVERLAPPED_TYPE::PRINT_CHAT_LOG: {
-			wprintf(L"%s\n", dboverlapped->chat_log.c_str());
+			wchar_t* chat_log = reinterpret_cast<wchar_t*>(dboverlapped->packet_buffer);
+			std::wprintf(L"%s\n", chat_log);
 		}
 		}
 	}

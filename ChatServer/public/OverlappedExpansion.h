@@ -36,19 +36,3 @@ struct OverlappedExpansion {
 	short packet_buffer[BUF_SIZE];
 	int remain_packet_size;
 };
-
-struct DBOverlapped : OverlappedExpansion {
-	DBOverlapped(std::wstring in_chat, OVERLAPPED_TYPE type)
-		: chat_log(in_chat) 
-		, overlapped_type(type)
-	{ 
-		
-	}
-
-	OVERLAPPED_TYPE overlapped_type;
-	std::wstring chat_log;
-};
-
-struct TIMEROverlapped : OverlappedExpansion {
-	OVERLAPPED_TYPE overlapped_type;
-};

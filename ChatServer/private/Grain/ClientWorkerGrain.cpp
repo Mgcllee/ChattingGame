@@ -130,15 +130,13 @@ void ClientWorkerGrain::process_packet(int player_ticket, short* packet)
 			login_users.insert(login_pack->id);
 			clients[player_ticket].id = login_pack->id;
 			
-			wcsncpy_s(result_pack.result, sizeof(result_pack.result) / sizeof(wchar_t),
-				L"로그인 성공! 어서오세요!", _TRUNCATE);
+			memcpy(result_pack.result, L"로그인 성공! 어서오세요!", sizeof(L"로그인 성공! 어서오세요!"));
 			
 			std::wstring chat_log = std::format(L"[{}]: {}", clients[player_ticket].id, result_pack.result);
 			OverlappedExpansion* dboverlapped = new OverlappedExpansion();
 			dboverlapped->overlapped_type = OVERLAPPED_TYPE::PRINT_CHAT_LOG;
-			memcpy_s(dboverlapped->packet_buffer, sizeof(chat_log) / sizeof(wchar_t),
-				chat_log.c_str(), sizeof(chat_log) / sizeof(wchar_t));
-			DWORD num_bytes = sizeof(chat_log);
+			memcpy(dboverlapped->packet_buffer, chat_log.c_str(), sizeof(chat_log));
+			DWORD num_bytes = sizeof(dboverlapped);
 			PostQueuedCompletionStatus(h_iocp_database, num_bytes, 0, &dboverlapped->overlapped);
 		}
 		clients[player_ticket].send_packet(&result_pack);
@@ -150,9 +148,8 @@ void ClientWorkerGrain::process_packet(int player_ticket, short* packet)
 		std::wstring chat_log = std::format(L"[{}]: {}", clients[player_ticket].id, chat->str);
 		OverlappedExpansion* dboverlapped = new OverlappedExpansion();
 		dboverlapped->overlapped_type = OVERLAPPED_TYPE::PRINT_CHAT_LOG;
-		memcpy_s(dboverlapped->packet_buffer, sizeof(chat_log) / sizeof(wchar_t),
-			chat_log.c_str(), sizeof(chat_log) / sizeof(wchar_t));
-		DWORD num_bytes = sizeof(chat_log);
+		memcpy(dboverlapped->packet_buffer, chat_log.c_str(), sizeof(chat_log));
+		DWORD num_bytes = sizeof(dboverlapped);
 		PostQueuedCompletionStatus(h_iocp_database, num_bytes, 0, &dboverlapped->overlapped);
 		break;
 	}
@@ -170,9 +167,8 @@ void ClientWorkerGrain::process_packet(int player_ticket, short* packet)
 			std::wstring chat_log = std::format(L"[{}]: {}", clients[player_ticket].id, result_pack.result);
 			OverlappedExpansion* dboverlapped = new OverlappedExpansion();
 			dboverlapped->overlapped_type = OVERLAPPED_TYPE::PRINT_CHAT_LOG;
-			memcpy_s(dboverlapped->packet_buffer, sizeof(chat_log) / sizeof(wchar_t),
-				chat_log.c_str(), sizeof(chat_log) / sizeof(wchar_t));
-			DWORD num_bytes = sizeof(chat_log);
+			memcpy(dboverlapped->packet_buffer, chat_log.c_str(), sizeof(chat_log));
+			DWORD num_bytes = sizeof(dboverlapped);
 			PostQueuedCompletionStatus(h_iocp_database, num_bytes, 0, &dboverlapped->overlapped);
 		}
 		clients[player_ticket].send_packet(&result_pack);
