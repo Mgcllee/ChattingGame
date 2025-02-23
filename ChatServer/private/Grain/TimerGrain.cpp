@@ -12,7 +12,7 @@ void TimerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE> h_iocp
 	auto[h_iocp_network, h_iocp_clients, h_iocp_chatroom, h_iocp_database] = h_iocps;
 
 	while (true) {
-		std::this_thread::sleep_for(std::chrono::seconds(2));
+		std::this_thread::sleep_for(std::chrono::seconds(10));
 		
 		OverlappedExpansion* timer_overlapped = new OverlappedExpansion();
 		timer_overlapped->overlapped_type = OVERLAPPED_TYPE::CHECK_EXIST_CLIENTS;
