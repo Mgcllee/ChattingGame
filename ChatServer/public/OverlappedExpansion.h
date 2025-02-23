@@ -33,6 +33,6 @@ struct OverlappedExpansion {
 	WSAOVERLAPPED overlapped;
 	WSABUF wsa_buffer;
 	OVERLAPPED_TYPE overlapped_type;
-	short packet_buffer[BUF_SIZE];
+	unsigned short packet_buffer[BUF_SIZE];
 	int remain_packet_size;
 };

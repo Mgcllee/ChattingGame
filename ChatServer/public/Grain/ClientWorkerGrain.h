@@ -22,5 +22,5 @@ protected:
 	virtual bool is_exist_GQCS_result(OverlappedExpansion* exoverlapped, BOOL GQCS_result) override;
 
 	void construct_receive_packet(int client_ticket, OverlappedExpansion* exoverlapped, DWORD num_bytes);
-	void process_packet(int player_ticket, short* packet);
+	void process_packet(int player_ticket, unsigned short* packet);
 };
