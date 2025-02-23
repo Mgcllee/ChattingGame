@@ -7,14 +7,24 @@ class Client
 private:
 	unique_ptr<sf::TcpSocket> m_socket;
 
+	random_device rd;
+	mt19937 eng;
+	uniform_int_distribution<> distr;
+
 public:
 	wstring id = L"";
 	wstring pw = L"";
 
 public:
-	Client() : m_socket(make_unique<sf::TcpSocket>()) {}
+	Client() : m_socket(make_unique<sf::TcpSocket>()) {
+		eng = mt19937(rd());
+		distr = uniform_int_distribution<>(JOB_TYPE::USER_LOGIN, JOB_TYPE::USER_LOGOUT);
+	}
 	Client(const Client&) = delete;
-	Client(Client&& other) noexcept : m_socket(move(other.m_socket)) {}
+	Client(Client&& other) noexcept : m_socket(move(other.m_socket)) {
+		eng = mt19937(rd());
+		distr = uniform_int_distribution<>(JOB_TYPE::USER_LOGIN, JOB_TYPE::USER_LOGOUT);
+	}
 	
 	~Client();
 
