@@ -27,10 +27,16 @@ void ChatRoomWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDL
 		}
 
 		switch (exoverlapped->overlapped_type) {
-			case OVERLAPPED_TYPE::CLIENT_ACCEPT: {
+		case OVERLAPPED_TYPE::REQUEST_JOIN_ROOM: {
+			std::wstring room_name = reinterpret_cast<wchar_t*>(exoverlapped->packet_buffer);
 
-				break;
+			if (room_list.find(room_name) == room_list.end()) {
+				room_list[room_name] = ChatRoomSession(room_name);
 			}
+
+			room_list[room_name].join_client(exoverlapped->user_id);
+			break;
+		}
 		}
 	}
 }

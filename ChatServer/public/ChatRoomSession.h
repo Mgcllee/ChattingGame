@@ -1,22 +1,22 @@
 #pragma once
 
 #include "ChatServer/public/stdafx.h"
-#include "ChatServer/public/Client.h"
+#include "ChatServer/public/OverlappedExpansion.h"
 
 class ChatRoomSession
 {
-private:
-	std::unordered_map<std::wstring, Client&> room_member_id;
-
 public:
-	std::wstring room_name;
-
+	ChatRoomSession();
 	ChatRoomSession(std::wstring new_room_name);
-	~ChatRoomSession() {};
+	~ChatRoomSession();
 
-	void join_client(Client& new_client);
+	void join_client(std::wstring new_user_id);
 
 	void sync_all_chat() {};
 	void sync_one_chat() {};
+
+private:
+	std::wstring room_name;
+	std::unordered_set<std::wstring> members_id;
 };
 

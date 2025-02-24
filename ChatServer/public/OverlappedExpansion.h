@@ -15,8 +15,9 @@ enum OVERLAPPED_TYPE {
 	, PACKET_SEND
 	, LOGOUT 
 
-	, REQUEST_MAKE_ROOM
 	, REQUEST_JOIN_ROOM
+	, RESPONSE_JOIN_ROOM
+
 	, REQUEST_LEAVE_ROOM
 
 	, REQUEST_CHAT_LOG
@@ -33,6 +34,7 @@ struct OverlappedExpansion {
 	WSAOVERLAPPED overlapped;
 	WSABUF wsa_buffer;
 	OVERLAPPED_TYPE overlapped_type;
-	unsigned short packet_buffer[BUF_SIZE];
 	int remain_packet_size;
+	unsigned short packet_buffer[BUF_SIZE];
+	std::wstring user_id;
 };
