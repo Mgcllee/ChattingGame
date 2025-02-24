@@ -35,6 +35,6 @@ struct OverlappedExpansion {
 	WSABUF wsa_buffer;
 	OVERLAPPED_TYPE overlapped_type;
 	int remain_packet_size;
-	unsigned short packet_buffer[BUF_SIZE];
+	wchar_t packet_buffer[BUF_SIZE];
 	std::wstring user_id;
 };
