@@ -31,6 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="public\ChatRoomSession.h">

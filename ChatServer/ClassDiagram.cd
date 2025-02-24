@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ChatRoomSession" Collapsed="true">
+    <Position X="14.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAACAAAAAAIAAAAAAAAAAEAAAAAAAKCAAA=</HashCode>
+      <FileName>public\ChatRoomSession.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Client" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAACAAEgCAEAAAAAAAAAgQ=</HashCode>
+      <FileName>public\Client.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ChatRoomWorkerGrain" Collapsed="true">
+    <Position X="1" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAABEAAAAAAAAAAAAAAAAAAgAAAAAAAAEAAAAA=</HashCode>
+      <FileName>public\Grain\ChatRoomWorkerGrain.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClientWorkerGrain" Collapsed="true">
+    <Position X="5.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAQAABAAQAAQEAAAACBAgAAAIAQAAAAAAAEAAAAA=</HashCode>
+      <FileName>public\Grain\ClientWorkerGrain.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataBaseWorkerGrain" Collapsed="true">
+    <Position X="10" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAIgA=</HashCode>
+      <FileName>public\Grain\DataBaseWorkerGrain.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NetworkManagerGrain" Collapsed="true">
+    <Position X="12.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQABAAAAAEAAgAAAAAAAAAAAAAAAAABAEAAAAI=</HashCode>
+      <FileName>public\Grain\NetworkManagerGrain.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NetworkWorkerGrain" Collapsed="true">
+    <Position X="3.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAgAAAAAAAAAAAAAAAAABAkAAAAI=</HashCode>
+      <FileName>public\Grain\NetworkWorkerGrain.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimerGrain" Collapsed="true">
+    <Position X="7.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAA=</HashCode>
+      <FileName>public\Grain\TimerGrain.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameServerSilo" Collapsed="true">
+    <Position X="16.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAQAAAAAQAQQAAAAAAAAEAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>public\Silo\GameServerSilo.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IGrain" Collapsed="true">
+    <Position X="6.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>public\Interface\IGrain.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="OverlappedExpansion" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgQAAACAAAAAEAAAAAoAAAAAgAAAAEAAAAAAA=</HashCode>
+      <FileName>public\OverlappedExpansion.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="OVERLAPPED_TYPE" Collapsed="true">
+    <Position X="14.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAACBAAAgAAAAAgAAAAAAAAYAIAAAAAAAAAQQAAAA=</HashCode>
+      <FileName>public\OverlappedExpansion.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Malgun Gothic" Size="8.77" />
+</ClassDiagram>
