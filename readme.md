@@ -1,3 +1,15 @@
+---
+languages:
+- C++
+products:
+- ISO C++20
+- Windows SDK 10.0
+page_type: Personal Project
+name: "Orleans Chat Room sample"
+urlFragment: "WinAPI-chat-room-project"
+description: ""
+---
+
 # Multi-User chatting program
 
 This repository is Multi-User chatting game program.
