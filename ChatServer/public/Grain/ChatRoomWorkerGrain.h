@@ -15,7 +15,6 @@ public:
 private:
 	inline static std::unordered_map<std::wstring, ChatRoomSession> room_list;
 
-protected:
 	virtual bool is_exist_GQCS_result(OverlappedExpansion* exoverlapped, BOOL GQCS_result) override;
 };
 
