@@ -108,13 +108,19 @@ BOOL CChatServerLogViewerDlg::OnInitDialog()
 	m_pSocket = new CSocket();
 	m_pSocket->Create();
 	bool ret = m_pSocket->Connect(L"127.0.0.1", SERVER_PORT); // 외부 프로그램의 IP와 포트
+	
+	if(ret) ChatLog.AddString(L"Connect Success!");
+	else ChatLog.AddString(L"Connect Fail...");
 
 	C2S_LOGIN_PACK* login_pack = new C2S_LOGIN_PACK();
-	login_pack->size = sizeof(login_pack);
+	login_pack->size = sizeof(C2S_LOGIN_PACK);
 	login_pack->type = C2S_PACKET_TYPE::LOGIN_PACK;
 	wcscpy_s(login_pack->id, L"ChatServerLogViewer");
-	ret = m_pSocket->Send(login_pack, sizeof(login_pack));
-
+	int ret_value = m_pSocket->Send(login_pack, sizeof(C2S_LOGIN_PACK));
+	
+	if (ret_value != SOCKET_ERROR) ChatLog.AddString(L"Send Success!");
+	else ChatLog.AddString(L"Send Fail...");
+	
 	ChatLog.AddString(L"Send LoginPacket");
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
