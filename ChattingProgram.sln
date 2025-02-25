@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{1DDC7E
 		Common\valid_game_names_with_korean_words.txt = Common\valid_game_names_with_korean_words.txt
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ChatServerLogViewer", "ChatServerLogViewer\ChatServerLogViewer.vcxproj", "{7FD66E43-050D-E9F5-ADD7-5B008996B1BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -44,8 +46,19 @@ Global
 		{01E2794B-D636-439E-A43A-CCBB9743C49E}.Release|x64.Build.0 = Release|x64
 		{01E2794B-D636-439E-A43A-CCBB9743C49E}.Release|x86.ActiveCfg = Release|Win32
 		{01E2794B-D636-439E-A43A-CCBB9743C49E}.Release|x86.Build.0 = Release|Win32
+		{7FD66E43-050D-E9F5-ADD7-5B008996B1BB}.Debug|x64.ActiveCfg = Debug|x64
+		{7FD66E43-050D-E9F5-ADD7-5B008996B1BB}.Debug|x64.Build.0 = Debug|x64
+		{7FD66E43-050D-E9F5-ADD7-5B008996B1BB}.Debug|x86.ActiveCfg = Debug|Win32
+		{7FD66E43-050D-E9F5-ADD7-5B008996B1BB}.Debug|x86.Build.0 = Debug|Win32
+		{7FD66E43-050D-E9F5-ADD7-5B008996B1BB}.Release|x64.ActiveCfg = Release|x64
+		{7FD66E43-050D-E9F5-ADD7-5B008996B1BB}.Release|x64.Build.0 = Release|x64
+		{7FD66E43-050D-E9F5-ADD7-5B008996B1BB}.Release|x86.ActiveCfg = Release|Win32
+		{7FD66E43-050D-E9F5-ADD7-5B008996B1BB}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {482942C9-D282-4175-AAB2-6ADAC3A5FC86}
 	EndGlobalSection
 EndGlobal
