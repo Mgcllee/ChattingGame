@@ -27,7 +27,7 @@ void GameServerSilo::run_game_logic_grains() {
 	NetworkManagerGrain networksetting("127.0.0.1", h_iocp_network);
 
 	std::vector<std::thread> grain_threads;
-	const short count_network_grain = 2;
+	const short count_network_grain = 1;
 	const short count_clients_grain = 2;
 	const short count_chatroom_grain = 2;
 	const short count_database_grain = 1;

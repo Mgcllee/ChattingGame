@@ -46,7 +46,9 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 				S2C_SEND_CHAT_LOG_PACK log_pack;
 				log_pack.size = sizeof(log_pack);
 				log_pack.type = S2C_PACKET_TYPE::RESPONSE_CHAT_LOG_PACK;
-				wcscpy_s(log_pack.str, wcslen(exoverlapped->packet_buffer), exoverlapped->packet_buffer);
+				// wcscpy_s(log_pack.str, wcslen(exoverlapped->packet_buffer), exoverlapped->packet_buffer);
+				wcscpy_s(log_pack.str, exoverlapped->packet_buffer);
+				wprintf(L"%s\n", log_pack.str);
 				LogViewers[ticket].send_packet(&log_pack);
 			}
 			delete exoverlapped;
@@ -76,7 +78,7 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 				}
 			}
 			
-			std::wstring chat_format = std::format(L"\n\n현재 접속중인 멤버: {}", login_users.size());
+			std::wstring chat_format = std::format(L"현재 접속중인 멤버: {}", login_users.size());
 			wchar_t chat_log[BUF_SIZE];
 			wcscpy_s(chat_log, chat_format.c_str());
 			post_exoverlapped(h_iocp_database, chat_log, clients[ticket].id, PRINT_CHAT_LOG);
@@ -128,9 +130,10 @@ void ClientWorkerGrain::process_packet(int ticket, wchar_t* packet)
 		
 		C2S_LOGIN_PACK* login_pack = reinterpret_cast<C2S_LOGIN_PACK*>(packet);
 
-		if (0 == wcscmp(login_pack->id, L"LogViewer")) {
+		if (0 == wcscmp(login_pack->id, L"ChatServerLogViewer")) {
 			clients.erase(ticket);
 			LogViewers[ticket] = Client(static_cast<SOCKET>(ticket));
+			break;
 		}
 		else if (login_users.find(login_pack->id) == login_users.end()) {
 			login_users.insert(login_pack->id);
