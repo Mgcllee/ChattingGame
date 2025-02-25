@@ -41,15 +41,18 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 			break;
 		}
 		case OVERLAPPED_TYPE::PACKET_SEND: {
+			if (false == LogViewers.empty()
+				&& 0 == wcscmp(exoverlapped->user_id.c_str(), L"ChatServerLogViewer")) {
+				S2C_SEND_CHAT_LOG_PACK log_pack;
+				log_pack.size = sizeof(log_pack);
+				log_pack.type = S2C_PACKET_TYPE::RESPONSE_CHAT_LOG_PACK;
+				wcscpy_s(log_pack.str, wcslen(exoverlapped->packet_buffer), exoverlapped->packet_buffer);
+				LogViewers[ticket].send_packet(&log_pack);
+			}
 			delete exoverlapped;
 			break;
 		}
 		case OVERLAPPED_TYPE::CHECK_EXIST_CLIENTS: {
-			if (login_users.empty()) {
-				wprintf(L"login user is empty\n");
-				break;
-			}
-
 			int connection_status;
 			std::unordered_map<int, std::wstring> disconnect_clients;
 
@@ -57,20 +60,22 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 			check_exist_user_packet.size = sizeof(check_exist_user_packet);
 			check_exist_user_packet.type = S2C_PACKET_TYPE::CHECK_EXIST_USER;
 
-			for (auto& [user_ticket, client] : clients) {
-				if (user_ticket == 0) continue;
-				connection_status = clients[user_ticket].send_packet(&check_exist_user_packet);
-				if (0 > connection_status) {
-					disconnect_clients[user_ticket] = client.id;
-					client.disconnect_server();
+			if (false == login_users.empty()) {
+				for (auto& [user_ticket, client] : clients) {
+					if (user_ticket == 0) continue;
+					connection_status = clients[user_ticket].send_packet(&check_exist_user_packet);
+					if (0 > connection_status) {
+						disconnect_clients[user_ticket] = client.id;
+						client.disconnect_server();
+					}
+				}
+
+				for (const auto& [user_ticket, id] : disconnect_clients) {
+					login_users.erase(id);
+					clients.erase(user_ticket);
 				}
 			}
-
-			for (const auto& [user_ticket, id] : disconnect_clients) {
-				login_users.erase(id);
-				clients.erase(user_ticket);
-			}
-
+			
 			std::wstring chat_format = std::format(L"\n\n현재 접속중인 멤버: {}", login_users.size());
 			wchar_t chat_log[BUF_SIZE];
 			wcscpy_s(chat_log, chat_format.c_str());
@@ -122,7 +127,12 @@ void ClientWorkerGrain::process_packet(int ticket, wchar_t* packet)
 		result_pack.size = sizeof(result_pack);
 		
 		C2S_LOGIN_PACK* login_pack = reinterpret_cast<C2S_LOGIN_PACK*>(packet);
-		if (login_users.find(login_pack->id) == login_users.end()) {
+
+		if (0 == wcscmp(login_pack->id, L"LogViewer")) {
+			clients.erase(ticket);
+			LogViewers[ticket] = Client(static_cast<SOCKET>(ticket));
+		}
+		else if (login_users.find(login_pack->id) == login_users.end()) {
 			login_users.insert(login_pack->id);
 			clients[ticket].id = login_pack->id;
 			
@@ -165,7 +175,7 @@ void ClientWorkerGrain::process_packet(int ticket, wchar_t* packet)
 
 			wchar_t chat_log[BUF_SIZE];
 			wcscpy_s(chat_log, chat_format.c_str());
-			post_exoverlapped(h_iocp_database, chat_log, clients[ticket].id, PRINT_CHAT_LOG);
+			post_exoverlapped(h_iocp_database, chat_log, clients[ticket].id, CHECK_EXIST_CLIENTS);
 		}
 		clients[ticket].send_packet(&result_pack);
 		break;

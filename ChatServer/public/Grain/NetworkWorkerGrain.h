@@ -7,6 +7,7 @@ class NetworkWorkerGrain : public IGrain
 {
 public:
 	NetworkWorkerGrain(NetworkManagerGrain& networking);
+	virtual ~NetworkWorkerGrain();
 
 	virtual void packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE> h_iocps) override;
 

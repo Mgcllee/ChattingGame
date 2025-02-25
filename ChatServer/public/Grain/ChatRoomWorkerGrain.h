@@ -8,7 +8,7 @@ class ChatRoomWorkerGrain : public IGrain
 {
 public:
 	ChatRoomWorkerGrain();
-	~ChatRoomWorkerGrain();
+	virtual ~ChatRoomWorkerGrain();
 
 	virtual void packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE> h_iocps) override;
 

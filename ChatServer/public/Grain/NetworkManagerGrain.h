@@ -8,6 +8,7 @@ class NetworkManagerGrain : public IGrain
 {
 public:
 	NetworkManagerGrain(std::string accpet_addr, HANDLE& h_iocp_network);
+	virtual ~NetworkManagerGrain();
 
 	std::tuple<SOCKET&, SOCKET&, OverlappedExpansion*> get_socket_variable();
 	

@@ -10,6 +10,10 @@ NetworkWorkerGrain::NetworkWorkerGrain(NetworkManagerGrain& networking)
 
 }
 
+NetworkWorkerGrain::~NetworkWorkerGrain()
+{
+}
+
 void NetworkWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE> h_iocps)
 {
 	auto [h_iocp_network, h_iocp_clients, h_iocp_chatroom, h_iocp_database] = h_iocps;

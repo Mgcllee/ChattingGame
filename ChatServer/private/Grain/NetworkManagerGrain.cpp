@@ -38,6 +38,10 @@ NetworkManagerGrain::NetworkManagerGrain(std::string accpet_addr, HANDLE& h_iocp
 		addr_size + 16, 0, &accept_overlapped_expansion->overlapped);
 }
 
+NetworkManagerGrain::~NetworkManagerGrain()
+{
+}
+
 std::tuple<SOCKET&, SOCKET&, OverlappedExpansion*> NetworkManagerGrain::get_socket_variable()
 {
     return std::tuple<SOCKET&, SOCKET&, OverlappedExpansion*>

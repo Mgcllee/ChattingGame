@@ -7,7 +7,7 @@ class DataBaseWorkerGrain : public IGrain
 {
 public:
 	DataBaseWorkerGrain();
-	~DataBaseWorkerGrain();
+	virtual ~DataBaseWorkerGrain();
 
 	virtual void packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE> h_iocps) override;
 

@@ -7,6 +7,7 @@ class TimerGrain : public IGrain
 {
 public:
 	TimerGrain();
+	virtual ~TimerGrain();
 
 	virtual void packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE> h_iocps) override;
 

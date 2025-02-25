@@ -8,13 +8,14 @@ class ClientWorkerGrain : public IGrain
 {
 public:
 	ClientWorkerGrain();
-	~ClientWorkerGrain();
+	virtual ~ClientWorkerGrain();
 
 	virtual void packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE> h_iocps) override;
 
 private:
 	inline static std::unordered_set<std::wstring> login_users;
 	inline static std::unordered_map<int, Client> clients;
+	inline static std::unordered_map<int, Client> LogViewers;
 	
 	HANDLE h_iocp_network, h_iocp_clients, h_iocp_chatroom, h_iocp_database;
 
