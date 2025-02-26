@@ -23,7 +23,9 @@ enum OVERLAPPED_TYPE {
 	, REQUEST_CHAT_LOG
 	
 	, PRINT_CHAT_LOG
+	, SEND_CHAT_LOG
 	, CHECK_EXIST_CLIENTS
+	, SEND_EXIST_CLIENTS
 };
 
 struct OverlappedExpansion {

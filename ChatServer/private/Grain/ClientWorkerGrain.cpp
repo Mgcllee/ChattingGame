@@ -40,18 +40,32 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 			construct_receive_packet(ticket, exoverlapped, num_bytes);
 			break;
 		}
-		case OVERLAPPED_TYPE::PACKET_SEND: {
+		case OVERLAPPED_TYPE::SEND_CHAT_LOG: {
 			if (false == LogViewers.empty()
 				&& 0 == wcscmp(exoverlapped->user_id.c_str(), L"ChatServerLogViewer")) {
 				S2C_SEND_CHAT_LOG_PACK log_pack;
-				log_pack.size = sizeof(log_pack);
+				log_pack.size = sizeof(S2C_SEND_CHAT_LOG_PACK);
 				log_pack.type = S2C_PACKET_TYPE::RESPONSE_CHAT_LOG_PACK;
-				// wcscpy_s(log_pack.str, wcslen(exoverlapped->packet_buffer), exoverlapped->packet_buffer);
 				wcscpy_s(log_pack.str, exoverlapped->packet_buffer);
 				wprintf(L"%s\n", log_pack.str);
-				LogViewers[ticket].send_packet(&log_pack);
+				for (auto& [key, client] : LogViewers) {
+					client.send_packet(&log_pack);
+				}
 			}
-			delete exoverlapped;
+			break;
+		}
+		case OVERLAPPED_TYPE::SEND_EXIST_CLIENTS: {
+			if (false == LogViewers.empty()
+				&& 0 == wcscmp(exoverlapped->user_id.c_str(), L"ChatServerLogViewer")) {
+				S2C_SEND_CHAT_LOG_PACK log_pack;
+				log_pack.size = sizeof(S2C_SEND_CHAT_LOG_PACK);
+				log_pack.type = S2C_PACKET_TYPE::RESPONSE_EXIST_CLIENTS;
+				wcscpy_s(log_pack.str, exoverlapped->packet_buffer);
+				wprintf(L"%s\n", log_pack.str);
+				for (auto& [key, client] : LogViewers) {
+					client.send_packet(&log_pack);
+				}
+			}
 			break;
 		}
 		case OVERLAPPED_TYPE::CHECK_EXIST_CLIENTS: {
@@ -60,7 +74,7 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 
 			BASIC_PACK check_exist_user_packet;
 			check_exist_user_packet.size = sizeof(check_exist_user_packet);
-			check_exist_user_packet.type = S2C_PACKET_TYPE::CHECK_EXIST_USER;
+			check_exist_user_packet.type = S2C_PACKET_TYPE::RESPONSE_EXIST_CLIENTS;
 
 			if (false == login_users.empty()) {
 				for (auto& [user_ticket, client] : clients) {
@@ -81,7 +95,7 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 			std::wstring chat_format = std::format(L"현재 접속중인 멤버: {}", login_users.size());
 			wchar_t chat_log[BUF_SIZE];
 			wcscpy_s(chat_log, chat_format.c_str());
-			post_exoverlapped(h_iocp_database, chat_log, clients[ticket].id, PRINT_CHAT_LOG);
+			post_exoverlapped(h_iocp_database, chat_log, clients[ticket].id, CHECK_EXIST_CLIENTS);
 			break;
 		}
 		}

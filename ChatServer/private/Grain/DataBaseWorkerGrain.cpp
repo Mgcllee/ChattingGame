@@ -27,10 +27,14 @@ void DataBaseWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDL
 		}
 
 		switch (dboverlapped->overlapped_type) {
-		case OVERLAPPED_TYPE::CHECK_EXIST_CLIENTS:
+		case OVERLAPPED_TYPE::CHECK_EXIST_CLIENTS: {
+			wchar_t* chat_log = reinterpret_cast<wchar_t*>(dboverlapped->packet_buffer);
+			post_exoverlapped(h_iocp_clients, chat_log, L"ChatServerLogViewer", SEND_EXIST_CLIENTS);
+			break;
+		}
 		case OVERLAPPED_TYPE::PRINT_CHAT_LOG: {
 			wchar_t* chat_log = reinterpret_cast<wchar_t*>(dboverlapped->packet_buffer);
-			post_exoverlapped(h_iocp_clients, chat_log, L"ChatServerLogViewer", PACKET_SEND);
+			post_exoverlapped(h_iocp_clients, chat_log, L"ChatServerLogViewer", SEND_CHAT_LOG);
 			break;
 		}
 		}
