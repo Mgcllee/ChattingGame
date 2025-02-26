@@ -90,7 +90,14 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 				}
 			}
 			
-			std::wstring chat_format = std::format(L"현재 접속중인 멤버: {}", login_users.size());
+			auto now = std::chrono::system_clock::now();
+			std::time_t end_time = std::chrono::system_clock::to_time_t(now);
+			tm tm_2;
+			gmtime_s(&tm_2, &end_time);
+			wchar_t cStrfTime[64];
+			wcsftime(cStrfTime, 64, L"%Y-%m-%d_%H:%M:%S\n", &tm_2);
+			
+			std::wstring chat_format = std::format(L"{} 접속중 유저: {}", cStrfTime, login_users.size());
 			wchar_t chat_log[BUF_SIZE];
 			wcscpy_s(chat_log, chat_format.c_str());
 			post_exoverlapped(h_iocp_database, chat_log, clients[ticket].id, CHECK_EXIST_CLIENTS);
