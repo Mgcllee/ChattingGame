@@ -44,7 +44,7 @@ void Client::communicate_server(int key) {
 
 	BASIC_PACK recv_pack{};
 	recv_packet(recv_pack);
-	if (recv_pack.type == S2C_PACKET_TYPE::CHECK_EXIST_USER) {
+	if (recv_pack.type == S2C_PACKET_TYPE::RESPONSE_EXIST_CLIENTS) {
 
 	}
 
@@ -99,7 +99,7 @@ void Client::recv_packet(T& packet)
 		}
 	}
 
-	if (packet.type == S2C_PACKET_TYPE::CHECK_EXIST_USER || sf::Socket::NotReady == ret) {
+	if (packet.type == S2C_PACKET_TYPE::RESPONSE_EXIST_CLIENTS || sf::Socket::NotReady == ret) {
 		return;
 	}
 	if (sf::Socket::Done != ret) {
