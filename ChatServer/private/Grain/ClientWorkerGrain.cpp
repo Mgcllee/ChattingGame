@@ -47,7 +47,6 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 				log_pack.size = sizeof(S2C_SEND_CHAT_LOG_PACK);
 				log_pack.type = S2C_PACKET_TYPE::RESPONSE_CHAT_LOG_PACK;
 				wcscpy_s(log_pack.str, exoverlapped->packet_buffer);
-				wprintf(L"%s\n", log_pack.str);
 				for (auto& [key, client] : LogViewers) {
 					client.send_packet(&log_pack);
 				}
@@ -61,7 +60,6 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 				log_pack.size = sizeof(S2C_SEND_CHAT_LOG_PACK);
 				log_pack.type = S2C_PACKET_TYPE::RESPONSE_EXIST_CLIENTS;
 				wcscpy_s(log_pack.str, exoverlapped->packet_buffer);
-				wprintf(L"%s\n", log_pack.str);
 				for (auto& [key, client] : LogViewers) {
 					client.send_packet(&log_pack);
 				}
