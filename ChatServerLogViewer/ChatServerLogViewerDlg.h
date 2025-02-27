@@ -29,8 +29,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	void AddLoginUserList(const CString str);
-	void AddReceivedChatLog(const CString data);
+	void AddLoginUserList(const CString& str);
+	void AddReceivedChatLog(const CString& data);
 
 	CClientSocket m_Socket;
 	CListBox LoginUser;

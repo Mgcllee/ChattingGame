@@ -159,13 +159,13 @@ HCURSOR CChatServerLogViewerDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-void CChatServerLogViewerDlg::AddLoginUserList(const CString str)
+void CChatServerLogViewerDlg::AddLoginUserList(const CString& str)
 {
 	LoginUser.AddString(str);
 	LoginUser.SetCurSel(LoginUser.GetCount() - 1);
 }
 
-void CChatServerLogViewerDlg::AddReceivedChatLog(const CString str)
+void CChatServerLogViewerDlg::AddReceivedChatLog(const CString& str)
 {
 	ChatLog.AddString(str);
 	ChatLog.SetCurSel(ChatLog.GetCount() - 1);
