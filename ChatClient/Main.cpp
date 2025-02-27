@@ -1,12 +1,14 @@
 ﻿#pragma once 
 
 #include "Client.h"
+#include <thread>
 
 vector<wstring> user_id;
 vector<wstring> chat_sentences;
 vector<Client> clients;
 
 void read_files();
+void run_clients_communication(int start, int end);
 
 
 int main() {
@@ -18,18 +20,29 @@ int main() {
 	}
 	wprintf(L"Complete all client connect to server and login success\n");
 
-	while (true) {
-		sf::sleep(sf::seconds(0.01f));
-		for (int i = 0; i < MAX_CLIENT; ++i) {
-			clients[i].communicate_server(i);
-		}
+	vector<thread> threads;
+	for (int i = 0; i < 4; ++i) {
+		threads.emplace_back(run_clients_communication, MAX_CLIENT / 4 * i, MAX_CLIENT / 4 * (i + 1));
+	}
+
+	for (auto& th : threads) {
+		th.join();
 	}
 
 	for (int i = 0; i < MAX_CLIENT; ++i) {
 		clients[i].disconnect_to_server();
 	}
 
+
 	return 0;
+}
+
+void run_clients_communication(int start, int end) {
+	while (true) {
+		for (int i = start; i < end; ++i) {
+			clients[i].communicate_server(i);
+		}
+	}
 }
 
 

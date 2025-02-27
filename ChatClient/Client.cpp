@@ -54,7 +54,7 @@ void Client::communicate_server(int key) {
 		break;
 	}
 	case JOB_TYPE::USER_LOGOUT: {
-		// request_logout();
+		request_logout();
 		break;
 	}
 	}
@@ -120,23 +120,22 @@ void Client::login_server() {
 	login_packet.type = C2S_PACKET_TYPE::LOGIN_PACK;
 	
 	for (int time = 0; time < 10; ++time) {
+		sf::sleep(sf::milliseconds(0.01f));
 		int target = distr(eng);
 		wcsncpy_s(login_packet.id, sizeof(login_packet.id) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
 		wcsncpy_s(login_packet.pw, sizeof(login_packet.pw) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
 	
 		send_packet(login_packet);
-		sf::sleep(sf::seconds(0.02f));
-		wprintf(L"%s 로그인 시도\n", user_id[target].c_str());
+		//wprintf(L"%s 로그인 시도\n", user_id[target].c_str());
 
 		if (process_login_result()) {
 			id = user_id[target];
 			pw = user_id[target];
-			wprintf(L"%s님 로그인 성공!\n", id.c_str());
+			//wprintf(L"%s님 로그인 성공!\n", id.c_str());
 			break;
 		}
 		else {
-			wprintf(L"동일한 ID(%s)때문에 로그인 실패\n", user_id[target].c_str());
-			sf::sleep(sf::seconds(0.01f));
+			//wprintf(L"동일한 ID(%s)때문에 로그인 실패\n", user_id[target].c_str());
 		}
 	}
 }
@@ -202,7 +201,7 @@ void Client::request_logout() {
 
 	wstring result(result_packet.result);
 	if (result.find(L"로그아웃 성공") != wstring::npos) {
-		wprintf(L"%s\n", result_packet.result);
+		// wprintf(L"%s\n", result_packet.result);
 		disconnect_to_server();
 		return;
 	}
