@@ -5,7 +5,7 @@ products:
 - ISO C++20
 - Windows SDK 10.0
 page_type: Personal Project
-name: "Orleans Chat Room sample"
+name: "Chatting Program"
 urlFragment: "WinAPI-chat-room-project"
 description: ""
 ---
