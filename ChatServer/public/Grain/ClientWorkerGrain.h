@@ -4,6 +4,8 @@
 #include "ChatServer/public/Interface/IGrain.h"
 #include "ChatServer/public/Client.h"
 
+static std::mutex mutex_login_user_list;
+
 class ClientWorkerGrain : public IGrain
 {
 public:

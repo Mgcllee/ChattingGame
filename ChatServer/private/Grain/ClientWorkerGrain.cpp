@@ -74,6 +74,7 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 			check_exist_user_packet.size = sizeof(check_exist_user_packet);
 			check_exist_user_packet.type = S2C_PACKET_TYPE::RESPONSE_EXIST_CLIENTS;
 
+			/*mutex_login_user_list.lock();
 			if (false == login_users.empty()) {
 				for (auto& [user_ticket, client] : clients) {
 					if (user_ticket == 0) continue;
@@ -89,6 +90,8 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 					clients.erase(user_ticket);
 				}
 			}
+			mutex_login_user_list.unlock();*/
+			int count = login_users.size();
 			
 			auto now = std::chrono::system_clock::now();
 			std::time_t end_time = std::chrono::system_clock::to_time_t(now);
@@ -97,7 +100,8 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 			wchar_t cStrfTime[64];
 			wcsftime(cStrfTime, 64, L"%Y-%m-%d_%H:%M:%S\n", &tm_2);
 			
-			std::wstring chat_format = std::format(L"{} 접속중 유저: {}", cStrfTime, login_users.size());
+			std::wstring chat_format = std::format(L"{} 접속중 유저: {}", cStrfTime, count);
+
 			wchar_t chat_log[BUF_SIZE];
 			wcscpy_s(chat_log, chat_format.c_str());
 			post_exoverlapped(h_iocp_database, chat_log, clients[ticket].id, CHECK_EXIST_CLIENTS);
@@ -150,23 +154,31 @@ void ClientWorkerGrain::process_packet(int ticket, wchar_t* packet)
 		C2S_LOGIN_PACK* login_pack = reinterpret_cast<C2S_LOGIN_PACK*>(packet);
 
 		if (0 == wcscmp(login_pack->id, L"ChatServerLogViewer")) {
+			mutex_login_user_list.lock();
 			clients.erase(ticket);
+			mutex_login_user_list.unlock();
+
 			LogViewers[ticket] = Client(static_cast<SOCKET>(ticket));
-			break;
 		}
-		else if (login_users.find(login_pack->id) == login_users.end()) {
-			login_users.insert(login_pack->id);
-			clients[ticket].id = login_pack->id;
+		else {
+			mutex_login_user_list.lock();
+			if (login_users.find(login_pack->id) == login_users.end()) {
+				login_users.insert(login_pack->id);
+				clients[ticket].id = login_pack->id;
+				mutex_login_user_list.unlock();
 			
-			memcpy(result_pack.result, L"로그인 성공! 어서오세요!", sizeof(L"로그인 성공! 어서오세요!"));
+
+				memcpy(result_pack.result, L"로그인 성공! 어서오세요!", sizeof(L"로그인 성공! 어서오세요!"));
 			
-			std::wstring chat_format = std::format(L"[{}]: {}", clients[ticket].id, result_pack.result);
+				std::wstring chat_format = std::format(L"[{}]: {}", clients[ticket].id, result_pack.result);
 			
-			wchar_t chat_log[BUF_SIZE];
-			wcscpy_s(chat_log, chat_format.c_str());
-			post_exoverlapped(h_iocp_database, chat_log, clients[ticket].id, PRINT_CHAT_LOG);
+				wchar_t chat_log[BUF_SIZE];
+				wcscpy_s(chat_log, chat_format.c_str());
+				post_exoverlapped(h_iocp_database, chat_log, clients[ticket].id, PRINT_CHAT_LOG);
+			}
+			else mutex_login_user_list.unlock();
+			clients[ticket].send_packet(&result_pack);
 		}
-		clients[ticket].send_packet(&result_pack);
 		break;
 	}
 	case C2S_PACKET_TYPE::REQUEST_JOIN_ROOM_PACK: {
@@ -189,17 +201,15 @@ void ClientWorkerGrain::process_packet(int ticket, wchar_t* packet)
 		result_pack.size = sizeof(result_pack);
 
 		C2S_LOGOUT_PACK* info = reinterpret_cast<C2S_LOGOUT_PACK*>(packet);
+
+		mutex_login_user_list.lock();
 		if (login_users.find(info->id) != login_users.end()) {
 			login_users.erase(info->id);
-			
 			wcscpy_s(result_pack.result, L"로그아웃 성공! 안녕히가세요!");
-			std::wstring chat_format = std::format(L"[{}]: {}", clients[ticket].id, result_pack.result);
-
-			wchar_t chat_log[BUF_SIZE];
-			wcscpy_s(chat_log, chat_format.c_str());
-			post_exoverlapped(h_iocp_database, chat_log, clients[ticket].id, CHECK_EXIST_CLIENTS);
 		}
 		clients[ticket].send_packet(&result_pack);
+		clients.erase(ticket);
+		mutex_login_user_list.unlock();
 		break;
 	}
 	}
