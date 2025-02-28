@@ -47,6 +47,7 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 				log_pack.size = sizeof(S2C_SEND_CHAT_LOG_PACK);
 				log_pack.type = S2C_PACKET_TYPE::RESPONSE_CHAT_LOG_PACK;
 				wcscpy_s(log_pack.str, exoverlapped->packet_buffer);
+				
 				for (auto& [key, client] : LogViewers) {
 					client.send_packet(&log_pack);
 				}
@@ -173,6 +174,7 @@ void ClientWorkerGrain::process_packet(int ticket, wchar_t* packet)
 		
 		wchar_t chat_log[BUF_SIZE];
 		wcscpy_s(chat_log, chat_format.c_str());
+
 		post_exoverlapped(h_iocp_database, chat_log, clients[ticket].id, PRINT_CHAT_LOG);
 		break;
 	}
