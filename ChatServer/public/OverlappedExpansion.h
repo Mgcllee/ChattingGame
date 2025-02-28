@@ -21,6 +21,7 @@ enum OVERLAPPED_TYPE {
 	, REQUEST_LEAVE_ROOM
 
 	, REQUEST_CHAT_LOG
+	, MULTICAST_CHAT_LOG
 	
 	, PRINT_CHAT_LOG
 	, SEND_CHAT_LOG
@@ -28,7 +29,8 @@ enum OVERLAPPED_TYPE {
 	, SEND_EXIST_CLIENTS
 };
 
-struct OverlappedExpansion {
+class OverlappedExpansion {
+public:
 	OverlappedExpansion();
 	OverlappedExpansion(short* packet);
 	~OverlappedExpansion();

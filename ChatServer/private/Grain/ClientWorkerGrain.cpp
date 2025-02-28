@@ -37,12 +37,12 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 			break;
 		}
 		case OVERLAPPED_TYPE::PACKET_RECV: {
+			if (ticket == 0) break;
 			construct_receive_packet(ticket, exoverlapped, num_bytes);
 			break;
 		}
 		case OVERLAPPED_TYPE::SEND_CHAT_LOG: {
-			if (false == LogViewers.empty()
-				&& 0 == wcscmp(exoverlapped->user_id.c_str(), L"ChatServerLogViewer")) {
+			if (false == LogViewers.empty()) {
 				S2C_SEND_CHAT_LOG_PACK log_pack;
 				log_pack.size = sizeof(S2C_SEND_CHAT_LOG_PACK);
 				log_pack.type = S2C_PACKET_TYPE::RESPONSE_CHAT_LOG_PACK;
@@ -54,8 +54,7 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 			break;
 		}
 		case OVERLAPPED_TYPE::SEND_EXIST_CLIENTS: {
-			if (false == LogViewers.empty()
-				&& 0 == wcscmp(exoverlapped->user_id.c_str(), L"ChatServerLogViewer")) {
+			if (false == LogViewers.empty()) {
 				S2C_SEND_CHAT_LOG_PACK log_pack;
 				log_pack.size = sizeof(S2C_SEND_CHAT_LOG_PACK);
 				log_pack.type = S2C_PACKET_TYPE::RESPONSE_EXIST_CLIENTS;
@@ -67,32 +66,6 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 			break;
 		}
 		case OVERLAPPED_TYPE::CHECK_EXIST_CLIENTS: {
-			int connection_status;
-			std::unordered_map<int, std::wstring> disconnect_clients;
-
-			BASIC_PACK check_exist_user_packet;
-			check_exist_user_packet.size = sizeof(check_exist_user_packet);
-			check_exist_user_packet.type = S2C_PACKET_TYPE::RESPONSE_EXIST_CLIENTS;
-
-			/*mutex_login_user_list.lock();
-			if (false == login_users.empty()) {
-				for (auto& [user_ticket, client] : clients) {
-					if (user_ticket == 0) continue;
-					connection_status = clients[user_ticket].send_packet(&check_exist_user_packet);
-					if (0 > connection_status) {
-						disconnect_clients[user_ticket] = client.id;
-						client.disconnect_server();
-					}
-				}
-
-				for (const auto& [user_ticket, id] : disconnect_clients) {
-					login_users.erase(id);
-					clients.erase(user_ticket);
-				}
-			}
-			mutex_login_user_list.unlock();*/
-			int count = login_users.size();
-			
 			auto now = std::chrono::system_clock::now();
 			std::time_t end_time = std::chrono::system_clock::to_time_t(now);
 			tm tm_2;
@@ -100,11 +73,19 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 			wchar_t cStrfTime[64];
 			wcsftime(cStrfTime, 64, L"%Y-%m-%d_%H:%M:%S\n", &tm_2);
 			
-			std::wstring chat_format = std::format(L"{} 立加吝 蜡历: {}", cStrfTime, count);
+			std::wstring chat_format = std::format(L"{} 立加吝 蜡历: {}", cStrfTime, login_users.size());
 
-			wchar_t chat_log[BUF_SIZE];
+			wchar_t chat_log[BUF_SIZE * 2];
 			wcscpy_s(chat_log, chat_format.c_str());
 			post_exoverlapped(h_iocp_database, chat_log, clients[ticket].id, CHECK_EXIST_CLIENTS);
+			break;
+		}
+		case OVERLAPPED_TYPE::MULTICAST_CHAT_LOG: {
+			S2C_SEND_CHAT_LOG_PACK log_pack;
+			log_pack.size = sizeof(S2C_SEND_CHAT_LOG_PACK);
+			log_pack.type = S2C_PACKET_TYPE::RESPONSE_CHAT_LOG_PACK;
+			wcscpy_s(log_pack.str, exoverlapped->packet_buffer);
+
 			break;
 		}
 		}
