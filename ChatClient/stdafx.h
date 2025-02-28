@@ -3,7 +3,7 @@
 #define SERVER_ADDR "127.0.0.1"
 #define PORT_NUM 9785
 
-#define MAX_CLIENT 10'000 // 50'000
+#define MAX_CLIENT 10 // 50'000
 #define MAX_SENTENCE 100'000
 
 #include <iostream>
@@ -15,7 +15,12 @@
 #include <fstream>
 #include <locale>
 #include <codecvt>
-#include <Windows.h>
+
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#include <WS2tcpip.h>
+#include <MSWSock.h>
+#pragma comment(lib, "WS2_32.lib")
+#pragma comment(lib, "MSWSock.lib")
 
 #include <SFML/Network.hpp>
 #include <SFML/System.hpp>

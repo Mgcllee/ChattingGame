@@ -2,31 +2,65 @@
 
 Client::~Client()
 {
-	// m_socket->disconnect();
+
 }
 
-sf::Socket::Status Client::connect_to_server(string addr, unsigned short port, int i)
+void Client::connect_to_server(string addr, unsigned short port, int i)
 {
-	sf::Socket::Status status = m_socket->connect(addr, port);
-	m_socket->setBlocking(false);
+	WSADATA wsadata;
 
-	if (m_socket->getRemoteAddress() == sf::IpAddress::None) {
-		wprintf(L"Error first connect_to_server function!\n");
-		exit(true);
+	if(WSAStartup(MAKEWORD(2, 2), &wsadata) != 0)
+	{
+		printf("WSAStartup 에러\n");
+		return;
 	}
 
-	return status;
+	if((m_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
+	{
+		puts("socket 에러.");
+		return;
+	}
+
+	u_long on = 1;
+	if (::ioctlsocket(m_socket, FIONBIO, &on) == INVALID_SOCKET)  // 논블로킹소켓 옵션 설정
+		return;
+
+	SOCKADDR_IN server_address;
+	::memset(&server_address, 0, sizeof(server_address));
+	server_address.sin_family = AF_INET;
+	::inet_pton(AF_INET, SERVER_ADDR, &server_address.sin_addr);
+	server_address.sin_port = ::htons(PORT_NUM);
+
+	// Connect
+	while (true)
+	{
+		if (::connect(m_socket, (SOCKADDR*)&server_address, sizeof(server_address)) == SOCKET_ERROR)
+		{
+
+			// 원래 블록했어야 했는데... 너가 논블로킹으로 하라며?
+			if (::WSAGetLastError() == WSAEWOULDBLOCK)
+				continue;
+
+			// 이미 연결된 상태라면 break
+			if (::WSAGetLastError() == WSAEISCONN)
+				break;
+
+			// Error
+			break;
+		}
+	}
+
+	cout << "Connectd To Server! " << endl;
 }
 
 void Client::disconnect_to_server()
 {
 	id.clear();
 	pw.clear();
-	m_socket->disconnect();
 }
 
 void Client::communicate_server(int key) {
-	if (m_socket->getRemoteAddress() == sf::IpAddress::None) {
+	if (m_socket == NULL) {
 		connect_to_server(SERVER_ADDR, PORT_NUM, key);
 		return;
 	}
@@ -36,11 +70,9 @@ void Client::communicate_server(int key) {
 		return;
 	}
 
-	random_device rd;
-	mt19937 eng(rd());
-	uniform_int_distribution<> distr(JOB_TYPE::USER_LOGIN, JOB_TYPE::USER_LOGOUT);
 
-	int order = distr(eng);
+	send_chatting();
+	return;
 
 	BASIC_PACK recv_pack{};
 	recv_packet(recv_pack);
@@ -48,7 +80,7 @@ void Client::communicate_server(int key) {
 
 	}
 
-	switch (order) {
+	switch (distr(eng)) {
 	case JOB_TYPE::SEND_CHAT: {
 		send_chatting();
 		break;
@@ -61,70 +93,94 @@ void Client::communicate_server(int key) {
 }
 
 void Client::send_packet(BASIC_PACK& packet) {
-	if (packet.size <= 0 || m_socket->getRemoteAddress() == sf::IpAddress::None)
+	if (packet.size <= 0 || m_socket == NULL)
 		return;
 
-	size_t sent;
-	sf::Socket::Status ret = m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent);
-	if (sf::Socket::Status::NotReady == ret) {
-		for (int second = 1; second <= 10; ++second) {
-			sf::sleep(sf::seconds(0.01f));
-			ret = m_socket->send(reinterpret_cast<const void*>(&packet), (size_t)packet.size, sent);
+	WSABUF wsabuf;
+	wsabuf.buf = reinterpret_cast<char*>(&packet);
+	wsabuf.len = packet.size;
 
-			if (ret != sf::Socket::Status::NotReady)
-				break;
+	DWORD  bytesSent;
+	fd_set writefds;
+	FD_ZERO(&writefds);
+	FD_SET(m_socket, &writefds);
+
+	int result = select(0, NULL, &writefds, NULL, NULL);
+	if (result > 0) {
+		result = WSASend(m_socket, &wsabuf, 1, &bytesSent, 0, NULL, NULL);
+		if (result == SOCKET_ERROR) {
+			printf("WSASend failed: %d\n", WSAGetLastError());
+		}
+		else {
+			// Success
 		}
 	}
-
-	if (sf::Socket::Done != ret) {
-		wprintf(L"클라이언트 송신 오류 %d\n", static_cast<int>(ret));
+	else if (result == 0) {
+		printf("Timeout occurred while waiting for socket to be writable.\n");
+	}
+	else {
+		printf("select failed: %d\n", WSAGetLastError());
 	}
 }
 
 template<typename T>
 void Client::recv_packet(T& packet)
 {
-	if (m_socket->getRemoteAddress() == sf::IpAddress::None)
+	if (m_socket == NULL)
 		return;
+	
+	wchar_t buffer[1024];
+	
+	int retryCount = 0;
+	const int maxRetries = 5;
 
-	size_t recv_size;
-	sf::Socket::Status ret = m_socket->receive(&packet, sizeof(packet), recv_size);
-	if (sf::Socket::Status::NotReady == ret) {
-		for (int second = 1; second <= 10; ++second) {
-			sf::sleep(sf::seconds(0.1f));
-			ret = m_socket->receive(&packet, sizeof(packet), recv_size);
+	while (retryCount < maxRetries) {
+		DWORD bytesReceived;
+		DWORD flags = 0;
+		WSABUF wsabuf;
+		wsabuf.buf = reinterpret_cast<CHAR*>(buffer);
+		wsabuf.len = sizeof(buffer);
 
-			if (ret != sf::Socket::Status::NotReady)
-				break;
+
+		int result = WSARecv(m_socket, &wsabuf, 1, &bytesReceived, &flags, NULL, NULL);
+		if (result == SOCKET_ERROR) {
+			if (WSAGetLastError() == WSAEWOULDBLOCK) {
+				// 데이터가 준비되지 않았습니다. 잠시 대기 후 재시도
+				Sleep(100); // 100ms 대기
+				retryCount++;
+				continue; // 재시도
+			}
+			else {
+				printf("WSARecv failed: %d\n", WSAGetLastError());
+				break; // 다른 오류 발생
+			}
 		}
-	}
-
-	if (packet.type == S2C_PACKET_TYPE::RESPONSE_EXIST_CLIENTS || sf::Socket::NotReady == ret) {
-		return;
-	}
-	if (sf::Socket::Done != ret) {
-		wprintf(L"클라이언트 수신 오류 %d\n", static_cast<int>(ret));
+		else {
+			memcpy(&packet, buffer, sizeof(T));
+			break; // 성공적으로 수신됨
+		}
 	}
 }
 
 void Client::login_server() {
-	if (m_socket->getRemoteAddress() == sf::IpAddress::None)
+	if (m_socket == NULL)
 		return;
 
 	random_device rd;
 	mt19937 eng(rd());
-	uniform_int_distribution<> distr(0, MAX_SENTENCE);
+	uniform_int_distribution<> distr(0, MAX_SENTENCE - 1);
 
 	C2S_LOGIN_PACK login_packet;
 	login_packet.size = static_cast<short>(sizeof(login_packet));
 	login_packet.type = C2S_PACKET_TYPE::LOGIN_PACK;
 	
 	for (int time = 0; time < 10; ++time) {
-		sf::sleep(sf::milliseconds(0.01f));
+		sf::sleep(sf::milliseconds(1));
 		int target = distr(eng);
-		wcsncpy_s(login_packet.id, sizeof(login_packet.id) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
-		wcsncpy_s(login_packet.pw, sizeof(login_packet.pw) / sizeof(wchar_t), user_id[target].c_str(), _TRUNCATE);
 	
+		wcscpy_s(login_packet.id, user_id[target].c_str());
+		wcscpy_s(login_packet.pw, user_id[target].c_str());
+
 		send_packet(login_packet);
 		//wprintf(L"%s 로그인 시도\n", user_id[target].c_str());
 
@@ -162,10 +218,11 @@ void Client::send_chatting() {
 	int target = distr(eng);
 
 	C2S_SEND_CHAT_PACK packet;
-	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK;
-	packet.length = static_cast<short>(chat_sentences[target].length() + 1);
-	wcsncpy_s(packet.str, sizeof(packet.str) / sizeof(wchar_t), chat_sentences[target].c_str(), _TRUNCATE);
 	packet.size = static_cast<short>(sizeof(packet));
+	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK;
+	wcscpy_s(packet.str, chat_sentences[target].c_str());
+
+	wprintf(L"send_chat: %s\n", packet.str);
 
 	send_packet(packet);
 }
@@ -176,7 +233,7 @@ void Client::recv_chatting()
 
 	S2C_SEND_CHAT_LOG_PACK* packet = new S2C_SEND_CHAT_LOG_PACK();
 	size_t recved_size;
-	m_socket->receive(reinterpret_cast<void*>(packet), (size_t)sizeof(packet), recved_size);
+	// m_socket->receive(reinterpret_cast<void*>(packet), (size_t)sizeof(packet), recved_size);
 }
 
 void Client::request_chat_log()
