@@ -11,13 +11,13 @@ void Client::connect_to_server(string addr, unsigned short port, int i)
 
 	if(WSAStartup(MAKEWORD(2, 2), &wsadata) != 0)
 	{
-		printf("WSAStartup 에러\n");
+		wprintf(L"WSAStartup Error\n");
 		return;
 	}
 
 	if((m_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
 	{
-		puts("socket 에러.");
+		wprintf(L"Socket Error\n");
 		return;
 	}
 
@@ -49,8 +49,7 @@ void Client::connect_to_server(string addr, unsigned short port, int i)
 			break;
 		}
 	}
-
-	cout << "Connectd To Server! " << endl;
+	wprintf(L"Connect to server!\n");
 }
 
 void Client::disconnect_to_server()
@@ -166,32 +165,23 @@ void Client::login_server() {
 	if (m_socket == NULL)
 		return;
 
-	random_device rd;
-	mt19937 eng(rd());
-	uniform_int_distribution<> distr(0, MAX_SENTENCE - 1);
-
 	C2S_LOGIN_PACK login_packet;
 	login_packet.size = static_cast<short>(sizeof(login_packet));
 	login_packet.type = C2S_PACKET_TYPE::LOGIN_PACK;
 	
 	for (int time = 0; time < 10; ++time) {
-		sf::sleep(sf::milliseconds(1));
-		int target = distr(eng);
+		Sleep(100);
+		int target = distr_name(eng);
 	
 		wcscpy_s(login_packet.id, user_id[target].c_str());
 		wcscpy_s(login_packet.pw, user_id[target].c_str());
 
 		send_packet(login_packet);
-		//wprintf(L"%s 로그인 시도\n", user_id[target].c_str());
-
+		
 		if (process_login_result()) {
 			id = user_id[target];
 			pw = user_id[target];
-			//wprintf(L"%s님 로그인 성공!\n", id.c_str());
 			break;
-		}
-		else {
-			//wprintf(L"동일한 ID(%s)때문에 로그인 실패\n", user_id[target].c_str());
 		}
 	}
 }
@@ -202,8 +192,6 @@ bool Client::process_login_result() {
 
 	if (packet.size <= 0) return false;
 
-	// wcout << packet.result << "\n";
-	
 	wstring result(packet.result);
 	if(result.find(L"로그인 성공!") != wstring::npos) {
 		return true;
@@ -212,10 +200,7 @@ bool Client::process_login_result() {
 }
 
 void Client::send_chatting() {
-	random_device rd;
-	mt19937 eng(rd());
-	uniform_int_distribution<> distr(0, 99'999);
-	int target = distr(eng);
+	int target = distr_chat(eng);
 
 	C2S_SEND_CHAT_PACK packet;
 	packet.size = static_cast<short>(sizeof(packet));
@@ -225,15 +210,6 @@ void Client::send_chatting() {
 	wprintf(L"send_chat: %s\n", packet.str);
 
 	send_packet(packet);
-}
-
-void Client::recv_chatting()
-{
-	// [Work I/O]: 새롭게 받은 채팅을 그래픽으로 출력(하는 모습이라고 가정)
-
-	S2C_SEND_CHAT_LOG_PACK* packet = new S2C_SEND_CHAT_LOG_PACK();
-	size_t recved_size;
-	// m_socket->receive(reinterpret_cast<void*>(packet), (size_t)sizeof(packet), recved_size);
 }
 
 void Client::request_chat_log()

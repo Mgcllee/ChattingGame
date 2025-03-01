@@ -8,11 +8,15 @@ public:
 	Client() : m_socket(SOCKET()) {
 		eng = mt19937(rd());
 		distr = uniform_int_distribution<>(JOB_TYPE::USER_LOGIN, JOB_TYPE::USER_LOGOUT);
+		distr_name = uniform_int_distribution<>(0, MAX_SENTENCE - 1);
+		distr_chat = uniform_int_distribution<>(0, MAX_SENTENCE - 1);
 	}
 	Client(const Client&) = delete;
 	Client(Client&& other) noexcept : m_socket(other.m_socket) {
 		eng = mt19937(rd());
 		distr = uniform_int_distribution<>(JOB_TYPE::USER_LOGIN, JOB_TYPE::USER_LOGOUT);
+		distr_name = uniform_int_distribution<>(0, MAX_SENTENCE - 1);
+		distr_chat = uniform_int_distribution<>(0, MAX_SENTENCE - 1);
 	}
 	
 	~Client();
@@ -38,7 +42,6 @@ public:
 	void login_server();
 	bool process_login_result();
 	void send_chatting();
-	void recv_chatting();
 
 	void request_chat_log();
 	void request_logout();
@@ -49,6 +52,8 @@ private:
 	random_device rd;
 	mt19937 eng;
 	uniform_int_distribution<> distr;
+	uniform_int_distribution<> distr_name;
+	uniform_int_distribution<> distr_chat;
 
 	wstring id = L"";
 	wstring pw = L"";

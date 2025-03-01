@@ -22,8 +22,14 @@
 #pragma comment(lib, "WS2_32.lib")
 #pragma comment(lib, "MSWSock.lib")
 
+#ifdef DEBUG
 #include <SFML/Network.hpp>
 #include <SFML/System.hpp>
+#else
+#define SFML_STATIC
+#include <SFML/Network.hpp>
+#include <SFML/System.hpp>
+#endif
 
 #pragma comment (lib, "opengl32.lib")
 #pragma comment (lib, "winmm.lib")
