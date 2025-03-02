@@ -22,13 +22,17 @@ int main() {
 
 	run_clients_communication(0, MAX_CLIENT);
 
-	/*vector<thread> threads;
-	for (int i = 0; i < 4; ++i) {
-		threads.emplace_back(run_clients_communication, MAX_CLIENT / 4 * i, MAX_CLIENT / 4 * (i + 1));
-	}
+	vector<thread> threads;
+	/*for (int i = 0; i < 2; ++i) {
+		threads.emplace_back(run_clients_communication, MAX_CLIENT / 2 * i, MAX_CLIENT / 2 * (i + 1));
+	}*/
+
+	threads.emplace_back(run_clients_communication, 0, 5);
+	threads.emplace_back(run_clients_communication, 5, 10);
+
 	for (auto& th : threads) {
 		th.join();
-	}*/
+	}
 
 	for (int i = 0; i < MAX_CLIENT; ++i) {
 		clients[i].disconnect_to_server();

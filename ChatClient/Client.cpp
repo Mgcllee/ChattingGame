@@ -1,59 +1,50 @@
 ﻿#include "Client.h"
 
-Client::~Client()
-{
-
-}
-
 void Client::connect_to_server(string addr, unsigned short port, int i)
 {
 	WSADATA wsadata;
 
-	if(WSAStartup(MAKEWORD(2, 2), &wsadata) != 0)
-	{
+	if(WSAStartup(MAKEWORD(2, 2), &wsadata) != 0) {
 		wprintf(L"WSAStartup Error\n");
 		return;
 	}
 
-	if((m_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
-	{
+	if((m_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
 		wprintf(L"Socket Error\n");
 		return;
 	}
 
 	u_long on = 1;
-	if (::ioctlsocket(m_socket, FIONBIO, &on) == INVALID_SOCKET)  // 논블로킹소켓 옵션 설정
+	if (ioctlsocket(m_socket, FIONBIO, &on) == INVALID_SOCKET) {
+		wprintf(L"fail to non-blocking socket\n");
 		return;
+	}
 
 	SOCKADDR_IN server_address;
-	::memset(&server_address, 0, sizeof(server_address));
+	memset(&server_address, 0, sizeof(server_address));
 	server_address.sin_family = AF_INET;
-	::inet_pton(AF_INET, SERVER_ADDR, &server_address.sin_addr);
+	inet_pton(AF_INET, SERVER_ADDR, &server_address.sin_addr);
 	server_address.sin_port = ::htons(PORT_NUM);
 
-	// Connect
-	while (true)
-	{
-		if (::connect(m_socket, (SOCKADDR*)&server_address, sizeof(server_address)) == SOCKET_ERROR)
-		{
-
-			// 원래 블록했어야 했는데... 너가 논블로킹으로 하라며?
-			if (::WSAGetLastError() == WSAEWOULDBLOCK)
+	while (true) {
+		if (SOCKET_ERROR == connect(m_socket, (SOCKADDR*)&server_address, sizeof(server_address))) {
+			int error_type = WSAGetLastError();
+			if (error_type == WSAEWOULDBLOCK) {
 				continue;
-
-			// 이미 연결된 상태라면 break
-			if (::WSAGetLastError() == WSAEISCONN)
+			}
+			else if (error_type == WSAEISCONN) {
 				break;
-
-			// Error
-			break;
+			}
+			else {
+				wprintf(L"connection Error! (error_type: %d)\n", error_type);
+				return;
+			}
 		}
 	}
 	wprintf(L"Connect to server!\n");
 }
 
-void Client::disconnect_to_server()
-{
+void Client::disconnect_to_server() {
 	id.clear();
 	pw.clear();
 }
@@ -63,23 +54,13 @@ void Client::communicate_server(int key) {
 		connect_to_server(SERVER_ADDR, PORT_NUM, key);
 		return;
 	}
-
-	if (id.empty()) {
+	else if (id.empty()) {
 		login_server();
 		return;
 	}
 
-
-	send_chatting();
-	return;
-
-	BASIC_PACK recv_pack{};
-	recv_packet(recv_pack);
-	if (recv_pack.type == S2C_PACKET_TYPE::RESPONSE_EXIST_CLIENTS) {
-
-	}
-
-	switch (distr(eng)) {
+	int job_type = distr_job(eng);
+	switch (job_type) {
 	case JOB_TYPE::SEND_CHAT: {
 		send_chatting();
 		break;
@@ -108,17 +89,17 @@ void Client::send_packet(BASIC_PACK& packet) {
 	if (result > 0) {
 		result = WSASend(m_socket, &wsabuf, 1, &bytesSent, 0, NULL, NULL);
 		if (result == SOCKET_ERROR) {
-			printf("WSASend failed: %d\n", WSAGetLastError());
+			wprintf(L"WSASend failed: %d\n", WSAGetLastError());
 		}
 		else {
 			// Success
 		}
 	}
 	else if (result == 0) {
-		printf("Timeout occurred while waiting for socket to be writable.\n");
+		wprintf(L"Timeout occurred while waiting for socket to be writable.\n");
 	}
 	else {
-		printf("select failed: %d\n", WSAGetLastError());
+		wprintf(L"select failed: %d\n", WSAGetLastError());
 	}
 }
 
@@ -128,35 +109,33 @@ void Client::recv_packet(T& packet)
 	if (m_socket == NULL)
 		return;
 	
-	wchar_t buffer[1024];
-	
-	int retryCount = 0;
+	int retry_count = 0;
 	const int maxRetries = 5;
 
-	while (retryCount < maxRetries) {
-		DWORD bytesReceived;
-		DWORD flags = 0;
-		WSABUF wsabuf;
-		wsabuf.buf = reinterpret_cast<CHAR*>(buffer);
-		wsabuf.len = sizeof(buffer);
+	DWORD bytesReceived;
+	DWORD flags = 0;
 
+	wchar_t buffer[1024];
+	WSABUF wsabuf;
+	wsabuf.buf = reinterpret_cast<CHAR*>(buffer);
+	wsabuf.len = sizeof(buffer);
 
+	while (retry_count < maxRetries) {	
 		int result = WSARecv(m_socket, &wsabuf, 1, &bytesReceived, &flags, NULL, NULL);
 		if (result == SOCKET_ERROR) {
 			if (WSAGetLastError() == WSAEWOULDBLOCK) {
-				// 데이터가 준비되지 않았습니다. 잠시 대기 후 재시도
-				Sleep(100); // 100ms 대기
-				retryCount++;
-				continue; // 재시도
+				Sleep(100);
+				retry_count++;
+				continue;
 			}
 			else {
 				printf("WSARecv failed: %d\n", WSAGetLastError());
-				break; // 다른 오류 발생
+				break;
 			}
 		}
 		else {
 			memcpy(&packet, buffer, sizeof(T));
-			break; // 성공적으로 수신됨
+			break;
 		}
 	}
 }
@@ -234,7 +213,6 @@ void Client::request_logout() {
 
 	wstring result(result_packet.result);
 	if (result.find(L"로그아웃 성공") != wstring::npos) {
-		// wprintf(L"%s\n", result_packet.result);
 		disconnect_to_server();
 		return;
 	}
