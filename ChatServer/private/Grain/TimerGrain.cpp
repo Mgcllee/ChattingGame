@@ -28,5 +28,11 @@ void TimerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE> h_iocp
 
 bool TimerGrain::is_exist_GQCS_result(OverlappedExpansion* exoverlapped, BOOL GQCS_result)
 {
-	return false;
+	if (exoverlapped == nullptr) return false;
+	if (FALSE == GQCS_result) {
+		// TODO: add error type log
+		return false;
+	}
+
+	return true;
 }

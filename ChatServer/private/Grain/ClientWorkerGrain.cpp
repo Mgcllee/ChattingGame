@@ -48,7 +48,7 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 				log_pack.type = S2C_PACKET_TYPE::RESPONSE_CHAT_LOG_PACK;
 				wcscpy_s(log_pack.str, exoverlapped->packet_buffer);
 				
-				for (auto& [key, client] : LogViewers) {
+				for (auto& [_, client] : LogViewers) {
 					client.send_packet(&log_pack);
 				}
 			}
@@ -75,7 +75,7 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 			
 			std::wstring chat_format = std::format(L"{} 접속중 유저: {}", cStrfTime, login_users.size());
 
-			wchar_t chat_log[BUF_SIZE * 2];
+			wchar_t chat_log[MAX_BUF_SIZE * 2];
 			wcscpy_s(chat_log, chat_format.c_str());
 			post_exoverlapped(h_iocp_database, chat_log, clients[ticket].id, CHECK_EXIST_CLIENTS);
 			break;
@@ -153,7 +153,7 @@ void ClientWorkerGrain::process_packet(int ticket, wchar_t* packet)
 			
 				std::wstring chat_format = std::format(L"[{}]: {}", clients[ticket].id, result_pack.result);
 			
-				wchar_t chat_log[BUF_SIZE];
+				wchar_t chat_log[MAX_BUF_SIZE];
 				wcscpy_s(chat_log, chat_format.c_str());
 				post_exoverlapped(h_iocp_database, chat_log, clients[ticket].id, PRINT_CHAT_LOG);
 			}
@@ -171,7 +171,7 @@ void ClientWorkerGrain::process_packet(int ticket, wchar_t* packet)
 		C2S_SEND_CHAT_PACK* chat = reinterpret_cast<C2S_SEND_CHAT_PACK*>(packet);
 		std::wstring chat_format = std::format(L"[{}]: {}", clients[ticket].id, chat->str);
 		
-		wchar_t chat_log[BUF_SIZE];
+		wchar_t chat_log[MAX_BUF_SIZE];
 		wcscpy_s(chat_log, chat_format.c_str());
 
 		post_exoverlapped(h_iocp_database, chat_log, clients[ticket].id, PRINT_CHAT_LOG);

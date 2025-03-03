@@ -21,7 +21,7 @@ int Client::recv_packet()
     DWORD recv_flag = 0;
     memset(&overlapped, 0, sizeof(overlapped));
     
-    wsa_buffer.len = BUF_SIZE - remain_packet_size;
+    wsa_buffer.len = MAX_BUF_SIZE - remain_packet_size;
     wsa_buffer.buf = reinterpret_cast<CHAR*>(packet_buffer + remain_packet_size);
 
     overlapped_type = OVERLAPPED_TYPE::PACKET_RECV;

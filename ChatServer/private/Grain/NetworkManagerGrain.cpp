@@ -50,10 +50,17 @@ std::tuple<SOCKET&, SOCKET&, OverlappedExpansion*> NetworkManagerGrain::get_sock
 
 void NetworkManagerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE> h_iocps)
 {
+	auto [h_iocp_network, h_iocp_clients, h_iocp_chatroom, h_iocp_database] = h_iocps;
 
 }
 
 bool NetworkManagerGrain::is_exist_GQCS_result(OverlappedExpansion* exoverlapped, BOOL GQCS_result)
 {
-	return false;
+	if (exoverlapped == nullptr) return false;
+	if (FALSE == GQCS_result) {
+		// TODO: add error type log
+		return false;
+	}
+
+	return true;
 }

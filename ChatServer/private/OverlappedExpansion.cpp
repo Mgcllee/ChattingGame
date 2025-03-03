@@ -5,7 +5,7 @@
 OverlappedExpansion::OverlappedExpansion() {
 	overlapped_type = OVERLAPPED_TYPE::PACKET_RECV;
 	ZeroMemory(&overlapped, sizeof(overlapped));
-	wsa_buffer.len = BUF_SIZE;
+	wsa_buffer.len = MAX_BUF_SIZE;
 	ZeroMemory(&packet_buffer, sizeof(packet_buffer));
 	wsa_buffer.buf = reinterpret_cast<CHAR*>(packet_buffer);
 	remain_packet_size = 0;
