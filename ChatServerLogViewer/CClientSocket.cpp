@@ -21,8 +21,8 @@ void CClientSocket::OnReceive(int nErrorCode)
 {
     if (nErrorCode == 0)
     {
-        char buffer[BUF_SIZE * 2];
-        int nReceived = Receive(buffer, BUF_SIZE * 2);
+        char buffer[MAX_BUF_SIZE * 2];
+        int nReceived = Receive(buffer, MAX_BUF_SIZE * 2);
         if (nReceived > 0)
         {
             BASIC_PACK* basic_packet = reinterpret_cast<BASIC_PACK*>(buffer);
