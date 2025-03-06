@@ -32,7 +32,6 @@ public:
 	void AddLoginUserList(const CString& str);
 	void AddReceivedChatLog(const CString& data);
 
-	CClientSocket m_Socket;
 	CListBox LoginUser;
 	CListBox ChatLog;
 };

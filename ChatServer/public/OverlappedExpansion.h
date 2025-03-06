@@ -39,6 +39,6 @@ public:
 	WSABUF wsa_buffer;
 	OVERLAPPED_TYPE overlapped_type;
 	int remain_packet_size;
-	wchar_t packet_buffer[MAX_BUF_SIZE];
+	wchar_t packet_buffer[MAX_PACKET_SIZE];
 	std::wstring user_id;
 };

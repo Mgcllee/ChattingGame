@@ -1,7 +1,8 @@
 // Chatting Game Packet structure.
 
 #define SERVER_PORT 9785
-#define MAX_BUF_SIZE 1024
+#define MAX_PACKET_SIZE 1024
+#define MAX_BUF_SIZE 200
 #define MAX_ROOM_MEMBER_COUNT 100
 
 enum C2S_PACKET_TYPE {

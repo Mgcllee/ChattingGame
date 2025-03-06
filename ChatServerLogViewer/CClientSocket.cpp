@@ -11,6 +11,7 @@
 CClientSocket::CClientSocket(class CChatServerLogViewerDlg* pDlg)
     : m_pDlg(pDlg)
 {
+    
 }
 
 CClientSocket::~CClientSocket()

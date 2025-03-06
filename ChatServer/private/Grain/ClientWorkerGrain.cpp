@@ -61,7 +61,9 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 				log_pack.type = S2C_PACKET_TYPE::RESPONSE_EXIST_CLIENTS;
 				wcscpy_s(log_pack.str, exoverlapped->packet_buffer);
 				
-				// TODO: using Multicast(UDP)
+				for (auto& [_, client] : LogViewers) {
+					client.send_packet(&log_pack);
+				}
 			}
 			break;
 		}
@@ -75,9 +77,9 @@ void ClientWorkerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE>
 			
 			std::wstring chat_format = std::format(L"{} 접속중 유저: {}", cStrfTime, login_users.size());
 
-			wchar_t chat_log[MAX_BUF_SIZE * 2];
+			wchar_t chat_log[MAX_BUF_SIZE];
 			wcscpy_s(chat_log, chat_format.c_str());
-			post_exoverlapped(h_iocp_database, chat_log, clients[ticket].id, CHECK_EXIST_CLIENTS);
+			post_exoverlapped(h_iocp_database, chat_log, L"", CHECK_EXIST_CLIENTS);
 			break;
 		}
 		case OVERLAPPED_TYPE::MULTICAST_CHAT_LOG: {
@@ -108,7 +110,7 @@ void ClientWorkerGrain::construct_receive_packet(int client_ticket, OverlappedEx
 
 	wchar_t* p = exoverlapped->packet_buffer;
 	while (remain_data > 0) {
-		int packet_size = p[0];
+		int packet_size = (int)p[0];
 		if (packet_size <= remain_data) {
 			process_packet(client_ticket, p);
 			p = p + packet_size;

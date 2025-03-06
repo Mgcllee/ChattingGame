@@ -18,11 +18,11 @@ void TimerGrain::packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE> h_iocp
 	while (true) {
 		std::this_thread::sleep_for(std::chrono::seconds(10));
 		
-		OverlappedExpansion* timer_overlapped = new OverlappedExpansion();
-		timer_overlapped->overlapped_type = OVERLAPPED_TYPE::CHECK_EXIST_CLIENTS;
+		OverlappedExpansion timer_overlapped;
+		timer_overlapped.overlapped_type = OVERLAPPED_TYPE::CHECK_EXIST_CLIENTS;
 		DWORD sent_byte = 0;
 		ULONG_PTR key = 0;
-		PostQueuedCompletionStatus(h_iocp_clients, sent_byte, key, &timer_overlapped->overlapped);
+		PostQueuedCompletionStatus(h_iocp_clients, sent_byte, key, &timer_overlapped.overlapped);
 	}
 }
 

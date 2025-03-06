@@ -3,7 +3,7 @@
 #define SERVER_ADDR "127.0.0.1"
 #define PORT_NUM 9785
 
-#define MAX_CLIENT 10 // 50'000
+#define MAX_CLIENT 100 // 50'000
 #define MAX_SENTENCE 100'000
 
 #include <iostream>
@@ -45,5 +45,5 @@ extern vector<wstring> chat_sentences;
 enum JOB_TYPE {
 	USER_LOGIN = 1,
 	SEND_CHAT,
-	USER_LOGOUT	// JOB_TYPE 개수 확인용으로 반드시 마지막에 위치.
+	USER_LOGOUT
 };

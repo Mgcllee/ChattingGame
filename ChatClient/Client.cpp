@@ -41,7 +41,6 @@ void Client::connect_to_server(string addr, unsigned short port, int i)
 			}
 		}
 	}
-	wprintf(L"Connect to server!\n");
 }
 
 void Client::disconnect_to_server() {
@@ -58,6 +57,19 @@ void Client::communicate_server(int key) {
 		login_server();
 		return;
 	}
+	
+	// TODO: Cleanup job_type
+	send_chatting();
+	return;
+
+	BASIC_PACK recv_pack{};
+	recv_packet(recv_pack);
+	if (recv_pack.type == S2C_PACKET_TYPE::RESPONSE_EXIST_CLIENTS) {
+
+	}
+
+	
+
 
 	int job_type = distr_job(eng);
 	switch (job_type) {
@@ -185,8 +197,6 @@ void Client::send_chatting() {
 	packet.size = static_cast<short>(sizeof(packet));
 	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK;
 	wcscpy_s(packet.str, chat_sentences[target].c_str());
-
-	wprintf(L"send_chat: %s\n", packet.str);
 
 	send_packet(packet);
 }
