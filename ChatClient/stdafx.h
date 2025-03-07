@@ -3,15 +3,16 @@
 #define SERVER_ADDR "127.0.0.1"
 #define PORT_NUM 9785
 
-#define MAX_CLIENT 100 // 50'000
+#define MAX_CLIENT 10
 #define MAX_SENTENCE 100'000
+
+#define MAX_THREAD 2
 
 #include <iostream>
 #include <string>
 #include <cstring>
 #include <vector>
 #include <random>
-#include <memory>
 #include <fstream>
 #include <locale>
 #include <codecvt>
@@ -21,19 +22,6 @@
 #include <MSWSock.h>
 #pragma comment(lib, "WS2_32.lib")
 #pragma comment(lib, "MSWSock.lib")
-
-#ifdef DEBUG
-#include <SFML/Network.hpp>
-#include <SFML/System.hpp>
-#else
-#define SFML_STATIC
-#include <SFML/Network.hpp>
-#include <SFML/System.hpp>
-#endif
-
-#pragma comment (lib, "opengl32.lib")
-#pragma comment (lib, "winmm.lib")
-#pragma comment (lib, "ws2_32.lib")
 
 using namespace std;
 

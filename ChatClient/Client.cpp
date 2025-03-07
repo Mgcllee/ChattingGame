@@ -59,6 +59,7 @@ void Client::communicate_server(int key) {
 	}
 	
 	// TODO: Cleanup job_type
+	Sleep(1);
 	send_chatting();
 	return;
 
