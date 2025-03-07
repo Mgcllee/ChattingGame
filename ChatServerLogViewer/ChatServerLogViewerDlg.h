@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "CClientSocket.h"
 
 class CChatServerLogViewerDlg : public CDialogEx
@@ -32,6 +33,9 @@ public:
 	void AddLoginUserList(const CString& str);
 	void AddReceivedChatLog(const CString& data);
 
+	CClientSocket* m_Socket;
 	CListBox LoginUser;
 	CListBox ChatLog;
+
+	std::vector<CString> vec_chat_logs;
 };

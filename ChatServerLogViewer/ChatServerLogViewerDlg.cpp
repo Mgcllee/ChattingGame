@@ -14,8 +14,6 @@
 #define new DEBUG_NEW
 #endif
 
-UINT RecvThread(LPVOID lparam);
-
 // CAboutDlg dialog used for App About
 
 class CAboutDlg : public CDialogEx
@@ -91,9 +89,31 @@ BOOL CChatServerLogViewerDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);
 	SetIcon(m_hIcon, FALSE);
 
-	AfxBeginThread(RecvThread, (LPVOID)this);
+	m_Socket = new CClientSocket(this);
+	if (false == m_Socket->Create()) {
+		AfxMessageBox(_T("소켓 생성 실패"));
+		return FALSE;
+	}
+	if (!m_Socket->Connect(_T("127.0.0.1"), 9785)) {
+		if (WSAGetLastError() != WSAEWOULDBLOCK) {
+			AfxMessageBox(_T("서버 연결 실패"));
+			return FALSE;
+		}
+	}
+	m_Socket->AsyncSelect(FD_READ);
 
-	return TRUE;  // return TRUE  unless you set the focus to a control
+	C2S_LOGIN_PACK* login_pack = new C2S_LOGIN_PACK();
+	login_pack->size = sizeof(C2S_LOGIN_PACK);
+	login_pack->type = C2S_PACKET_TYPE::LOGIN_PACK;
+	wcscpy_s(login_pack->id, L"ChatServerLogViewer");
+	int ret_value = m_Socket->Send(login_pack, sizeof(C2S_LOGIN_PACK));
+
+	if (ret_value != SOCKET_ERROR) ChatLog.AddString(L"Send Success!");
+	else ChatLog.AddString(L"Send Fail...");
+
+	ChatLog.AddString(L"Send LoginPacket");
+
+	return TRUE;
 }
 
 void CChatServerLogViewerDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -146,42 +166,14 @@ void CChatServerLogViewerDlg::AddLoginUserList(const CString& str)
 
 void CChatServerLogViewerDlg::AddReceivedChatLog(const CString& str)
 {
-	ChatLog.AddString(str);
-	ChatLog.SetCurSel(ChatLog.GetCount() - 1);
-}
+	if (str.IsEmpty()) return;
 
-UINT RecvThread(LPVOID lparam) {
-
-	CChatServerLogViewerDlg* dlg = reinterpret_cast<CChatServerLogViewerDlg*>(&lparam);
-
-	CClientSocket m_Socket(dlg);
-	if (false == m_Socket.Create()) {
-		AfxMessageBox(_T("소켓 생성 실패"));
-		return FALSE;
-	}
-	if (!m_Socket.Connect(_T("127.0.0.1"), 9785)) {
-		if (WSAGetLastError() != WSAEWOULDBLOCK) {
-			AfxMessageBox(_T("서버 연결 실패"));
-			return FALSE;
+	vec_chat_logs.emplace_back(str);
+	if (vec_chat_logs.size() >= 10) {
+		for (const auto& chat : vec_chat_logs) {
+			ChatLog.AddString(chat);
 		}
+		ChatLog.SetCurSel(ChatLog.GetCount() - 1);
+		vec_chat_logs.clear();
 	}
-	m_Socket.AsyncSelect(FD_READ);
-
-	C2S_LOGIN_PACK* login_pack = new C2S_LOGIN_PACK();
-	login_pack->size = sizeof(C2S_LOGIN_PACK);
-	login_pack->type = C2S_PACKET_TYPE::LOGIN_PACK;
-	wcscpy_s(login_pack->id, L"ChatServerLogViewer");
-	int ret_value = m_Socket.Send(login_pack, sizeof(C2S_LOGIN_PACK));
-
-	if (ret_value != SOCKET_ERROR) dlg->ChatLog.AddString(L"Send Success!");
-	else dlg->ChatLog.AddString(L"Send Fail...");
-	
-	dlg->ChatLog.AddString(L"Send LoginPacket");
-
-	while (true) {
-		// TODO: 
-		m_Socket.OnReceive(0);
-	}
-
-	return 0;
 }
