@@ -15,6 +15,8 @@ void run_clients_communication(int start, int end);
 int main() {
 	read_files();
 
+	return 0;
+
 	for (int i = 0; i < MAX_CLIENT; ++i) {
 		clients.emplace_back();
 		clients[i].connect_to_server(SERVER_ADDR, PORT_NUM, i);
@@ -38,26 +40,28 @@ int main() {
 }
 
 void read_files() {
-	wifstream readFile(L"mixed_sentences.txt");
-	if (readFile) {
+	locale::global(locale(".UTF-8"));
+	wifstream sentence_file(L"mixed_sentences.txt");
+	if (sentence_file) {
 		wstring sentence;
-		while (getline(readFile, sentence)) {
+		while (getline(sentence_file, sentence)) {
 			chat_sentences.emplace_back(sentence);
+			wprintf(L"%s\n", sentence.c_str());
 		}
-		readFile.close();
+		sentence_file.close();
 	}
 	else {
 		wprintf(L"Can't read mixed_sentences file...\n");
 		return;
 	}
 
-	readFile.open("valid_game_names_with_korean_words.txt");
-	if (readFile) {
+	wifstream name_file(L"valid_game_names_with_korean_words.txt");
+	if (name_file) {
 		wstring sentences;
-		while (getline(readFile, sentences)) {
+		while (getline(name_file, sentences)) {
 			user_id.emplace_back(sentences);
 		}
-		readFile.close();
+		name_file.close();
 	}
 	else {
 		wprintf(L"Can't read valid_game_names_with_korean_words file...\n");
