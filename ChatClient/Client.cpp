@@ -59,6 +59,7 @@ void Client::communicate_server(int key) {
 		return;
 	}
 	
+	wprintf(L"%d\t", key);
 	// TODO: Cleanup job_type
 	send_chatting();
 	return;
@@ -121,39 +122,49 @@ void Client::recv_packet(T& packet)
 {
 	if (m_socket == NULL)
 		return;
-	
-	int retry_count = 0;
-	const int maxRetries = 100;
 
 	DWORD bytesReceived = 0;
-	DWORD flags = 0;
-	WSAOVERLAPPED* pWol = new WSAOVERLAPPED;
-
-	wchar_t buffer[MAX_PACKET_SIZE];
 	WSABUF wsabuf;
-	wsabuf.buf = reinterpret_cast<CHAR*>(buffer);
-	wsabuf.len = sizeof(buffer);
+	wchar_t* buffer = new wchar_t[MAX_PACKET_SIZE];
+	int result;
 
-	while (retry_count < maxRetries) {	
-		int result = WSARecv(m_socket, &wsabuf, 1, &bytesReceived, &flags, NULL, NULL);
+	fd_set readfds;
+	FD_ZERO(&readfds);
+	FD_SET(m_socket, &readfds);
+
+	struct timeval timeout;
+	// 타임아웃 설정 (5초)
+	timeout.tv_sec = 5;
+	timeout.tv_usec = 0;
+
+	// select 호출
+	result = select(0, &readfds, NULL, NULL, &timeout);
+	if (result == SOCKET_ERROR) {
+		printf("select() failed: %d\n", WSAGetLastError());
+		return;
+	}
+	else if (result == 0) {
+		printf("Timeout occurred, no data received.\n");
+		return; // 타임아웃 발생 시 계속 루프
+	}
+
+	// 데이터 수신
+	if (FD_ISSET(m_socket, &readfds)) {
+		wsabuf.len = MAX_PACKET_SIZE;
+		wsabuf.buf = reinterpret_cast<char*>(buffer);
+
+		result = WSARecv(m_socket, &wsabuf, 1, &bytesReceived, NULL, NULL, NULL);
 		if (result == SOCKET_ERROR) {
-			if (WSAGetLastError() == WSAEWOULDBLOCK) {
-				Sleep(10);
-				retry_count++;
-				continue;
-			}
-			else if (WSAGetLastError() != WSA_IO_PENDING) {
-				printf("WSARecv failed: %d\n", WSAGetLastError());
-				break;
-			}
-			else {
-				printf("WSARecv failed: %d\n", WSAGetLastError());
-				break;
-			}
+			printf("WSARecv() failed: %d\n", WSAGetLastError());
+			return;
+		}
+
+		// 수신된 데이터 처리
+		if (bytesReceived > 0) {
+			memcpy(&packet, buffer, sizeof(T));
 		}
 		else {
-			memcpy(&packet, buffer, sizeof(T));
-			break;
+			printf("Connection closed by the server.\n");
 		}
 	}
 }
@@ -168,6 +179,7 @@ void Client::login_server() {
 	
 	for (int time = 0; time < 10; ++time) {
 		int target = distr_name(eng);
+		Sleep(10);
 		wcscpy_s(login_packet.id, user_id[target].c_str());
 		wcscpy_s(login_packet.pw, user_id[target].c_str());
 
@@ -183,7 +195,9 @@ void Client::login_server() {
 
 bool Client::process_login_result() {
 	S2C_LOGIN_RESULT_PACK packet{};
+	
 	recv_packet(packet);
+	// recv(m_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
 
 	if (packet.size <= 0) return false;
 
@@ -205,6 +219,7 @@ void Client::send_chatting() {
 	wprintf(L"%s: %s\n", id.c_str(), packet.str);
 
 	send_packet(packet);
+
 }
 
 void Client::request_chat_log()
@@ -220,10 +235,13 @@ void Client::request_logout() {
 	logout_packet.type = C2S_PACKET_TYPE::LOGOUT_PACK;
 	wcsncpy_s(logout_packet.id, sizeof(logout_packet.id) / sizeof(wchar_t), id.c_str(), _TRUNCATE);
 	wcsncpy_s(logout_packet.pw, sizeof(logout_packet.pw) / sizeof(wchar_t), pw.c_str(), _TRUNCATE);
+	
 	send_packet(logout_packet);
 
 	S2C_LOGOUT_RESULT_PACK result_packet{};
-	recv_packet(result_packet);
+	// recv_packet(result_packet);
+	recv(m_socket, reinterpret_cast<char*>(&result_packet), sizeof(result_packet), 0);
+
 
 	if (result_packet.size <= 0) return;
 

@@ -102,22 +102,21 @@ void NetworkManagerGrain::process_packet(int ticket, wchar_t* packet)
 
 		C2S_LOGIN_PACK* login_pack = reinterpret_cast<C2S_LOGIN_PACK*>(packet);
 
+		std::wstring chat_format;
 		mutex_login_user_list.lock();
 		if (login_users.find(login_pack->id) == login_users.end()) {
 			login_users.insert(login_pack->id);
 			clients[ticket].id = login_pack->id;
 			mutex_login_user_list.unlock();
-
-			memcpy(result_pack.result, L"로그인 성공! 어서오세요!", sizeof(L"로그인 성공! 어서오세요!"));
-
-			std::wstring chat_format = std::format(L"[{}]: {}", clients[ticket].id, result_pack.result);
+			chat_format = std::format(L"[{}]: {}", clients[ticket].id, L"로그인 성공! 어서오세요!");
 		}
 		else {
 			mutex_login_user_list.unlock();
-			memcpy(result_pack.result, L"중복된 아이디로 로그인 실패", sizeof(L"중복된 아이디로 로그인 실패"));
+			chat_format = std::format(L"[{}]: {}", clients[ticket].id, L"중복된 아이디로 로그인 실패");
 		}
+		wcscpy(result_pack.result, chat_format.c_str());
 		int ret = clients[ticket].send_packet(&result_pack);
-		wprintf(L"%s [%d]\n", result_pack.result, ret);
+		wprintf(L"%s\n", chat_format.c_str());
 		break;
 	}
 	case C2S_PACKET_TYPE::SEND_CHAT_PACK: {
