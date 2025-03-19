@@ -141,12 +141,7 @@
   <ItemGroup>
     <ClInclude Include="public\ChatRoomSession.h" />
     <ClInclude Include="public\Client.h" />
-    <ClInclude Include="public\Grain\ChatRoomWorkerGrain.h" />
-    <ClInclude Include="public\Grain\ClientWorkerGrain.h" />
-    <ClInclude Include="public\Grain\DataBaseWorkerGrain.h" />
     <ClInclude Include="public\Grain\NetworkManagerGrain.h" />
-    <ClInclude Include="public\Grain\NetworkWorkerGrain.h" />
-    <ClInclude Include="public\Grain\TimerGrain.h" />
     <ClInclude Include="public\Interface\IGrain.h" />
     <ClInclude Include="public\OverlappedExpansion.h" />
     <ClInclude Include="public\Silo\GameServerSilo.h" />
@@ -156,12 +151,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="private\ChatRoomSession.cpp" />
     <ClCompile Include="private\Client.cpp" />
-    <ClCompile Include="private\Grain\ChatRoomWorkerGrain.cpp" />
-    <ClCompile Include="private\Grain\ClientWorkerGrain.cpp" />
-    <ClCompile Include="private\Grain\DataBaseWorkerGrain.cpp" />
     <ClCompile Include="private\Grain\NetworkManagerGrain.cpp" />
-    <ClCompile Include="private\Grain\NetworkWorkerGrain.cpp" />
-    <ClCompile Include="private\Grain\TimerGrain.cpp" />
     <ClCompile Include="private\OverlappedExpansion.cpp" />
     <ClCompile Include="private\Silo\GameServerSilo.cpp" />
   </ItemGroup>

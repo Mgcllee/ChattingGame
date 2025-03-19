@@ -6,7 +6,7 @@
 #define MAX_CLIENT 10
 #define MAX_SENTENCE 100'000
 
-#define MAX_THREAD 2
+#define MAX_THREAD 1
 
 #include <iostream>
 #include <string>

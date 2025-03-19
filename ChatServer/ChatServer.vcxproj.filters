@@ -46,19 +46,7 @@
     <ClInclude Include="public\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="public\Grain\ChatRoomWorkerGrain.h">
-      <Filter>Header Files\Grain</Filter>
-    </ClInclude>
-    <ClInclude Include="public\Grain\ClientWorkerGrain.h">
-      <Filter>Header Files\Grain</Filter>
-    </ClInclude>
-    <ClInclude Include="public\Grain\DataBaseWorkerGrain.h">
-      <Filter>Header Files\Grain</Filter>
-    </ClInclude>
     <ClInclude Include="public\Grain\NetworkManagerGrain.h">
-      <Filter>Header Files\Grain</Filter>
-    </ClInclude>
-    <ClInclude Include="public\Grain\NetworkWorkerGrain.h">
       <Filter>Header Files\Grain</Filter>
     </ClInclude>
     <ClInclude Include="public\Silo\GameServerSilo.h">
@@ -66,9 +54,6 @@
     </ClInclude>
     <ClInclude Include="public\Interface\IGrain.h">
       <Filter>Header Files\Interface</Filter>
-    </ClInclude>
-    <ClInclude Include="public\Grain\TimerGrain.h">
-      <Filter>Header Files\Grain</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -84,26 +69,11 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="private\Grain\ChatRoomWorkerGrain.cpp">
-      <Filter>Source Files\Grain</Filter>
-    </ClCompile>
-    <ClCompile Include="private\Grain\ClientWorkerGrain.cpp">
-      <Filter>Source Files\Grain</Filter>
-    </ClCompile>
-    <ClCompile Include="private\Grain\DataBaseWorkerGrain.cpp">
-      <Filter>Source Files\Grain</Filter>
-    </ClCompile>
     <ClCompile Include="private\Grain\NetworkManagerGrain.cpp">
-      <Filter>Source Files\Grain</Filter>
-    </ClCompile>
-    <ClCompile Include="private\Grain\NetworkWorkerGrain.cpp">
       <Filter>Source Files\Grain</Filter>
     </ClCompile>
     <ClCompile Include="private\Silo\GameServerSilo.cpp">
       <Filter>Source Files\Silo</Filter>
-    </ClCompile>
-    <ClCompile Include="private\Grain\TimerGrain.cpp">
-      <Filter>Source Files\Grain</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

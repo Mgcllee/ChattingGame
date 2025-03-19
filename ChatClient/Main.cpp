@@ -15,9 +15,8 @@ void run_clients_communication(int start, int end);
 int main() {
 	read_files();
 
-	return 0;
-
-	for (int i = 0; i < MAX_CLIENT; ++i) {
+	clients.emplace_back();
+	for (int i = 1; i <= MAX_CLIENT; ++i) {
 		clients.emplace_back();
 		clients[i].connect_to_server(SERVER_ADDR, PORT_NUM, i);
 	}
@@ -26,8 +25,8 @@ int main() {
 	vector<thread> threads;
 	for (int i = 0; i < MAX_THREAD; ++i) {
 		threads.emplace_back(run_clients_communication, 
-			MAX_CLIENT / MAX_THREAD * i + 1, 
-			MAX_CLIENT / MAX_THREAD * (i + 1) + 1);
+			(MAX_CLIENT / MAX_THREAD) * i + 1,
+			(MAX_CLIENT / MAX_THREAD) * (i + 1) + 1);
 	}
 	for (auto& th : threads) {
 		th.join();
@@ -45,8 +44,8 @@ void read_files() {
 	if (sentence_file) {
 		wstring sentence;
 		while (getline(sentence_file, sentence)) {
+			if (sentence.empty()) break;
 			chat_sentences.emplace_back(sentence);
-			wprintf(L"%s\n", sentence.c_str());
 		}
 		sentence_file.close();
 	}
@@ -57,9 +56,10 @@ void read_files() {
 
 	wifstream name_file(L"valid_game_names_with_korean_words.txt");
 	if (name_file) {
-		wstring sentences;
-		while (getline(name_file, sentences)) {
-			user_id.emplace_back(sentences);
+		wstring sentence;
+		while (getline(name_file, sentence)) {
+			if (sentence.empty()) break;
+			user_id.emplace_back(sentence);
 		}
 		name_file.close();
 	}

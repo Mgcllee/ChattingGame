@@ -1,5 +1,6 @@
 ﻿#include "Client.h"
 
+
 void Client::connect_to_server(string addr, unsigned short port, int i)
 {
 	WSADATA wsadata;
@@ -59,7 +60,6 @@ void Client::communicate_server(int key) {
 	}
 	
 	// TODO: Cleanup job_type
-	Sleep(1);
 	send_chatting();
 	return;
 
@@ -123,12 +123,13 @@ void Client::recv_packet(T& packet)
 		return;
 	
 	int retry_count = 0;
-	const int maxRetries = 5;
+	const int maxRetries = 100;
 
-	DWORD bytesReceived;
+	DWORD bytesReceived = 0;
 	DWORD flags = 0;
+	WSAOVERLAPPED* pWol = new WSAOVERLAPPED;
 
-	wchar_t buffer[1024];
+	wchar_t buffer[MAX_PACKET_SIZE];
 	WSABUF wsabuf;
 	wsabuf.buf = reinterpret_cast<CHAR*>(buffer);
 	wsabuf.len = sizeof(buffer);
@@ -137,9 +138,13 @@ void Client::recv_packet(T& packet)
 		int result = WSARecv(m_socket, &wsabuf, 1, &bytesReceived, &flags, NULL, NULL);
 		if (result == SOCKET_ERROR) {
 			if (WSAGetLastError() == WSAEWOULDBLOCK) {
-				Sleep(100);
+				Sleep(10);
 				retry_count++;
 				continue;
+			}
+			else if (WSAGetLastError() != WSA_IO_PENDING) {
+				printf("WSARecv failed: %d\n", WSAGetLastError());
+				break;
 			}
 			else {
 				printf("WSARecv failed: %d\n", WSAGetLastError());
@@ -162,14 +167,12 @@ void Client::login_server() {
 	login_packet.type = C2S_PACKET_TYPE::LOGIN_PACK;
 	
 	for (int time = 0; time < 10; ++time) {
-		Sleep(100);
 		int target = distr_name(eng);
-	
 		wcscpy_s(login_packet.id, user_id[target].c_str());
 		wcscpy_s(login_packet.pw, user_id[target].c_str());
 
 		send_packet(login_packet);
-		
+
 		if (process_login_result()) {
 			id = user_id[target];
 			pw = user_id[target];
@@ -198,6 +201,8 @@ void Client::send_chatting() {
 	packet.size = static_cast<short>(sizeof(packet));
 	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK;
 	wcscpy_s(packet.str, chat_sentences[target].c_str());
+
+	wprintf(L"%s: %s\n", id.c_str(), packet.str);
 
 	send_packet(packet);
 }

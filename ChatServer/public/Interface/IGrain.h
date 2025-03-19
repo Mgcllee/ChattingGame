@@ -5,7 +5,8 @@
 
 class IGrain {
 public:
-	virtual void packet_worker(std::tuple<HANDLE, HANDLE, HANDLE, HANDLE> h_iocps) = 0;
+	virtual void packet_worker(HANDLE h_iocp,
+		SOCKET server_socket, SOCKET accept_client_socket, OverlappedExpansion* accept_overlapped_expansion) = 0;
 
 protected:
 	virtual bool is_exist_GQCS_result(OverlappedExpansion* exoverlapped, BOOL GQCS_result) = 0;

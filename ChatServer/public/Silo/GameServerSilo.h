@@ -5,14 +5,14 @@
 
 class GameServerSilo {
 private:
-	// Accept, Recv, Send, ((가제)Exit) 처리 담당
 	HANDLE h_iocp_network;
-	// 클라이언트 요청 사항 처리 담당
 	HANDLE h_iocp_clients;
-	// 각 채팅룸에서 받는 요청 처리 담당
 	HANDLE h_iocp_chatroom;
-	// 데이터베이스 처리 담당
 	HANDLE h_iocp_database;
+
+	SOCKET server_socket;
+	SOCKET accept_client_socket;
+	OverlappedExpansion* accept_overlapped_expansion;
 
 public:
 	GameServerSilo();
