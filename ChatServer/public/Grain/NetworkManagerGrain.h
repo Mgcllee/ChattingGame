@@ -19,14 +19,14 @@ public:
 		SOCKET server_socket, SOCKET accept_client_socket, OverlappedExpansion* accept_overlapped_expansion) override;
 
 	inline static std::unordered_set<std::wstring> login_users;
-	inline static std::unordered_map<int, Client> clients;
-	inline static std::unordered_map<int, Client> LogViewers;
+	inline static std::unordered_map<ULONG, Client> clients;
+	inline static std::unordered_map<ULONG, Client> LogViewers;
 
 private:
 
 	virtual bool is_exist_GQCS_result(OverlappedExpansion* exoverlapped, BOOL GQCS_result) override;
 
-	void construct_receive_packet(int client_ticket, OverlappedExpansion* exoverlapped, DWORD num_bytes);
-	void process_packet(int player_ticket, wchar_t* packet);
+	void construct_receive_packet(ULONG client_ticket, OverlappedExpansion* exoverlapped, DWORD num_bytes);
+	void process_packet(ULONG player_ticket, wchar_t* packet);
 };
 

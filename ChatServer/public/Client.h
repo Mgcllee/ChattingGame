@@ -16,6 +16,6 @@ public:
 	std::wstring id;
 	std::wstring pw;
 
-private:
 	SOCKET client_socket;
+private:
 };

@@ -4,14 +4,11 @@
 
 int Client::send_packet(void* packet)
 {
-    OverlappedExpansion* sendoverlapped = new OverlappedExpansion(reinterpret_cast<short*>(packet));
-
-    int err;
-    LPDWORD sent_byte = 0;
-    int ret = WSASend(client_socket, &sendoverlapped->wsa_buffer, 1, sent_byte, 0, &sendoverlapped->overlapped, 0);
+    OverlappedExpansion* sendoverlapped = new OverlappedExpansion{ reinterpret_cast<short*>(packet) };
+    int ret = WSASend(client_socket, &sendoverlapped->wsa_buffer, 1, 0, 0, &sendoverlapped->overlapped, 0);
     if ((ret == SOCKET_ERROR) &&
-        (WSA_IO_PENDING != (err = WSAGetLastError()))) {
-        wprintf(L"WSASend failed with error: %d\n", err);
+        (WSA_IO_PENDING != (ret = WSAGetLastError()))) {
+        wprintf(L"WSASend failed with error: %d\n", ret);
     }
     return ret;
 }

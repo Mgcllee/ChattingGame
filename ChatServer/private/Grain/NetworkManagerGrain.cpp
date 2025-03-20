@@ -25,16 +25,16 @@ void NetworkManagerGrain::packet_worker(HANDLE h_iocp,
 			continue;
 		}
 
-		int ticket = static_cast<int>(key);
+		ULONG ticket = static_cast<int>(key);
 
 		switch (exoverlapped->overlapped_type) {
 		case OVERLAPPED_TYPE::CLIENT_ACCEPT: {
 			clients[ticket] = Client(accept_client_socket);
+			CreateIoCompletionPort(reinterpret_cast<HANDLE>(accept_client_socket), h_iocp, ticket, 0);
 			clients[ticket].recv_packet();
 
 			ZeroMemory(&accept_overlapped_expansion->overlapped, sizeof(accept_overlapped_expansion->overlapped));
 			accept_client_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
-			CreateIoCompletionPort(reinterpret_cast<HANDLE>(accept_client_socket), h_iocp, ticket, 0);
 
 			BOOL option = TRUE;
 			setsockopt(accept_client_socket, IPPROTO_TCP, TCP_NODELAY, (const char*)&option, sizeof(option));
@@ -50,7 +50,6 @@ void NetworkManagerGrain::packet_worker(HANDLE h_iocp,
 			break;
 		}
 		case OVERLAPPED_TYPE::PACKET_SEND: {
-			delete exoverlapped;
 			break;
 		}
 		default: {
@@ -70,7 +69,7 @@ bool NetworkManagerGrain::is_exist_GQCS_result(OverlappedExpansion* exoverlapped
 	return true;
 }
 
-void NetworkManagerGrain::construct_receive_packet(int client_ticket, OverlappedExpansion* exoverlapped, DWORD num_bytes)
+void NetworkManagerGrain::construct_receive_packet(ULONG client_ticket, OverlappedExpansion* exoverlapped, DWORD num_bytes)
 {
 	int remain_data = num_bytes + clients[client_ticket].remain_packet_size;
 
@@ -92,13 +91,13 @@ void NetworkManagerGrain::construct_receive_packet(int client_ticket, Overlapped
 	clients[client_ticket].recv_packet();
 }
 
-void NetworkManagerGrain::process_packet(int ticket, wchar_t* packet)
+void NetworkManagerGrain::process_packet(ULONG ticket, wchar_t* packet)
 {
 	switch (packet[1]) {
 	case C2S_PACKET_TYPE::LOGIN_PACK: {
 		S2C_LOGIN_RESULT_PACK result_pack;
-		result_pack.type = S2C_PACKET_TYPE::LOGIN_RESULT_PACK;
 		result_pack.size = sizeof(S2C_LOGIN_RESULT_PACK);
+		result_pack.type = S2C_PACKET_TYPE::LOGIN_RESULT_PACK;
 
 		C2S_LOGIN_PACK* login_pack = reinterpret_cast<C2S_LOGIN_PACK*>(packet);
 
@@ -116,7 +115,7 @@ void NetworkManagerGrain::process_packet(int ticket, wchar_t* packet)
 		}
 		wcscpy(result_pack.result, chat_format.c_str());
 		int ret = clients[ticket].send_packet(&result_pack);
-		wprintf(L"%s\n", chat_format.c_str());
+		wprintf(L"%s [%d]\n", chat_format.c_str(), ret);
 		break;
 	}
 	case C2S_PACKET_TYPE::SEND_CHAT_PACK: {
