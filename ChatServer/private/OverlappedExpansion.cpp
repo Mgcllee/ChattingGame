@@ -10,7 +10,7 @@ OverlappedExpansion::OverlappedExpansion()
 	ZeroMemory(&overlapped, sizeof(overlapped));
 }
 
-OverlappedExpansion::OverlappedExpansion(short* packet) 
+OverlappedExpansion::OverlappedExpansion(wchar_t* packet)
 	: overlapped_type(OVERLAPPED_TYPE::PACKET_SEND)
 	, wsa_buffer(WSABUF(packet[0], reinterpret_cast<CHAR*>(packet_buffer)))
 	, remain_packet_size(0)

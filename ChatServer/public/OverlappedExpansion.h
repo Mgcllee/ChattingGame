@@ -32,7 +32,7 @@ enum OVERLAPPED_TYPE {
 class OverlappedExpansion {
 public:
 	OverlappedExpansion();
-	OverlappedExpansion(short* packet);
+	OverlappedExpansion(wchar_t* packet);
 	~OverlappedExpansion();
 
 	WSAOVERLAPPED overlapped;

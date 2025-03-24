@@ -39,10 +39,11 @@ void NetworkManagerGrain::packet_worker(HANDLE h_iocp,
 			BOOL option = TRUE;
 			setsockopt(accept_client_socket, IPPROTO_TCP, TCP_NODELAY, (const char*)&option, sizeof(option));
 
-			int addr_size = sizeof(SOCKADDR_IN);
+			SOCKADDR_IN client_addr;
+			int addr_size = sizeof(client_addr);
 			AcceptEx(server_socket, accept_client_socket,
-				accept_overlapped_expansion->packet_buffer, 0, addr_size + 16, addr_size + 16,
-				0, &accept_overlapped_expansion->overlapped);
+				accept_overlapped_expansion->packet_buffer, 0, addr_size + 16, 
+				addr_size + 16, 0, &accept_overlapped_expansion->overlapped);
 			break;
 		}
 		case OVERLAPPED_TYPE::PACKET_RECV: {

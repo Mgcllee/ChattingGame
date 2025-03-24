@@ -23,8 +23,9 @@ void GameServerSilo::run_game_logic_grains() {
 	SOCKADDR_IN server_addr;
 	memset(&server_addr, 0, sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
+	// server_addr.sin_addr.S_un.S_addr = INADDR_ANY;
+	server_addr.sin_addr.s_addr = INADDR_ANY;
 	server_addr.sin_port = htons(SERVER_PORT);
-	server_addr.sin_addr.S_un.S_addr = INADDR_ANY;
 
 	error_code = bind(server_socket, reinterpret_cast<sockaddr*>(&server_addr), sizeof(server_addr));
 	error_code = listen(server_socket, SOMAXCONN);
@@ -46,7 +47,7 @@ void GameServerSilo::run_game_logic_grains() {
 		addr_size + 16, 0, &accept_overlapped_expansion->overlapped);
 
 	std::vector<std::thread> workers;
-	for (int i = 0; i < 4; ++i) {
+	for (int i = 0; i < 1; ++i) {
 		workers.emplace_back(&NetworkManagerGrain::packet_worker, new NetworkManagerGrain(), h_iocp_network,
 			server_socket, accept_client_socket, accept_overlapped_expansion);
 	}

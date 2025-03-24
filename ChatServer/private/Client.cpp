@@ -4,7 +4,7 @@
 
 int Client::send_packet(void* packet)
 {
-    OverlappedExpansion* sendoverlapped = new OverlappedExpansion{ reinterpret_cast<short*>(packet) };
+    OverlappedExpansion* sendoverlapped = new OverlappedExpansion{ reinterpret_cast<wchar_t*>(packet) };
     int ret = WSASend(client_socket, &sendoverlapped->wsa_buffer, 1, 0, 0, &sendoverlapped->overlapped, 0);
     if ((ret == SOCKET_ERROR) &&
         (WSA_IO_PENDING != (ret = WSAGetLastError()))) {
