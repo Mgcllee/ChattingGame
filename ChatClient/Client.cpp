@@ -1,6 +1,43 @@
 ﻿#include "Client.h"
 
 
+template<typename T>
+void recv_packet(SOCKET m_socket, T& packet)
+{
+	if (m_socket == NULL)
+		return;
+
+	int retry_count = 0;
+	const int maxRetries = 5;
+
+	DWORD bytesReceived;
+	DWORD flags = 0;
+
+	wchar_t buffer[1024];
+	WSABUF wsabuf;
+	wsabuf.buf = reinterpret_cast<CHAR*>(buffer);
+	wsabuf.len = sizeof(buffer);
+
+	while (retry_count < maxRetries) {
+		int result = WSARecv(m_socket, &wsabuf, 1, &bytesReceived, &flags, NULL, NULL);
+		if (result == SOCKET_ERROR) {
+			if (WSAGetLastError() == WSAEWOULDBLOCK) {
+				Sleep(100);
+				retry_count++;
+				continue;
+			}
+			else {
+				printf("WSARecv failed: %d\n", WSAGetLastError());
+				break;
+			}
+		}
+		else {
+			memcpy(&packet, buffer, sizeof(T));
+			break;
+		}
+	}
+}
+
 void Client::connect_to_server(string addr, unsigned short port, int i)
 {
 	WSADATA wsadata;
@@ -65,7 +102,7 @@ void Client::communicate_server(int key) {
 	return;
 
 	BASIC_PACK recv_pack{};
-	recv_packet(recv_pack);
+	recv_packet(m_socket, recv_pack);
 	if (recv_pack.type == S2C_PACKET_TYPE::RESPONSE_EXIST_CLIENTS) {
 
 	}
@@ -117,57 +154,6 @@ void Client::send_packet(BASIC_PACK& packet) {
 	}
 }
 
-template<typename T>
-void Client::recv_packet(T& packet)
-{
-	if (m_socket == NULL)
-		return;
-
-	DWORD bytesReceived = 0;
-	WSABUF wsabuf;
-	wchar_t* buffer = new wchar_t[MAX_PACKET_SIZE];
-	int result;
-
-	fd_set readfds;
-	FD_ZERO(&readfds);
-	FD_SET(m_socket, &readfds);
-
-	struct timeval timeout;
-	// 타임아웃 설정 (5초)
-	timeout.tv_sec = 5;
-	timeout.tv_usec = 0;
-
-	// select 호출
-	result = select(0, &readfds, NULL, NULL, &timeout);
-	if (result == SOCKET_ERROR) {
-		printf("select() failed: %d\n", WSAGetLastError());
-		return;
-	}
-	else if (result == 0) {
-		printf("Timeout occurred, no data received.\n");
-		return; // 타임아웃 발생 시 계속 루프
-	}
-
-	// 데이터 수신
-	if (FD_ISSET(m_socket, &readfds)) {
-		wsabuf.len = MAX_PACKET_SIZE;
-		wsabuf.buf = reinterpret_cast<char*>(buffer);
-
-		result = WSARecv(m_socket, &wsabuf, 1, &bytesReceived, NULL, NULL, NULL);
-		if (result == SOCKET_ERROR) {
-			printf("WSARecv() failed: %d\n", WSAGetLastError());
-			return;
-		}
-
-		// 수신된 데이터 처리
-		if (bytesReceived > 0) {
-			memcpy(&packet, buffer, sizeof(T));
-		}
-		else {
-			printf("Connection closed by the server.\n");
-		}
-	}
-}
 
 void Client::login_server() {
 	if (m_socket == NULL)
@@ -181,31 +167,20 @@ void Client::login_server() {
 		int target = distr_name(eng);
 		Sleep(10);
 		wcscpy_s(login_packet.id, user_id[target].c_str());
-		wcscpy_s(login_packet.pw, user_id[target].c_str());
 
 		send_packet(login_packet);
 
-		if (process_login_result()) {
+		S2C_LOGIN_RESULT_PACK packet{};
+		recv_packet(m_socket, packet);
+
+		if (packet.size <= 0) continue;
+
+		wstring result(packet.result);
+		if (result.find(L"로그인 성공!") != wstring::npos) {
 			id = user_id[target];
-			pw = user_id[target];
 			break;
 		}
 	}
-}
-
-bool Client::process_login_result() {
-	S2C_LOGIN_RESULT_PACK packet{};
-	
-	recv_packet(packet);
-	// recv(m_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
-
-	if (packet.size <= 0) return false;
-
-	wstring result(packet.result);
-	if(result.find(L"로그인 성공!") != wstring::npos) {
-		return true;
-	}
-	else return false;
 }
 
 void Client::send_chatting() {

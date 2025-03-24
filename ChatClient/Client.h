@@ -39,18 +39,17 @@ public:
 	
 	void communicate_server(int i);
 	void send_packet(BASIC_PACK& packet);
-	template<typename T>
-	void recv_packet(T& packet);
+	// template<typename T>
+	// void recv_packet(T& packet);
 	
 	void login_server();
-	bool process_login_result();
 	void request_logout();
 	
 	void send_chatting();
 	void request_chat_log();
 
-private:
 	SOCKET m_socket;
+private:
 
 	random_device rd;
 	mt19937 eng;
