@@ -1,43 +1,6 @@
 ﻿#include "Client.h"
 
 
-template<typename T>
-void recv_packet(SOCKET m_socket, T& packet)
-{
-	if (m_socket == NULL)
-		return;
-
-	int retry_count = 0;
-	const int maxRetries = 5;
-
-	DWORD bytesReceived;
-	DWORD flags = 0;
-
-	wchar_t buffer[1024];
-	WSABUF wsabuf;
-	wsabuf.buf = reinterpret_cast<CHAR*>(buffer);
-	wsabuf.len = sizeof(buffer);
-
-	while (retry_count < maxRetries) {
-		int result = WSARecv(m_socket, &wsabuf, 1, &bytesReceived, &flags, NULL, NULL);
-		if (result == SOCKET_ERROR) {
-			if (WSAGetLastError() == WSAEWOULDBLOCK) {
-				Sleep(100);
-				retry_count++;
-				continue;
-			}
-			else {
-				printf("WSARecv failed: %d\n", WSAGetLastError());
-				break;
-			}
-		}
-		else {
-			memcpy(&packet, buffer, sizeof(T));
-			break;
-		}
-	}
-}
-
 void Client::connect_to_server(string addr, unsigned short port, int i)
 {
 	WSADATA wsadata;
@@ -52,11 +15,15 @@ void Client::connect_to_server(string addr, unsigned short port, int i)
 		return;
 	}
 
-	u_long on = 1;
-	if (ioctlsocket(m_socket, FIONBIO, &on) == INVALID_SOCKET) {
-		wprintf(L"fail to non-blocking socket\n");
+	// Nagle 알고리즘 끄기
+	int flag = 1;
+	if (setsockopt(m_socket, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(flag)) < 0) {
+		WSACleanup();
 		return;
 	}
+
+	u_long mode = FALSE;
+	ioctlsocket(m_socket, FIONBIO, &mode);
 
 	SOCKADDR_IN server_address;
 	memset(&server_address, 0, sizeof(server_address));
@@ -88,39 +55,15 @@ void Client::disconnect_to_server() {
 
 void Client::communicate_server(int key) {
 	if (m_socket == NULL) {
-		connect_to_server(SERVER_ADDR, PORT_NUM, key);
+		connect_to_server(SERVER_ADDR, PORT_NUM, 0);
 		return;
 	}
 	else if (id.empty()) {
 		login_server();
 		return;
 	}
-	
-	wprintf(L"%d\t", key);
-	// TODO: Cleanup job_type
+
 	send_chatting();
-	return;
-
-	BASIC_PACK recv_pack{};
-	recv_packet(m_socket, recv_pack);
-	if (recv_pack.type == S2C_PACKET_TYPE::RESPONSE_EXIST_CLIENTS) {
-
-	}
-
-	
-
-
-	int job_type = distr_job(eng);
-	switch (job_type) {
-	case JOB_TYPE::SEND_CHAT: {
-		send_chatting();
-		break;
-	}
-	case JOB_TYPE::USER_LOGOUT: {
-		request_logout();
-		break;
-	}
-	}
 }
 
 void Client::send_packet(BASIC_PACK& packet) {
@@ -154,7 +97,6 @@ void Client::send_packet(BASIC_PACK& packet) {
 	}
 }
 
-
 void Client::login_server() {
 	if (m_socket == NULL)
 		return;
@@ -165,41 +107,35 @@ void Client::login_server() {
 	
 	for (int time = 0; time < 10; ++time) {
 		int target = distr_name(eng);
-		Sleep(10);
 		wcscpy_s(login_packet.id, user_id[target].c_str());
 
-		send_packet(login_packet);
-
 		S2C_LOGIN_RESULT_PACK packet{};
-		recv_packet(m_socket, packet);
-
+		
+		// send_packet(login_packet);
+		send(m_socket, reinterpret_cast<const char*>(&login_packet), sizeof(login_packet), 0);
+		recv(m_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
+		
 		if (packet.size <= 0) continue;
 
 		wstring result(packet.result);
 		if (result.find(L"로그인 성공!") != wstring::npos) {
 			id = user_id[target];
+			wprintf(L"%s\n", result.c_str());
 			break;
 		}
+		else wprintf(L"%s\n", result.c_str());
 	}
 }
 
 void Client::send_chatting() {
-	int target = distr_chat(eng);
-
 	C2S_SEND_CHAT_PACK packet;
 	packet.size = static_cast<short>(sizeof(packet));
 	packet.type = C2S_PACKET_TYPE::SEND_CHAT_PACK;
-	wcscpy_s(packet.str, chat_sentences[target].c_str());
 
-	wprintf(L"%s: %s\n", id.c_str(), packet.str);
+	int chat_idx = distr_chat(eng);
+	wcscpy_s(packet.str, chat_sentences[chat_idx].c_str());
 
 	send_packet(packet);
-
-}
-
-void Client::request_chat_log()
-{
-	
 }
 
 void Client::request_logout() {
@@ -214,7 +150,6 @@ void Client::request_logout() {
 	send_packet(logout_packet);
 
 	S2C_LOGOUT_RESULT_PACK result_packet{};
-	// recv_packet(result_packet);
 	recv(m_socket, reinterpret_cast<char*>(&result_packet), sizeof(result_packet), 0);
 
 

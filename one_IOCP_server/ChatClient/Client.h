@@ -39,14 +39,11 @@ public:
 	
 	void communicate_server(int i);
 	void send_packet(BASIC_PACK& packet);
-	// template<typename T>
-	// void recv_packet(T& packet);
 	
 	void login_server();
 	void request_logout();
 	
 	void send_chatting();
-	void request_chat_log();
 
 	SOCKET m_socket;
 private:

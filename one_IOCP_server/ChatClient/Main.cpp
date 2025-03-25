@@ -9,27 +9,23 @@ vector<wstring> chat_sentences;
 vector<Client> clients;
 
 void read_files();
-void run_clients_communication(int start, int end);
-
 
 int main() {
 	read_files();
 
-	clients.emplace_back();
-	for (int i = 1; i <= MAX_CLIENT; ++i) {
+	clients.reserve(MAX_CLIENT);
+	for (int i = 0; i < MAX_CLIENT; ++i) {
 		clients.emplace_back();
-		clients[i].connect_to_server(SERVER_ADDR, PORT_NUM, i);
+		clients[i].connect_to_server(SERVER_ADDR, PORT_NUM, 0);
+		clients[i].login_server();
 	}
-	wprintf(L"Complete all client connect to server and login success\n");
+	wprintf(L"Complete all client connect to server\n");
 
-	vector<thread> threads;
-	for (int i = 0; i < MAX_THREAD; ++i) {
-		threads.emplace_back(run_clients_communication, 
-			(MAX_CLIENT / MAX_THREAD) * i + 1,
-			(MAX_CLIENT / MAX_THREAD) * (i + 1) + 1);
-	}
-	for (auto& th : threads) {
-		th.join();
+	while (true) {
+		for (int i = 0; i < MAX_CLIENT; ++i) {
+			Sleep(500);
+			clients[i].communicate_server(i);
+		}
 	}
 
 	for (int i = 0; i < MAX_CLIENT; ++i) {
@@ -66,13 +62,5 @@ void read_files() {
 	else {
 		wprintf(L"Can't read valid_game_names_with_korean_words file...\n");
 		return;
-	}
-}
-
-void run_clients_communication(int start, int end) {
-	while (true) {
-		for (int i = start; i < end; ++i) {
-			clients[i].communicate_server(i);
-		}
 	}
 }
