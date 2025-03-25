@@ -25,13 +25,11 @@ void NetworkManagerGrain::packet_worker(HANDLE h_iocp,
 			continue;
 		}
 
-		ULONG ticket = static_cast<int>(key);
-
 		switch (exoverlapped->overlapped_type) {
 		case OVERLAPPED_TYPE::CLIENT_ACCEPT: {
-			clients[ticket] = Client(accept_client_socket);
-			CreateIoCompletionPort(reinterpret_cast<HANDLE>(accept_client_socket), h_iocp, ticket, 0);
-			clients[ticket].recv_packet();
+			clients[accept_client_socket] = Client(accept_client_socket);
+			CreateIoCompletionPort(reinterpret_cast<HANDLE>(accept_client_socket), h_iocp, accept_client_socket, 0);
+			clients[accept_client_socket].recv_packet();
 
 			ZeroMemory(&accept_overlapped_expansion->overlapped, sizeof(accept_overlapped_expansion->overlapped));
 			accept_client_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
@@ -41,16 +39,17 @@ void NetworkManagerGrain::packet_worker(HANDLE h_iocp,
 
 			SOCKADDR_IN client_addr;
 			int addr_size = sizeof(client_addr);
-			AcceptEx(server_socket, accept_client_socket,
-				accept_overlapped_expansion->packet_buffer, 0, addr_size + 16, 
-				addr_size + 16, 0, &accept_overlapped_expansion->overlapped);
+			AcceptEx(server_socket, accept_client_socket, accept_overlapped_expansion->packet_buffer, 0, 
+				addr_size + 16, addr_size + 16, NULL, 
+				&accept_overlapped_expansion->overlapped);
 			break;
 		}
 		case OVERLAPPED_TYPE::PACKET_RECV: {
-			construct_receive_packet(ticket, exoverlapped, num_bytes);
+			construct_receive_packet(reinterpret_cast<HANDLE>(key), exoverlapped, num_bytes);
 			break;
 		}
 		case OVERLAPPED_TYPE::PACKET_SEND: {
+			wprintf(L"Complete send work! \t[%d]\n", num_bytes);
 			break;
 		}
 		default: {
@@ -70,7 +69,7 @@ bool NetworkManagerGrain::is_exist_GQCS_result(OverlappedExpansion* exoverlapped
 	return true;
 }
 
-void NetworkManagerGrain::construct_receive_packet(ULONG client_ticket, OverlappedExpansion* exoverlapped, DWORD num_bytes)
+void NetworkManagerGrain::construct_receive_packet(HANDLE client_ticket, OverlappedExpansion* exoverlapped, DWORD num_bytes)
 {
 	int remain_data = num_bytes + clients[client_ticket].remain_packet_size;
 
@@ -92,7 +91,7 @@ void NetworkManagerGrain::construct_receive_packet(ULONG client_ticket, Overlapp
 	clients[client_ticket].recv_packet();
 }
 
-void NetworkManagerGrain::process_packet(ULONG ticket, wchar_t* packet)
+void NetworkManagerGrain::process_packet(HANDLE ticket, wchar_t* packet)
 {
 	switch (packet[1]) {
 	case C2S_PACKET_TYPE::LOGIN_PACK: {
