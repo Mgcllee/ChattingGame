@@ -25,11 +25,16 @@ void NetworkManagerGrain::packet_worker(HANDLE h_iocp,
 			continue;
 		}
 
+			
 		switch (exoverlapped->overlapped_type) {
 		case OVERLAPPED_TYPE::CLIENT_ACCEPT: {
-			clients[accept_client_socket] = Client(accept_client_socket);
-			CreateIoCompletionPort(reinterpret_cast<HANDLE>(accept_client_socket), h_iocp, accept_client_socket, 0);
-			clients[accept_client_socket].recv_packet();
+			uint64_t ticket = static_cast<uint64_t>(accept_client_socket);
+
+			mutex_login_user_list.lock();
+			clients[ticket] = Client(accept_client_socket);
+			CreateIoCompletionPort(reinterpret_cast<HANDLE>(accept_client_socket), h_iocp, ticket, 0);
+			clients[ticket].recv_packet();
+			mutex_login_user_list.unlock();
 
 			ZeroMemory(&accept_overlapped_expansion->overlapped, sizeof(accept_overlapped_expansion->overlapped));
 			accept_client_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
@@ -45,7 +50,8 @@ void NetworkManagerGrain::packet_worker(HANDLE h_iocp,
 			break;
 		}
 		case OVERLAPPED_TYPE::PACKET_RECV: {
-			construct_receive_packet(reinterpret_cast<HANDLE>(key), exoverlapped, num_bytes);
+			uint64_t ticket = static_cast<uint64_t>(key);
+			construct_receive_packet(ticket, exoverlapped, num_bytes);
 			break;
 		}
 		case OVERLAPPED_TYPE::PACKET_SEND: {
@@ -69,7 +75,7 @@ bool NetworkManagerGrain::is_exist_GQCS_result(OverlappedExpansion* exoverlapped
 	return true;
 }
 
-void NetworkManagerGrain::construct_receive_packet(HANDLE client_ticket, OverlappedExpansion* exoverlapped, DWORD num_bytes)
+void NetworkManagerGrain::construct_receive_packet(uint64_t client_ticket, OverlappedExpansion* exoverlapped, DWORD num_bytes)
 {
 	int remain_data = num_bytes + clients[client_ticket].remain_packet_size;
 
@@ -91,7 +97,7 @@ void NetworkManagerGrain::construct_receive_packet(HANDLE client_ticket, Overlap
 	clients[client_ticket].recv_packet();
 }
 
-void NetworkManagerGrain::process_packet(HANDLE ticket, wchar_t* packet)
+void NetworkManagerGrain::process_packet(uint64_t ticket, wchar_t* packet)
 {
 	switch (packet[1]) {
 	case C2S_PACKET_TYPE::LOGIN_PACK: {

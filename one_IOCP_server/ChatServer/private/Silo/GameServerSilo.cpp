@@ -23,9 +23,7 @@ void GameServerSilo::run_game_logic_grains() {
 	SOCKADDR_IN server_addr;
 	memset(&server_addr, 0, sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
-	// server_addr.sin_addr.s_addr = INADDR_ANY;
-	// inet_pton(AF_INET, "127.0.0.1", server_addr.sin_addr.s_addr);
-	inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr);
+	server_addr.sin_addr.s_addr = INADDR_ANY;
 	server_addr.sin_port = htons(SERVER_PORT);
 	
 	error_code = bind(server_socket, reinterpret_cast<sockaddr*>(&server_addr), sizeof(server_addr));
