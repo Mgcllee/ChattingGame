@@ -3,19 +3,22 @@
 #define SERVER_ADDR "127.0.0.1"
 #define PORT_NUM 9785
 
-#define MAX_CLIENT 10
 #define MAX_SENTENCE 100'000
 
 #define MAX_THREAD 1
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <cstring>
+
 #include <vector>
 #include <random>
-#include <fstream>
+
 #include <locale>
-#include <codecvt>
+#include <chrono>
+
+#include <thread>
 
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <WS2tcpip.h>

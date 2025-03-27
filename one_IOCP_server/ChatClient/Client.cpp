@@ -15,21 +15,23 @@ void Client::connect_to_server(string addr, unsigned short port, int i)
 		return;
 	}
 
-	// Nagle 알고리즘 끄기
-	int flag = 1;
+	int flag = TRUE;
 	if (setsockopt(m_socket, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(flag)) < 0) {
 		WSACleanup();
 		return;
 	}
 
-	u_long mode = FALSE;
-	ioctlsocket(m_socket, FIONBIO, &mode);
+	u_long mode = 1;
+	if (ioctlsocket(m_socket, FIONBIO, &mode) == SOCKET_ERROR) {
+		wprintf(L"Faile to set non-blocking socket [Error Code: %d]\n", GetLastError());
+		return;
+	}
 
 	SOCKADDR_IN server_address;
 	memset(&server_address, 0, sizeof(server_address));
 	server_address.sin_family = AF_INET;
 	inet_pton(AF_INET, SERVER_ADDR, &server_address.sin_addr);
-	server_address.sin_port = ::htons(PORT_NUM);
+	server_address.sin_port = htons(PORT_NUM);
 
 	while (true) {
 		if (SOCKET_ERROR == connect(m_socket, (SOCKADDR*)&server_address, sizeof(server_address))) {
@@ -51,6 +53,7 @@ void Client::connect_to_server(string addr, unsigned short port, int i)
 void Client::disconnect_to_server() {
 	id.clear();
 	pw.clear();
+	closesocket(m_socket);
 }
 
 void Client::communicate_server(int key) {
@@ -70,31 +73,68 @@ void Client::send_packet(BASIC_PACK& packet) {
 	if (packet.size <= 0 || m_socket == NULL)
 		return;
 
+	DWORD  bytesSent;
 	WSABUF wsabuf;
 	wsabuf.buf = reinterpret_cast<char*>(&packet);
 	wsabuf.len = packet.size;
 
-	DWORD  bytesSent;
-	fd_set writefds;
-	FD_ZERO(&writefds);
-	FD_SET(m_socket, &writefds);
-
-	int result = select(0, NULL, &writefds, NULL, NULL);
-	if (result > 0) {
-		result = WSASend(m_socket, &wsabuf, 1, &bytesSent, 0, NULL, NULL);
+	auto startTime = std::chrono::steady_clock::now();
+	auto currentTime = startTime;
+	while (std::chrono::duration_cast<std::chrono::seconds>(currentTime - startTime).count() < 10) {
+		int result = WSASend(m_socket, &wsabuf, 1, &bytesSent, 0, NULL, NULL);
 		if (result == SOCKET_ERROR) {
-			wprintf(L"WSASend failed: %d\n", WSAGetLastError());
+			if (result == WSAEWOULDBLOCK) {
+				std::this_thread::sleep_for(std::chrono::milliseconds(100));
+				currentTime = std::chrono::steady_clock::now();
+				continue;
+			}
+			wprintf(L"WSASend failed with error [error_code: %d]\n", GetLastError());
+			return;
 		}
-		else {
-			// Success
+		return;
+	}
+	wprintf(L"Send timeout after 10 seconds.\n");
+}
+
+template<typename T>
+void Client::recv_packet(T& packet)
+{
+	if (m_socket == NULL)
+		return;
+
+	DWORD bytesReceived;
+	DWORD flags = 0;
+
+	wchar_t buffer[1024];
+	WSABUF wsabuf;
+	wsabuf.buf = reinterpret_cast<CHAR*>(buffer);
+	wsabuf.len = sizeof(buffer);
+
+	auto startTime = std::chrono::steady_clock::now();
+	auto currentTime = startTime;
+	while (std::chrono::duration_cast<std::chrono::seconds>(currentTime - startTime).count() < 10) {
+		int result = WSARecv(m_socket, &wsabuf, 1, &bytesReceived, &flags, NULL, NULL);
+
+		if (result == SOCKET_ERROR) {
+			int error = WSAGetLastError();
+			if (error == WSAEWOULDBLOCK) {
+				std::this_thread::sleep_for(std::chrono::milliseconds(100));
+				currentTime = std::chrono::steady_clock::now();
+				continue;
+			}
+			else {
+				wprintf(L"WSARecv failed with error [error_code: %d]\n", GetLastError());
+				return;
+			}
+		}
+
+		if (bytesReceived > 0) {
+			memcpy(&packet, &buffer, sizeof(T));
+			return;
 		}
 	}
-	else if (result == 0) {
-		wprintf(L"Timeout occurred while waiting for socket to be writable.\n");
-	}
-	else {
-		wprintf(L"select failed: %d\n", WSAGetLastError());
-	}
+	wprintf(L"Receive timeout after 10 seconds.\n");
+	return;
 }
 
 void Client::login_server() {
@@ -108,22 +148,17 @@ void Client::login_server() {
 	for (int time = 0; time < 10; ++time) {
 		int target = distr_name(eng);
 		wcscpy_s(login_packet.id, user_id[target].c_str());
-
-		S2C_LOGIN_RESULT_PACK packet{};
+		send_packet(login_packet);
 		
-		// send_packet(login_packet);
-		send(m_socket, reinterpret_cast<const char*>(&login_packet), sizeof(login_packet), 0);
-		recv(m_socket, reinterpret_cast<char*>(&packet), sizeof(packet), 0);
-		
-		if (packet.size <= 0) continue;
+		S2C_LOGIN_RESULT_PACK login_result_packet{};
+		recv_packet(login_result_packet);
+		if (login_result_packet.size <= 0) continue;
 
-		wstring result(packet.result);
+		wstring result(login_result_packet.result);
 		if (result.find(L"로그인 성공!") != wstring::npos) {
 			id = user_id[target];
-			wprintf(L"%s\n", result.c_str());
 			break;
 		}
-		else wprintf(L"%s\n", result.c_str());
 	}
 }
 
@@ -150,8 +185,7 @@ void Client::request_logout() {
 	send_packet(logout_packet);
 
 	S2C_LOGOUT_RESULT_PACK result_packet{};
-	recv(m_socket, reinterpret_cast<char*>(&result_packet), sizeof(result_packet), 0);
-
+	recv_packet(result_packet);
 
 	if (result_packet.size <= 0) return;
 

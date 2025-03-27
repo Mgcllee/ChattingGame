@@ -1,8 +1,6 @@
 ﻿#pragma once 
 
 #include "Client.h"
-#include <thread>
-#include <windows.h>
 
 vector<wstring> user_id;
 vector<wstring> chat_sentences;
@@ -11,9 +9,17 @@ vector<Client> clients;
 void read_files();
 
 int main() {
-	read_files();
+	locale::global(locale(".UTF-8"));
 
-	clients.reserve(MAX_CLIENT);
+	wprintf(L"접속시킬 클라이언트의 수 입력(최대 5만개): ");
+	int MAX_CLIENT = 1;
+	wscanf_s(L"%d", &MAX_CLIENT);
+	
+	wprintf(L"리로스 로딩...\n");
+	read_files();
+	wprintf(L"리소스 로딩 완료\n");
+
+	clients.reserve(static_cast<size_t>(MAX_CLIENT));
 	for (int i = 0; i < MAX_CLIENT; ++i) {
 		clients.emplace_back();
 		clients[i].connect_to_server(SERVER_ADDR, PORT_NUM, 0);
@@ -23,7 +29,7 @@ int main() {
 
 	while (true) {
 		for (int i = 0; i < MAX_CLIENT; ++i) {
-			Sleep(500);
+			Sleep(100);
 			clients[i].communicate_server(i);
 		}
 	}
@@ -35,7 +41,6 @@ int main() {
 }
 
 void read_files() {
-	locale::global(locale(".UTF-8"));
 	wifstream sentence_file(L"mixed_sentences.txt");
 	if (sentence_file) {
 		wstring sentence;
