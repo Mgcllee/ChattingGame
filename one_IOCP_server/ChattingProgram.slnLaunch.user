@@ -11,6 +11,10 @@
         "Path": "ChatClient\\ChatClient.vcxproj",
         "Action": "Start",
         "DebugTarget": "Local Windows Debugger"
+      },
+      {
+        "Path": "ChatServerLogViewer\\ChatServerLogViewer.vcxproj",
+        "Action": "StartWithoutDebugging"
       }
     ]
   }

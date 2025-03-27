@@ -24,8 +24,7 @@ void NetworkManagerGrain::packet_worker(HANDLE h_iocp,
 		if (false == is_exist_GQCS_result(exoverlapped, GQCS_result)) {
 			continue;
 		}
-
-			
+	
 		switch (exoverlapped->overlapped_type) {
 		case OVERLAPPED_TYPE::CLIENT_ACCEPT: {
 			uint64_t ticket = static_cast<uint64_t>(accept_client_socket);
@@ -58,21 +57,15 @@ void NetworkManagerGrain::packet_worker(HANDLE h_iocp,
 			wprintf(L"Complete send work! \t[%d]\n", num_bytes);
 			break;
 		}
-		default: {
-			break;
-		}
 		}
 	}
 }
 
 bool NetworkManagerGrain::is_exist_GQCS_result(OverlappedExpansion* exoverlapped, BOOL GQCS_result)
 {
-	if (exoverlapped == nullptr) return false;
-	if (FALSE == GQCS_result) {
-		return false;
-	}
-
-	return true;
+	if (exoverlapped == nullptr)return false;
+	if (GQCS_result == FALSE)	return false;
+	else						return true;
 }
 
 void NetworkManagerGrain::construct_receive_packet(uint64_t client_ticket, OverlappedExpansion* exoverlapped, DWORD num_bytes)
@@ -147,9 +140,13 @@ void NetworkManagerGrain::process_packet(uint64_t ticket, wchar_t* packet)
 		if (login_users.find(info->id) != login_users.end()) {
 			login_users.erase(info->id);
 			wcscpy_s(result_pack.result, L"로그아웃 성공! 안녕히가세요!");
+			clients[ticket].send_packet(&result_pack);
+			clients.erase(ticket);
 		}
-		clients[ticket].send_packet(&result_pack);
-		clients.erase(ticket);
+		else {
+			wcscpy_s(result_pack.result, L"로그아웃 실패 재시도 해주세요.");
+			clients[ticket].send_packet(&result_pack);
+		}
 		mutex_login_user_list.unlock();
 		break;
 	}
