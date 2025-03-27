@@ -8,7 +8,7 @@
 #include "ChatServerLogViewerDlg.h"
 #include "afxdialogex.h"
 
-#include "Common/Packet.h"
+#include "one_IOCP_server/Common/Packet.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
