@@ -5,7 +5,7 @@
 #include "ChatServerLogViewer.h"
 #include "CClientSocket.h"
 
-#include "Common/Packet.h"
+#include "one_IOCP_server/Common/Packet.h"
 #include "ChatServerLogViewerDlg.h"
 
 CClientSocket::CClientSocket(class CChatServerLogViewerDlg* pDlg)
