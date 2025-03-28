@@ -13,7 +13,7 @@ NetworkManagerGrain::~NetworkManagerGrain()
 void NetworkManagerGrain::packet_worker(HANDLE h_iocp, 
 	SOCKET server_socket, SOCKET accept_client_socket, OverlappedExpansion* accept_overlapped_expansion)
 {
-	DWORD num_bytes;
+	DWORD num_bytes = 0;
 	ULONG_PTR key;
 	WSAOVERLAPPED* overlapped;
 
@@ -24,11 +24,23 @@ void NetworkManagerGrain::packet_worker(HANDLE h_iocp,
 		if (false == is_exist_GQCS_result(exoverlapped, GQCS_result)) {
 			continue;
 		}
-	
+		
 		switch (exoverlapped->overlapped_type) {
 		case OVERLAPPED_TYPE::CLIENT_ACCEPT: {
-			uint64_t ticket = static_cast<uint64_t>(accept_client_socket);
+			tcp_keepalive tcp_opt = { 0 };
+			tcp_opt.onoff = TRUE;	
+			tcp_opt.keepalivetime = 5'000;
+			tcp_opt.keepaliveinterval = 1'000;
 
+			DWORD dwBytes;
+			if (0 != WSAIoctl(accept_client_socket, SIO_KEEPALIVE_VALS, &tcp_opt, sizeof(tcp_keepalive),
+				0, 0, &dwBytes, NULL, NULL)) {
+				wprintf(L"Error setting SO_KEEPALIVE_VALS [error_code: %d]\n", GetLastError());
+				WSACleanup();
+				break;
+			}
+
+			uint64_t ticket = static_cast<uint64_t>(accept_client_socket);
 			mutex_login_user_list.lock();
 			clients[ticket] = Client(accept_client_socket);
 			CreateIoCompletionPort(reinterpret_cast<HANDLE>(accept_client_socket), h_iocp, ticket, 0);
@@ -50,7 +62,7 @@ void NetworkManagerGrain::packet_worker(HANDLE h_iocp,
 		}
 		case OVERLAPPED_TYPE::PACKET_RECV: {
 			uint64_t ticket = static_cast<uint64_t>(key);
-			construct_receive_packet(ticket, exoverlapped, num_bytes);
+			construct_receive_packet(h_iocp, ticket, exoverlapped, num_bytes);
 			break;
 		}
 		case OVERLAPPED_TYPE::PACKET_SEND: {
@@ -68,15 +80,27 @@ bool NetworkManagerGrain::is_exist_GQCS_result(OverlappedExpansion* exoverlapped
 	else						return true;
 }
 
-void NetworkManagerGrain::construct_receive_packet(uint64_t client_ticket, OverlappedExpansion* exoverlapped, DWORD num_bytes)
+void NetworkManagerGrain::construct_receive_packet(HANDLE h_iocp, uint64_t client_ticket, OverlappedExpansion* exoverlapped, DWORD num_bytes)
 {
+	if (num_bytes <= 0) {
+		C2S_LOGOUT_PACK logout_packet;
+		logout_packet.size = sizeof(logout_packet);
+		logout_packet.type = C2S_PACKET_TYPE::LOGOUT_PACK;
+		wcscpy_s(logout_packet.id, clients[client_ticket].id.c_str());
+
+		wchar_t packet_buffer[MAX_PACKET_SIZE];
+		memcpy(packet_buffer, &logout_packet, sizeof(logout_packet));
+		post_exoverlapped(h_iocp, packet_buffer, L"", OVERLAPPED_TYPE::PACKET_RECV);
+		return;
+	}
+
 	int remain_data = num_bytes + clients[client_ticket].remain_packet_size;
 
 	wchar_t* p = exoverlapped->packet_buffer;
 	while (remain_data > 0) {
 		int packet_size = (int)p[0];
 		if (packet_size <= remain_data) {
-			process_packet(client_ticket, p);
+			process_packet(h_iocp, client_ticket, p);
 			p = p + packet_size;
 			remain_data = remain_data - packet_size;
 		}
@@ -90,7 +114,7 @@ void NetworkManagerGrain::construct_receive_packet(uint64_t client_ticket, Overl
 	clients[client_ticket].recv_packet();
 }
 
-void NetworkManagerGrain::process_packet(uint64_t ticket, wchar_t* packet)
+void NetworkManagerGrain::process_packet(HANDLE h_iocp, uint64_t ticket, wchar_t* packet)
 {
 	switch (packet[1]) {
 	case C2S_PACKET_TYPE::LOGIN_PACK: {
@@ -113,19 +137,28 @@ void NetworkManagerGrain::process_packet(uint64_t ticket, wchar_t* packet)
 			chat_format = std::format(L"[{}]: {}", clients[ticket].id, L"중복된 아이디로 로그인 실패");
 		}
 		wcscpy(result_pack.result, chat_format.c_str());
-		int ret = clients[ticket].send_packet(&result_pack);
-		wprintf(L"%s [%d]\n", chat_format.c_str(), ret);
+		DWORD send_bytes = clients[ticket].send_packet(&result_pack);
+		
+		if (static_cast<DWORD>(result_pack.size) > send_bytes) {
+			C2S_LOGOUT_PACK logout_packet;
+			logout_packet.size = sizeof(logout_packet);
+			logout_packet.type = C2S_PACKET_TYPE::LOGOUT_PACK;
+			wcscpy_s(logout_packet.id, clients[ticket].id.c_str());
+
+			wchar_t packet_buffer[MAX_PACKET_SIZE];
+			memcpy(packet_buffer, &logout_packet, sizeof(logout_packet));
+			post_exoverlapped(h_iocp, packet_buffer, L"", OVERLAPPED_TYPE::PACKET_RECV);
+		}
+		wprintf(L"%s\n", result_pack.result);
 		break;
 	}
 	case C2S_PACKET_TYPE::SEND_CHAT_PACK: {
 		C2S_SEND_CHAT_PACK* chat = reinterpret_cast<C2S_SEND_CHAT_PACK*>(packet);
-
 		auto start = std::chrono::system_clock::now();
 		auto start_time_t = std::chrono::system_clock::to_time_t(start);
-		wchar_t start_buffer[100];
 		struct tm* start_tm = localtime(&start_time_t);
-		swprintf(start_buffer, sizeof(start_buffer) / sizeof(wchar_t), L"%02d:%02d:%02d", start_tm->tm_hour, start_tm->tm_min, start_tm->tm_sec);
-		std::wstring chat_format = std::format(L"[{}][{}]: {}", start_buffer, clients[ticket].id, chat->str);
+		std::wstring time_stamp = std::format(L"{:02}:{:02}:{:02}", start_tm->tm_hour, start_tm->tm_min, start_tm->tm_sec);
+		std::wstring chat_format = std::format(L"[{}][{}]: {}", time_stamp, clients[ticket].id, chat->str);
 		wprintf(L"%s\n", chat_format.c_str());
 		break;
 	}
@@ -141,6 +174,7 @@ void NetworkManagerGrain::process_packet(uint64_t ticket, wchar_t* packet)
 			login_users.erase(info->id);
 			wcscpy_s(result_pack.result, L"로그아웃 성공! 안녕히가세요!");
 			clients[ticket].send_packet(&result_pack);
+			clients[ticket].disconnect_server();
 			clients.erase(ticket);
 		}
 		else {

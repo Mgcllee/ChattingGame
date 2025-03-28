@@ -9,8 +9,8 @@ public:
 	Client() : client_socket(NULL) { }
 	Client(SOCKET in_socket) : client_socket(in_socket) { }
 
-	int send_packet(void* packet);
-	int recv_packet();
+	DWORD send_packet(void* packet);
+	DWORD recv_packet();
 	void disconnect_server();
 
 	std::wstring id;
