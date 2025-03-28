@@ -50,6 +50,15 @@ void GameServerSilo::run_game_logic_grains() {
 		workers.emplace_back(&NetworkManagerGrain::packet_worker, new NetworkManagerGrain(), h_iocp_network,
 			server_socket, accept_client_socket, accept_overlapped_expansion);
 	}
+	while (true) {
+		std::this_thread::sleep_for(std::chrono::seconds(10));
+
+		OverlappedExpansion timer_overlapped;
+		timer_overlapped.overlapped_type = OVERLAPPED_TYPE::CHECK_EXIST_CLIENTS;
+		DWORD sent_byte = 0;
+		ULONG_PTR key = 0;
+		PostQueuedCompletionStatus(h_iocp_network, sent_byte, key, &timer_overlapped.overlapped);
+	}
 	for (auto& ths : workers) {
 		ths.join();
 	}

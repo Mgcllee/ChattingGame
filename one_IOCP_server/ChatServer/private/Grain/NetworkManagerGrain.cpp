@@ -66,7 +66,27 @@ void NetworkManagerGrain::packet_worker(HANDLE h_iocp,
 			break;
 		}
 		case OVERLAPPED_TYPE::PACKET_SEND: {
-			wprintf(L"Complete send work! \t[%d]\n", num_bytes);
+			break;
+		}
+		case OVERLAPPED_TYPE::CHECK_EXIST_CLIENTS: {
+			if (false == LogViewers.empty()) {
+				S2C_SEND_CHAT_LOG_PACK log_pack;
+				log_pack.size = sizeof(S2C_SEND_CHAT_LOG_PACK);
+				log_pack.type = S2C_PACKET_TYPE::RESPONSE_EXIST_CLIENTS;
+
+				auto now = std::chrono::system_clock::now();
+				std::time_t end_time = std::chrono::system_clock::to_time_t(now);
+				tm tm_2;
+				gmtime_s(&tm_2, &end_time);
+				wchar_t cStrfTime[64];
+				wcsftime(cStrfTime, 64, L"%Y-%m-%d_%H:%M:%S\n", &tm_2);
+				std::wstring chat_format = std::format(L"[{}] 접속 유저 수: {}", cStrfTime, login_users.size());
+				wcscpy_s(log_pack.str, chat_format.c_str());
+
+				for (auto& [_, client] : LogViewers) {
+					client.send_packet(&log_pack);
+				}
+			}
 			break;
 		}
 		}
@@ -124,42 +144,61 @@ void NetworkManagerGrain::process_packet(HANDLE h_iocp, uint64_t ticket, wchar_t
 
 		C2S_LOGIN_PACK* login_pack = reinterpret_cast<C2S_LOGIN_PACK*>(packet);
 
-		std::wstring chat_format;
-		mutex_login_user_list.lock();
-		if (login_users.find(login_pack->id) == login_users.end()) {
-			login_users.insert(login_pack->id);
-			clients[ticket].id = login_pack->id;
+		if (0 == wcscmp(login_pack->id, L"ChatServerLogViewer")) {
+			mutex_login_user_list.lock();
+			clients.erase(ticket);
 			mutex_login_user_list.unlock();
-			chat_format = std::format(L"[{}]: {}", clients[ticket].id, L"로그인 성공! 어서오세요!");
+
+			LogViewers[ticket] = Client(static_cast<SOCKET>(ticket));
 		}
 		else {
-			mutex_login_user_list.unlock();
-			chat_format = std::format(L"[{}]: {}", clients[ticket].id, L"중복된 아이디로 로그인 실패");
-		}
-		wcscpy(result_pack.result, chat_format.c_str());
-		DWORD send_bytes = clients[ticket].send_packet(&result_pack);
-		
-		if (static_cast<DWORD>(result_pack.size) > send_bytes) {
-			C2S_LOGOUT_PACK logout_packet;
-			logout_packet.size = sizeof(logout_packet);
-			logout_packet.type = C2S_PACKET_TYPE::LOGOUT_PACK;
-			wcscpy_s(logout_packet.id, clients[ticket].id.c_str());
+			std::wstring chat_format;
+			mutex_login_user_list.lock();
+			if (login_users.find(login_pack->id) == login_users.end()) {
+				login_users.insert(login_pack->id);
+				clients[ticket].id = login_pack->id;
+				mutex_login_user_list.unlock();
+				chat_format = std::format(L"[{}]: {}", clients[ticket].id, L"로그인 성공! 어서오세요!");
+			}
+			else {
+				mutex_login_user_list.unlock();
+				chat_format = std::format(L"[{}]: {}", clients[ticket].id, L"중복된 아이디로 로그인 실패");
+			}
+			wcscpy(result_pack.result, chat_format.c_str());
+			DWORD send_bytes = clients[ticket].send_packet(&result_pack);
 
-			wchar_t packet_buffer[MAX_PACKET_SIZE];
-			memcpy(packet_buffer, &logout_packet, sizeof(logout_packet));
-			post_exoverlapped(h_iocp, packet_buffer, L"", OVERLAPPED_TYPE::PACKET_RECV);
+			if (static_cast<DWORD>(result_pack.size) > send_bytes) {
+				C2S_LOGOUT_PACK logout_packet;
+				logout_packet.size = sizeof(logout_packet);
+				logout_packet.type = C2S_PACKET_TYPE::LOGOUT_PACK;
+				wcscpy_s(logout_packet.id, clients[ticket].id.c_str());
+
+				wchar_t packet_buffer[MAX_PACKET_SIZE];
+				memcpy(packet_buffer, &logout_packet, sizeof(logout_packet));
+				post_exoverlapped(h_iocp, packet_buffer, L"", OVERLAPPED_TYPE::PACKET_RECV);
+			}
+			wprintf(L"%s\n", result_pack.result);
 		}
-		wprintf(L"%s\n", result_pack.result);
 		break;
 	}
 	case C2S_PACKET_TYPE::SEND_CHAT_PACK: {
-		C2S_SEND_CHAT_PACK* chat = reinterpret_cast<C2S_SEND_CHAT_PACK*>(packet);
-		auto start = std::chrono::system_clock::now();
-		auto start_time_t = std::chrono::system_clock::to_time_t(start);
-		struct tm* start_tm = localtime(&start_time_t);
-		std::wstring time_stamp = std::format(L"{:02}:{:02}:{:02}", start_tm->tm_hour, start_tm->tm_min, start_tm->tm_sec);
-		std::wstring chat_format = std::format(L"[{}][{}]: {}", time_stamp, clients[ticket].id, chat->str);
-		wprintf(L"%s\n", chat_format.c_str());
+		if (false == LogViewers.empty()) {
+			S2C_SEND_CHAT_LOG_PACK log_pack;
+			log_pack.size = sizeof(S2C_SEND_CHAT_LOG_PACK);
+			log_pack.type = S2C_PACKET_TYPE::RESPONSE_CHAT_LOG_PACK;
+
+			C2S_SEND_CHAT_PACK* chat = reinterpret_cast<C2S_SEND_CHAT_PACK*>(packet);
+			auto start = std::chrono::system_clock::now();
+			auto start_time_t = std::chrono::system_clock::to_time_t(start);
+			struct tm* start_tm = localtime(&start_time_t);
+			std::wstring time_stamp = std::format(L"{:02}:{:02}:{:02}", start_tm->tm_hour, start_tm->tm_min, start_tm->tm_sec);
+			std::wstring chat_format = std::format(L"[{}][{}]: {}", time_stamp, clients[ticket].id, chat->str);
+			wcscpy_s(log_pack.str, chat_format.c_str());
+
+			for (auto& [_, client] : LogViewers) {
+				client.send_packet(&log_pack);
+			}
+		}
 		break;
 	}
 	case C2S_PACKET_TYPE::LOGOUT_PACK: {
