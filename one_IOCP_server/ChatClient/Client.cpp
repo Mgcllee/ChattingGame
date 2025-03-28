@@ -21,6 +21,19 @@ void Client::connect_to_server(string addr, unsigned short port, int i)
 		return;
 	}
 
+	tcp_keepalive tcp_opt = { 0 };
+	tcp_opt.onoff = TRUE;				// Keep Alive On(TRUE)
+	tcp_opt.keepalivetime = 5'000;		// 5초(5'000ms)마다 KEEPALIVE 신호 송신
+	tcp_opt.keepaliveinterval = 1'000;	// KeepAlive 신호 송신 후 응답이 없으면 1초마다 재송신 (MS TCP는 10회 시도)
+
+	DWORD dwBytes;
+	if (0 != WSAIoctl(m_socket, SIO_KEEPALIVE_VALS, &tcp_opt, sizeof(tcp_keepalive),
+		0, 0, &dwBytes, NULL, NULL)) {
+		wprintf(L"Error setting SO_KEEPALIVE_VALS [error_code: %d]\n", GetLastError());
+		WSACleanup();
+		return;
+	}
+
 	u_long mode = 1;
 	if (ioctlsocket(m_socket, FIONBIO, &mode) == SOCKET_ERROR) {
 		wprintf(L"Faile to set non-blocking socket [Error Code: %d]\n", GetLastError());
