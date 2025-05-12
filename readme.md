@@ -20,8 +20,8 @@ description: "많은 유저 접속을 위한 채팅 서버 제작"
 
 ## 프로젝트 구성
 
-* [1 개의 IOCP를 사용한 서버](https://github.com/Mgcllee/ChattingGame/tree/master/one_IOCP_server)  
-* [여러 개의 IOCP를 사용한 서버](https://github.com/Mgcllee/ChattingGame/tree/master/multi_IOCP_server)  
+* [[Main] 여러 개의 IOCP를 사용한 서버](https://github.com/Mgcllee/ChattingGame/tree/master/multi_IOCP_server)  
+* [[Sub] 1개의 IOCP를 사용한 서버](https://github.com/Mgcllee/ChattingGame/tree/master/one_IOCP_server)  
 
 <br/>
 
